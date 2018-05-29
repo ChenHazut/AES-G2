@@ -17,7 +17,7 @@ public class TeacherController
 		client=new ClientConsole();
 	}
 	
-	public ArrayList<Question> getAllQuestions()
+	public ArrayList<Question> getAllQuestions()//send request to db to get all question which belong to subject this teacher teach 
 	{
 		Message msg=new Message();
 		msg.setSentObj(teacher);

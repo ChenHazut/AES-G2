@@ -88,10 +88,7 @@ public class ClientConsole extends Application implements ChatIF
   public void display(Object message) 
   {
 	  this.msg=(Message) message;
-//	  if(message instanceof String)
-//		  System.out.println(">"+message);
-//	  if(message instanceof ArrayList)
-//		  questions=(ArrayList<Question>) message;
+
   }
 
   
@@ -116,20 +113,13 @@ public class ClientConsole extends Application implements ChatIF
       host = "localhost";
     }
     ClientConsole chat= new ClientConsole();
-    //chat.accept("GiveMeQuestions");  //Wait for console data
-    try {
-		Thread.sleep(2000L);
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-    launch(args);
+    launch(args);  //call start method
   }
 
 	@Override
 	public void start(Stage arg0) throws Exception 
 	{
-		lg = new LoginGUI();
+		lg = new LoginGUI();   //run login window
 		lg.start(arg0);
 	}
 

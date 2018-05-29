@@ -19,7 +19,7 @@ public class LoginController
 		this.client = new ClientConsole();
 	}
 
-	public boolean checkIfUserIDExist() 
+	public boolean checkIfUserIDExist() //sent message to db to get user details and check if user id exist
 	{
 		Message userMsg=new Message();
 		userMsg.setSentObj(userToSend);

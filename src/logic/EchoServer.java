@@ -47,15 +47,6 @@ public class EchoServer extends AbstractServer {
 	}
 
 	// Instance methods ************************************************
-
-	/**
-	 * This method handles any messages received from the client.
-	 *
-	 * @param msg
-	 *            The message received from the client.
-	 * @param client
-	 *            The connection from which the message originated.
-	 */
 	
 	protected Connection connectToDB() {
 		Connection dbh = null;
@@ -67,54 +58,53 @@ public class EchoServer extends AbstractServer {
 		}
 		return dbh;
 	}
+
+	/**
+	 * This method handles any messages received from the client.
+	 *
+	 * @param msg
+	 *            The message received from the client.
+	 * @param client
+	 *            The connection from which the message originated.
+	 */
 	
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) throws SQLException, IOException
 	{
 		Connection conn = null;
-		try {
-			conn = (Connection) DriverManager.getConnection("jdbc:mysql://127.0.0.1/prototype", "root", "CQ1162");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		conn=connectToDB();
 		System.out.println("SQL connection succeed");
 		Message m=(Message)msg;
 		if (m.getClassType().equalsIgnoreCase("User"))
 			userHandler(m,client,conn);
 		else if(m.getClassType().equalsIgnoreCase("Teacher"))
 			teacherHandler(m,client,conn);
+		conn.close();
 
 	}
-
+	//**************************************************************************************
+	//handlers to handle different class types request of DB
+	//**************************************************************************************
+	
+	//user handler= handle client request about User class
+	private void userHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
+	{
+		if (msg.getqueryToDo().equals("checkIfUserExist") ) //send to client the details 												// e.g to logIn
+			searchUserInDB(msg, client, conn);
+		
+	}
+	//teacher handler= handle client request about Teacher class
 	private void teacherHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
 	{
 		if(msg.getqueryToDo().equals("getAllQuestionRelevantToTeacher"))
 			getQuestionsByTeacher(msg,client,conn);
+		else if(msg.getqueryToDo().equals("updadeQuestion"))
+			editQuestion(msg,client,conn);
+			
 	}
-
-	private void getQuestionsByTeacher(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
-	{
-		Statement stmt = (Statement) conn.createStatement();
-		User teacherToSearch=(User) msg.getSentObj();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM questions AS Q,courses AS C WHERE Q.qSubject=C.sID AND C.teacherID="+teacherToSearch.getuID());
-		ArrayList<Question> tempArr=new ArrayList<Question>();	
-		while(rs.next())
-		{
-			Question q=new Question(rs.getString(1), rs.getString(2), rs.getString(3),
-					rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9));
-			tempArr.add(q);
-		}
-		msg.setReturnObj(tempArr);
-		client.sendToClient(msg);
-	}
-
-	private void userHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
-	{
-		if (msg.getqueryToDo().equals("checkIfUserExist") ) // If we want to check if user is exist															// e.g to logIn
-			searchUserInDB(msg, client, conn);
-		
-	}
-
+	//********************************************************************************************
+	//get data or change data in DB methods
+	//********************************************************************************************
+	//search in db for user with same userID as sentObj in msg
 	private void searchUserInDB(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
 	{
 		User uToSearch=(User)msg.getSentObj();
@@ -131,26 +121,46 @@ public class EchoServer extends AbstractServer {
 		}
 		
 		rs.close();
-		conn.close();
 		msg.setReturnObj(tmpUsr);
 		client.sendToClient(msg);
 	}
+	//search in db all questions of subjects teacher in msg.sentObj teach
+	private void getQuestionsByTeacher(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
+	{
+		Statement stmt = (Statement) conn.createStatement();
+		User teacherToSearch=(User) msg.getSentObj();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM questions AS Q,courses AS C WHERE Q.qSubject=C.sID AND C.teacherID="+teacherToSearch.getuID());
+		ArrayList<Question> tempArr=new ArrayList<Question>();	
+		while(rs.next())
+		{
+			Question q=new Question(rs.getString(1), rs.getString(2), rs.getString(3),
+					rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9));
+			tempArr.add(q);
+		}
+		rs.close();
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+	}
 
-	public void editQuestion(Question q)
+	//search in db for question with same qID and edit the requested field.
+	public void editQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException
 	{
 		Statement stmt;
-		Connection conn = null;
 		ResultSet rs = null;
 		try 
 		{
-			Connection dbh = connectToDB();
-			stmt = (Statement) dbh.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Question q=(Question)msg.getSentObj();
 			String s="SELECT * FROM questions WHERE QuestionID="+q.getQuestionID();
 			rs= stmt.executeQuery(s);
 			rs.last();
-			rs.updateInt("correctAns", q.getCorrectAnswer());
+			if(msg.getColumnToUpdate().equalsIgnoreCase("correctAns"))
+				rs.updateInt(msg.getColumnToUpdate(),(int) msg.getValueToUpdate());
+			else rs.updateString(msg.getColumnToUpdate(),(String) msg.getValueToUpdate());
 			rs.updateRow();
-			conn.close();
+			rs.close();
+			msg.setReturnObj(q);
+			client.sendToClient(msg);
 		} 
 			catch (SQLException e) 
 		{
@@ -159,30 +169,7 @@ public class EchoServer extends AbstractServer {
 			
 	}
 	
-	private ArrayList<Question> PutOutAllInformation(ArrayList<Question> itemFromDB) throws SQLException {
-		Connection dbh = connectToDB();
-
-		Statement st = (Statement) dbh.createStatement();
-
-		ResultSet rs = st.executeQuery("select * from questions ");
-
-		while (rs.next()) {
-			Question itemReturnToClient = new Question(rs.getString(1), rs.getString(2), rs.getString(3),
-					rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9));
-			itemFromDB.add(itemReturnToClient);
-		}
-		rs.close();
-		st.close();
-
-		try {
-			dbh.close();
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-
-		return itemFromDB;
-	}
-
+	
 	/**
 	 * This method overrides the one in the superclass. Called when the server
 	 * starts listening for connections.

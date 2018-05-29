@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import client.ChatClient;
+import common.Message;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,11 +62,18 @@ public class QuestionDetailsGUI implements Initializable
 		
 		System.out.println("save has been pressed");
 		q.setCorrectAnswer(Integer.parseInt((correctAnswerLabel.getText())));
-		client.accept(q);
-		try {
+		Message questionToSend=new Message();
+		questionToSend.setSentObj(q);
+		questionToSend.setClassType("Teacher");
+		questionToSend.setqueryToDo("updadeQuestion");
+		questionToSend.setColumnToUpdate("correctAns");
+		questionToSend.setValueToUpdate(Integer.parseInt((correctAnswerLabel.getText())));
+		client.accept(questionToSend);
+		try 
+		{
 			Thread.sleep(1500L);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+		} catch (InterruptedException e) 
+		{
 			e.printStackTrace();
 		}
 		Stage stage = (Stage) saveButton.getScene().getWindow();

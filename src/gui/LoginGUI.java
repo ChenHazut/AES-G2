@@ -42,41 +42,47 @@ public class LoginGUI implements Initializable
 	{
 		
 	}
-	
+	//listen to presses on the login button
 	public void loginButtonAction(ActionEvent ae) throws Exception
 	{
 		
 		uid=userIDTF.getText();
 		upass=passwordTF.getText();
-		User userToLog= new User(uid,upass);
-		LoginController lc=new LoginController(userToLog);
-		
-		if(!lc.checkIfUserIDExist())
-		{
-			System.out.println("id doesn't exist");
-			errorL.setText("User ID doesn't exist");
-		}
-		else if(!lc.getPassword().equals(upass))
-		{
-			System.out.println("password is wrong");
-			errorL.setText("password is wrong");
-		}
-		else if(lc.isConnected())
-		{
-			System.out.println("user already logged in");
-			errorL.setText("user already logged in");
-		}
-		else 
-		{
-			if(lc.getTitle().equalsIgnoreCase("teacher"))
+		if(uid.equals("")||upass.equals("")) //if one or more of fields are empty
+			errorL.setText("details are missing");
+		else {
+			User userToLog= new User(uid,upass);    
+			LoginController lc=new LoginController(userToLog);
+			
+			if(!lc.checkIfUserIDExist())  //if user id doesn't exist
 			{
-				Stage primaryStage=new Stage();
-				TeacherMenuGUI tmg= new TeacherMenuGUI();
-				tmg.start(primaryStage);
+				System.out.println("id doesn't exist");
+				errorL.setText("User ID doesn't exist");
 			}
-			Stage stage = (Stage) loginButton.getScene().getWindow();
-			stage.close();
+			else if(!lc.getPassword().equals(upass)) //if password is incorrect
+			{
+				System.out.println("password is wrong");
+				errorL.setText("password is wrong");
+			}
+			else if(lc.isConnected())  //if user already connected
+			{
+				System.out.println("user already logged in");
+				errorL.setText("user already logged in");
+			}
+			else 
+			{
+				if(lc.getTitle().equalsIgnoreCase("teacher"))//if user is teacher
+				{
+					Stage primaryStage=new Stage();
+					TeacherMenuGUI tmg= new TeacherMenuGUI();
+					tmg.start(primaryStage);
+				}
+				Stage stage = (Stage) loginButton.getScene().getWindow(); //close login window
+				stage.close();
+			}
+			
 		}
+		
 		
 	}
 	

@@ -4,26 +4,25 @@ import java.io.Serializable;
 
 public class Message implements Serializable 
 {
-	/**Constants word at any query that we will use */
-	final public static String qSELECTALL = "SELECT *";
-	final static public String qSELECT="SELECT";
-	final static public String qUPDATE="UPDATE";
-	final static public String qINSERT="INSERT INTO";
+//	/**Constants word at any query that we will use */
+//	final public static String qSELECTALL = "SELECT *";
+//	final static public String qSELECT="SELECT";
+//	final static public String qUPDATE="UPDATE";
+//	final static public String qINSERT="INSERT INTO";
 	
 	private static final long serialVersionUID = 1L;
 	private Object sentObj; /*The object holds the kind of object that we want to send to server*/
 	private Object returnObj; /*this obj is the obj that we are receive after the query*/
-	private String queryQuestion; /*The query that we send to server(DB)*/
+	//private String queryQuestion; /*The query that we send to server(DB)*/
 	private String ClassType; //to sort the msg in echo server
 	private String queryToDo; // which action we want to do 
 	private String ColumnToUpdate; 
-	private String ValueToUpdate; //this two variables help us to make the SQL query more generic
+	private Object ValueToUpdate; //this two variables help us to make the SQL query more generic
 	
 	public Message(String queryQ,String queryTodo) 
 	{
 		sentObj=null;
 		returnObj=null;
-		queryQuestion=queryQ;
 		queryToDo=queryTodo;
 	}
 	
@@ -55,13 +54,6 @@ public class Message implements Serializable
 		this.returnObj = returnObj;
 	}
 
-	public String getQueryQuestion() {
-		return queryQuestion;
-	}
-
-	public void setQueryQuestion(String queryQuestion) {
-		this.queryQuestion = queryQuestion;
-	}
 
 	public String getClassType()
 	{
@@ -77,10 +69,10 @@ public class Message implements Serializable
 	public void setColumnToUpdate(String columnToUpdate) {
 		ColumnToUpdate = columnToUpdate;
 	}
-	public String getValueToUpdate() {
+	public Object getValueToUpdate() {
 		return ValueToUpdate;
 	}
-	public void setValueToUpdate(String valueToUpdate) {
+	public void setValueToUpdate(Object valueToUpdate) {
 		ValueToUpdate = valueToUpdate;
 	}
 }
