@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
@@ -38,6 +39,8 @@ public class QuestionRepositoryGUI implements Initializable
 	private TableColumn <Question,String> QuestionTxt;
 	@FXML
 	private TableColumn <Question,String> teacherName;
+	@FXML
+	private Button editQuestionButton;
 	private ArrayList<Question> arr;
 	//private DatabaseControl dbControl;
 	private QuestionDetailsGUI qdg;
@@ -69,18 +72,12 @@ public class QuestionRepositoryGUI implements Initializable
 	public void editQuestionButtonAction(ActionEvent ae) throws Exception
 	{
 		Question q=(Question) table.getSelectionModel().getSelectedItem();
-		Stage primaryStage=new Stage();
+		Stage stage = (Stage) editQuestionButton.getScene().getWindow();
 		m.selectedQuestion=q;
 		qdg = new QuestionDetailsGUI();
-		qdg.start(primaryStage);
-		
-		//qrControl.editQuestion();
+		qdg.start(stage);
 		System.out.println("question is changed");
-		Thread.sleep(1500L);
-		for(int i=0;i<questionList.size();i++)
-			if(questionList.get(i).getQuestionID().equals(q.getQuestionID()))
-				questionList.remove(questionList.get(i));
-		questionList.add(q);
+		
 		
 	}
 	

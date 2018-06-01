@@ -51,7 +51,7 @@ public class EchoServer extends AbstractServer {
 	protected Connection connectToDB() {
 		Connection dbh = null;
 		try {
-			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/prototype", "root", "CQ1162");
+			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/aes", "root", "CQ1162");
 		} catch (SQLException ex) {
 			System.out.print("Sorry we had a problem, could not connect to DB server\n");
 			sendToAllClients("DBConnectFail");
@@ -154,9 +154,13 @@ public class EchoServer extends AbstractServer {
 			String s="SELECT * FROM questions WHERE QuestionID="+q.getQuestionID();
 			rs= stmt.executeQuery(s);
 			rs.last();
-			if(msg.getColumnToUpdate().equalsIgnoreCase("correctAns"))
-				rs.updateInt(msg.getColumnToUpdate(),(int) msg.getValueToUpdate());
-			else rs.updateString(msg.getColumnToUpdate(),(String) msg.getValueToUpdate());
+			rs.updateString(1,q.getQuestionTxt());
+			rs.updateString(4,q.getInstruction());
+			rs.updateString(5,q.getAnswers()[0]);
+			rs.updateString(6,q.getAnswers()[1]);
+			rs.updateString(7,q.getAnswers()[2]);
+			rs.updateString(8,q.getAnswers()[3]);
+			rs.updateInt(9, q.getCorrectAnswer());
 			rs.updateRow();
 			rs.close();
 			msg.setReturnObj(q);

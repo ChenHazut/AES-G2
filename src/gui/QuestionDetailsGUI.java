@@ -57,17 +57,21 @@ public class QuestionDetailsGUI implements Initializable
 		q=m.getSelectedQuestion();
 	}
 	
-	public void saveButtonAction(ActionEvent ae)
+	public void saveButtonAction(ActionEvent ae) throws Exception
 	{ 
 		
 		System.out.println("save has been pressed");
-		q.setCorrectAnswer(Integer.parseInt((correctAnswerLabel.getText())));
 		Message questionToSend=new Message();
-		questionToSend.setSentObj(q);
 		questionToSend.setClassType("Teacher");
 		questionToSend.setqueryToDo("updadeQuestion");
-		questionToSend.setColumnToUpdate("correctAns");
-		questionToSend.setValueToUpdate(Integer.parseInt((correctAnswerLabel.getText())));
+		Question updatedQuestion=new Question();
+		updatedQuestion.setQuestionID(q.getQuestionID());
+		updatedQuestion.setTeacherName(q.getTeacherName());
+		updatedQuestion.setQuestionTxt(QuestionLabel.getText());
+		updatedQuestion.setInstruction(instructionLabel.getText());
+		updatedQuestion.setCorrectAnswer(Integer.parseInt(correctAnswerLabel.getText()));
+		updatedQuestion.setAnswers(answer1Label.getText(), answer2Label.getText(), answer3Label.getText(), answer4Label.getText());
+		questionToSend.setSentObj(updatedQuestion);
 		client.accept(questionToSend);
 		try 
 		{
@@ -76,15 +80,19 @@ public class QuestionDetailsGUI implements Initializable
 		{
 			e.printStackTrace();
 		}
+		q=updatedQuestion;
+		m.setUpdatedQuestion(q);
 		Stage stage = (Stage) saveButton.getScene().getWindow();
-		stage.close();
+		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+		qrg.start(stage);
 	}
 	
-	public void cancleButtonAction(ActionEvent ae)
+	public void cancleButtonAction(ActionEvent ae) throws Exception
 	{
 		System.out.println("cancle has been pressed");
 		Stage stage = (Stage) cancleButton.getScene().getWindow();
-		stage.close();
+		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+		qrg.start(stage);
 	}
 	
 	public void correctAnswerTextField(ActionEvent ae)
@@ -98,21 +106,13 @@ public class QuestionDetailsGUI implements Initializable
 		QuestionIDTF.setText(q.getQuestionID());
 		QuestionIDTF.setDisable(true);
 		QuestionLabel.setText(q.getQuestionTxt());
-		QuestionLabel.setDisable(true);
 		answer1Label.setText(q.getAnswers()[0]);
-		answer1Label.setDisable(true);
 		answer2Label.setText(q.getAnswers()[1]);
-		answer2Label.setDisable(true);
 		answer3Label.setText(q.getAnswers()[2]);
-		answer3Label.setDisable(true);
 		answer4Label.setText(q.getAnswers()[3]);
-		answer4Label.setDisable(true);
 		teacherNameLabel.setText(q.getTeacherName());
 		teacherNameLabel.setDisable(true);
 		instructionLabel.setText(q.getInstruction());
-		instructionLabel.setDisable(true);
-		answer1Label.setText(q.getAnswers()[0]);
-		answer1Label.setDisable(true);
 		correctAnswerLabel.setText(Integer.toString(q.getCorrectAnswer()));
 		
 	}

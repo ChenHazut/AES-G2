@@ -25,6 +25,11 @@ public class Question  implements Serializable
 	}
 	
 	
+	public Question() {
+		this.answers=new String[4];
+	}
+
+
 	public String getQuestionTxt() {
 		return QuestionTxt;
 	}
@@ -48,6 +53,40 @@ public class Question  implements Serializable
 	public String getInstruction() {
 		return instruction;
 	}
+	
+	
+	public void setQuestionTxt(String questionTxt) {
+		QuestionTxt = questionTxt;
+	}
+
+
+	public void setTeacherName(String teacherName) {
+		this.teacherName = teacherName;
+	}
+
+
+	public void setQuestionID(String questionID) {
+		this.questionID = questionID;
+	}
+
+
+	public void setAnswers(String[] answers) {
+		this.answers = answers;
+	}
+	
+	public void setAnswers(String answer1,String answer2,String answer3,String answer4) {
+		this.answers[0] = answer1;
+		this.answers[1] = answer2;
+		this.answers[2] = answer3;
+		this.answers[3] = answer4;
+	}
+
+
+	public void setInstruction(String instruction) {
+		this.instruction = instruction;
+	}
+
+
 	public void setCorrectAnswer(int correctAnswer) {
 		this.correctAnswer = correctAnswer;
 		
