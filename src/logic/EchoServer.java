@@ -90,8 +90,13 @@ public class EchoServer extends AbstractServer {
 	{
 		if (msg.getqueryToDo().equals("checkIfUserExist") ) //send to client the details 												// e.g to logIn
 			searchUserInDB(msg, client, conn);
+		else if(msg.getqueryToDo().equals("signIn"))
+			loginUser(msg,client,conn);
+		else if(msg.getqueryToDo().equals("logout"))
+			logoutUser(msg,client,conn);
 		
 	}
+
 	//teacher handler= handle client request about Teacher class
 	private void teacherHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
 	{
@@ -99,8 +104,15 @@ public class EchoServer extends AbstractServer {
 			getQuestionsByTeacher(msg,client,conn);
 		else if(msg.getqueryToDo().equals("updadeQuestion"))
 			editQuestion(msg,client,conn);
+		else if(msg.getqueryToDo().equals("deleteQuestion"))
+			deleteQuestion(msg,client,conn);
+		
 			
 	}
+	
+
+
+
 	//********************************************************************************************
 	//get data or change data in DB methods
 	//********************************************************************************************
@@ -115,7 +127,7 @@ public class EchoServer extends AbstractServer {
 		{
 			tmpUsr.setuID(rs.getString(1));
 			tmpUsr.setuName(rs.getString(2));
-			tmpUsr.setIsLoggedIn(rs.getInt(3));
+			tmpUsr.setIsLoggedIn(rs.getString(3));
 			tmpUsr.setPassword(rs.getString(4));
 			tmpUsr.setTitle(rs.getString(5));
 		}
@@ -173,6 +185,73 @@ public class EchoServer extends AbstractServer {
 			
 	}
 	
+	private void deleteQuestion(Message msg, ConnectionToClient client, Connection conn) 
+	{
+		Statement stmt;
+		ResultSet rs = null;
+		try 
+		{
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Question q=(Question)msg.getSentObj();
+			String s="SELECT * FROM questions WHERE QuestionID="+q.getQuestionID();
+			rs= stmt.executeQuery(s);
+			rs.last();
+			rs.deleteRow();
+			rs.close();
+		}
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}	
+	}
+	
+	private void loginUser(Message msg, ConnectionToClient client, Connection conn) throws IOException
+	{
+		
+		Statement stmt;
+		ResultSet rs = null;
+		try 
+		{
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			User user=(User)msg.getSentObj();
+			String s="SELECT * FROM users WHERE uID="+user.getuID();
+			rs= stmt.executeQuery(s);
+			rs.last();
+			rs.updateString(3,user.getIsLoggedIn());
+			rs.updateRow();
+			rs.close();
+			msg.setReturnObj(user);
+			client.sendToClient(msg);
+		} 
+			catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void logoutUser(Message msg, ConnectionToClient client, Connection conn) throws IOException
+	{
+		
+		Statement stmt;
+		ResultSet rs = null;
+		try 
+		{
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			User user=(User)msg.getSentObj();
+			String s="SELECT * FROM users WHERE uID="+user.getuID();
+			rs= stmt.executeQuery(s);
+			rs.last();
+			rs.updateString(3,user.getIsLoggedIn());
+			rs.updateRow();
+			rs.close();
+			msg.setReturnObj(user);
+			client.sendToClient(msg);
+		} 
+			catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * This method overrides the one in the superclass. Called when the server

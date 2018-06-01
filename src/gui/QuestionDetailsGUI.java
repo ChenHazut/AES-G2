@@ -19,30 +19,8 @@ import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Question;
 
-public class QuestionDetailsGUI implements Initializable
+public class QuestionDetailsGUI extends QuestionForm implements Initializable 
 {
-	@FXML
-	TextField correctAnswerLabel;
-	@FXML
-	Button cancleButton;
-	@FXML
-	Button saveButton;
-	@FXML
-	TextField QuestionLabel;
-	@FXML
-	TextField answer1Label;
-	@FXML
-	TextField answer2Label;
-	@FXML
-	TextField answer3Label;
-	@FXML
-	TextField answer4Label;
-	@FXML
-	TextField teacherNameLabel;
-	@FXML
-	TextField instructionLabel;
-	@FXML
-	TextField QuestionIDTF;
 	
 	Question q;
 	GUImanager m;
@@ -57,6 +35,7 @@ public class QuestionDetailsGUI implements Initializable
 		q=m.getSelectedQuestion();
 	}
 	
+	@Override
 	public void saveButtonAction(ActionEvent ae) throws Exception
 	{ 
 		
@@ -64,13 +43,7 @@ public class QuestionDetailsGUI implements Initializable
 		Message questionToSend=new Message();
 		questionToSend.setClassType("Teacher");
 		questionToSend.setqueryToDo("updadeQuestion");
-		Question updatedQuestion=new Question();
-		updatedQuestion.setQuestionID(q.getQuestionID());
-		updatedQuestion.setTeacherName(q.getTeacherName());
-		updatedQuestion.setQuestionTxt(QuestionLabel.getText());
-		updatedQuestion.setInstruction(instructionLabel.getText());
-		updatedQuestion.setCorrectAnswer(Integer.parseInt(correctAnswerLabel.getText()));
-		updatedQuestion.setAnswers(answer1Label.getText(), answer2Label.getText(), answer3Label.getText(), answer4Label.getText());
+		Question updatedQuestion= getFilledDetails();
 		questionToSend.setSentObj(updatedQuestion);
 		client.accept(questionToSend);
 		try 
@@ -87,6 +60,7 @@ public class QuestionDetailsGUI implements Initializable
 		qrg.start(stage);
 	}
 	
+	@Override
 	public void cancleButtonAction(ActionEvent ae) throws Exception
 	{
 		System.out.println("cancle has been pressed");
@@ -94,7 +68,7 @@ public class QuestionDetailsGUI implements Initializable
 		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
 		qrg.start(stage);
 	}
-	
+	@Override
 	public void correctAnswerTextField(ActionEvent ae)
 	{
 	
@@ -117,14 +91,7 @@ public class QuestionDetailsGUI implements Initializable
 		
 	}
 
-	public void start(Stage primaryStage) throws IOException
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("QuestionDetails.fxml"));
-		Scene Scene = new Scene(root);
-		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		primaryStage.setScene(Scene);
-		primaryStage.show();
-	}
+
 
 	
 }

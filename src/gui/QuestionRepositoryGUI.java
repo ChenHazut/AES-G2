@@ -59,14 +59,25 @@ public class QuestionRepositoryGUI implements Initializable
 		primaryStage.show(); 
 	}
 	
-	public void insertButtonAction(ActionEvent ae)
+	public void insertButtonAction(ActionEvent ae) throws IOException
 	{
 		System.out.println("question is added");
+		Stage stage = (Stage) editQuestionButton.getScene().getWindow();
+		NewQuestionGUI nqg=new NewQuestionGUI();
+		nqg.start(stage);
 	}
 	
 	public void deleteQuestionButtonAction(ActionEvent ae)
 	{
 		System.out.println("question is deleted");
+		Question qToDel=(Question) table.getSelectionModel().getSelectedItem();
+		tc.deleteQuestion(qToDel);
+		for(int i=0;i<questionList.size();i++)
+			if(questionList.get(i).getQuestionID().equals(qToDel.getQuestionID()))
+			{
+				questionList.remove(i);
+				break;
+			}
 	}
 	
 	public void editQuestionButtonAction(ActionEvent ae) throws Exception

@@ -36,4 +36,23 @@ public class TeacherController
 		return arrOfQuestions;
 		
 	}
+
+	public void deleteQuestion(Question qToDel) 
+	{
+		Message msg=new Message();
+		msg.setClassType("teacher");
+		msg.setqueryToDo("deleteQuestion");
+		msg.setSentObj(qToDel);
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+
+	
 }
