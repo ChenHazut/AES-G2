@@ -1,31 +1,53 @@
 package gui;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import client.ChatClient;
+import common.Message;
 import javafx.event.ActionEvent;
-import logic.LoginController;
-import logic.User;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import logic.ClientConsole;
+import logic.Question;
 
 public class NewQuestionGUI extends QuestionForm 
 {
-	LoginController lc;
-	User user;
-	@Override
-	public void saveButtonAction(ActionEvent ae) throws Exception 
+	
+	//Question q;
+	
+	public NewQuestionGUI() 
 	{
-		user=lc.getUser();
-		 
+		super();
 		
+		
+	}
+	
+	public void start(Stage primaryStage) throws IOException
+	{
+		System.out.println("bla bla bla bla");
+		Parent root = FXMLLoader.load(getClass().getResource("QuestionDetails.fxml"));
+		Scene Scene = new Scene(root);
+		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		primaryStage.setScene(Scene);
+		primaryStage.show();
+		
+	}
+	
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		System.out.println("1234567890");
 	}
 
-	@Override
-	public void cancleButtonAction(ActionEvent ae) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void correctAnswerTextField(ActionEvent ae) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	
 }

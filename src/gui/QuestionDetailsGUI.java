@@ -19,63 +19,30 @@ import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Question;
 
-public class QuestionDetailsGUI extends QuestionForm implements Initializable 
+public class QuestionDetailsGUI extends QuestionForm
 {
 	
 	Question q;
-	GUImanager m;
-	
-
-	ClientConsole client;
 	
 	public QuestionDetailsGUI() 
 	{
-		client=new ClientConsole();
-		m=new GUImanager();
+		super();
 		q=m.getSelectedQuestion();
-	}
-	
-	@Override
-	public void saveButtonAction(ActionEvent ae) throws Exception
-	{ 
 		
-		System.out.println("save has been pressed");
-		Message questionToSend=new Message();
-		questionToSend.setClassType("Teacher");
-		questionToSend.setqueryToDo("updadeQuestion");
-		Question updatedQuestion= getFilledDetails();
-		questionToSend.setSentObj(updatedQuestion);
-		client.accept(questionToSend);
-		try 
-		{
-			Thread.sleep(1500L);
-		} catch (InterruptedException e) 
-		{
-			e.printStackTrace();
-		}
-		q=updatedQuestion;
-		m.setUpdatedQuestion(q);
-		Stage stage = (Stage) saveButton.getScene().getWindow();
-		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		qrg.start(stage);
 	}
 	
-	@Override
-	public void cancleButtonAction(ActionEvent ae) throws Exception
+	public void start(Stage primaryStage) throws IOException
 	{
-		System.out.println("cancle has been pressed");
-		Stage stage = (Stage) cancleButton.getScene().getWindow();
-		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		qrg.start(stage);
+		System.out.println("bla bla bla bla");
+		Parent root = FXMLLoader.load(getClass().getResource("QuestionDetails.fxml"));
+		Scene Scene = new Scene(root);
+		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		primaryStage.setScene(Scene);
+		primaryStage.show();
+		
 	}
-	@Override
-	public void correctAnswerTextField(ActionEvent ae)
-	{
+
 	
-	}
-
-
-	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		QuestionIDTF.setText(q.getQuestionID());
 		QuestionIDTF.setDisable(true);
@@ -88,7 +55,8 @@ public class QuestionDetailsGUI extends QuestionForm implements Initializable
 		teacherNameLabel.setDisable(true);
 		instructionLabel.setText(q.getInstruction());
 		correctAnswerLabel.setText(Integer.toString(q.getCorrectAnswer()));
-		
+		subjectCombo.setVisible(false);
+		courseCombo.setVisible(false);
 	}
 
 

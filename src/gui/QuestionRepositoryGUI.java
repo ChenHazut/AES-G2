@@ -71,6 +71,8 @@ public class QuestionRepositoryGUI implements Initializable
 	{
 		System.out.println("question is deleted");
 		Question qToDel=(Question) table.getSelectionModel().getSelectedItem();
+		if(qToDel==null)
+			return;
 		tc.deleteQuestion(qToDel);
 		for(int i=0;i<questionList.size();i++)
 			if(questionList.get(i).getQuestionID().equals(qToDel.getQuestionID()))
@@ -83,6 +85,8 @@ public class QuestionRepositoryGUI implements Initializable
 	public void editQuestionButtonAction(ActionEvent ae) throws Exception
 	{
 		Question q=(Question) table.getSelectionModel().getSelectedItem();
+		if(q==null)
+			return;
 		Stage stage = (Stage) editQuestionButton.getScene().getWindow();
 		m.selectedQuestion=q;
 		qdg = new QuestionDetailsGUI();
