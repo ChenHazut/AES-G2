@@ -173,7 +173,7 @@ public class NewQuestionGUI implements Initializable
 				s=tc.getSubjects().get(i);
 		}
 		
-		updatedQuestion.setQuestionID(s.getSubjectID()+s.getNextQID());
+		updatedQuestion.setQuestionID(s.getSubjectID());
 		q=tc.createNewQuestion(updatedQuestion);
 		
 		m.setUpdatedQuestion(q);

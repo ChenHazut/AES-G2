@@ -6,7 +6,7 @@ public class Subject implements Serializable
 {
 	String subjectID;
 	String sName;
-	public static int nextQID=4;
+
 	public Subject(String subjectID, String sName) {
 		super();
 		this.subjectID = subjectID;
@@ -29,16 +29,6 @@ public class Subject implements Serializable
 		this.sName = sName;
 	}
 
-	public String getNextQID() 
-	{
-		String s= Integer.toString(nextQID);
-		nextQID++;
-		if(nextQID<10)
-			return "00"+s;
-		else if(nextQID<100)
-			return "0"+s;
-		else return s;
-	}
 	
 	
 	

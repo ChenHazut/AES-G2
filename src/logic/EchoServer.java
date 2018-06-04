@@ -260,6 +260,37 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 	
+	
+	private String getNextQuestionIDOfSubject(String subjectID,Connection conn)
+	{
+		Statement stmt;
+		ResultSet rs = null;
+		try 
+		{
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			String s="SELECT * FROM subjects WHERE sID="+subjectID;
+			rs= stmt.executeQuery(s);
+			if(rs.next())
+			{
+				int temp= rs.getInt(3);
+				rs.updateInt(3, temp++);
+				String st=Integer.toString(temp);
+				if(temp<10)
+					return "00"+st+subjectID;
+				else if(temp<100)
+					return "0"+st+subjectID;
+				else return st+subjectID;
+			}
+			rs.close();
+		} 
+			catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
 	private void createQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException
 	{
 		Statement stmt;
@@ -272,7 +303,7 @@ public class EchoServer extends AbstractServer {
 			rs= stmt.executeQuery(s);
 			rs.moveToInsertRow();
 			rs.updateString(1,q.getQuestionTxt());
-			rs.updateString(2,q.getQuestionID());
+			rs.updateString(2,getNextQuestionIDOfSubject(q.getQuestionID(),conn));
 			rs.updateString(3,q.getTeacherID());
 			rs.updateString(4,q.getInstruction());
 			rs.updateString(5,q.getAnswers()[0]);
