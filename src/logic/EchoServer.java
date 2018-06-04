@@ -276,10 +276,10 @@ public class EchoServer extends AbstractServer {
 				rs.updateInt(3, temp++);
 				String st=Integer.toString(temp);
 				if(temp<10)
-					return "00"+st+subjectID;
+					return subjectID+"00"+st;
 				else if(temp<100)
-					return "0"+st+subjectID;
-				else return st+subjectID;
+					return subjectID+"0"+st;
+				else return subjectID+st;
 			}
 			rs.close();
 		} 
