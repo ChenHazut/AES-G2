@@ -5,15 +5,16 @@ import java.io.Serializable;
 public class Question  implements Serializable
 {
 	private String QuestionTxt;
-	private String teacherName;
+	private String teacherID;
 	private String questionID;
 	private String[] answers;
 	private int correctAnswer;
 	private String instruction;
+	private String teacherName;
 	
-	public Question(String questionTxt, String questionID, String teacherName, String instruction,String answer1,String answer2,String answer3,String answer4, int correctAnswer) {
+	public Question(String questionTxt, String questionID, String teacherId, String instruction,String answer1,String answer2,String answer3,String answer4, int correctAnswer) {
 		this.QuestionTxt = questionTxt;
-		this.teacherName = teacherName;
+		this.teacherID = teacherId;
 		this.questionID = questionID;
 		this.answers=new String[4];
 		this.answers[0] = answer1;
@@ -34,8 +35,8 @@ public class Question  implements Serializable
 		return QuestionTxt;
 	}
 	
-	public String getTeacherName() {
-		return teacherName;
+	public String getTeacherID() {
+		return teacherID;
 	}
 	
 	public String getQuestionID() {
@@ -60,8 +61,8 @@ public class Question  implements Serializable
 	}
 
 
-	public void setTeacherName(String teacherName) {
-		this.teacherName = teacherName;
+	public void setTeacherID(String teacherId) {
+		this.teacherID = teacherId;
 	}
 
 
@@ -91,13 +92,26 @@ public class Question  implements Serializable
 		this.correctAnswer = correctAnswer;
 		
 	}
+	
+	
+	
+	public String getTeacherName() {
+		return teacherName;
+	}
+
+
 	public String toString()
 	{
 		return questionID + QuestionTxt;
 	}
 
 
+	public void setTeacherName(String teacherName) {
+		this.teacherName = teacherName;
+	}
 
+
+	
 	
 	
 }
