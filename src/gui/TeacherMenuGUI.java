@@ -19,6 +19,7 @@ import logic.User;
 
 public class TeacherMenuGUI implements Initializable
 {
+	
 	@FXML
 	Button testRepositoryButton;
 	@FXML
@@ -58,6 +59,7 @@ public class TeacherMenuGUI implements Initializable
 
 	public void start(Stage primaryStage) throws IOException
 	{
+		System.out.println("Yaniv");
 		Parent root = FXMLLoader.load(getClass().getResource("teacherMenu.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
