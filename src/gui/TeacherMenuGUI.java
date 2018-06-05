@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import logic.LoginController;
+import logic.TeacherController;
 import logic.User;
 
 
@@ -27,6 +28,7 @@ public class TeacherMenuGUI implements Initializable
 	@FXML
 	Label helloMsgLabel;
 	private User teacher;
+	private LoginController lc;
 	
 	public void questionRepositoryButtonAction() throws Exception
 	{
@@ -51,6 +53,7 @@ public class TeacherMenuGUI implements Initializable
 		LoginController lc=new LoginController();
 		this.teacher=lc.getUser();
 		helloMsgLabel.setText("Hello "+teacher.getuName()+",");
+		
 	}
 
 	public void start(Stage primaryStage) throws IOException
@@ -60,5 +63,9 @@ public class TeacherMenuGUI implements Initializable
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
 		primaryStage.show();
+		lc=new LoginController();
+		primaryStage.setOnCloseRequest(event ->{
+			lc.logoutUser();
+		});
 	}
 }

@@ -71,6 +71,8 @@ public class LoginGUI implements Initializable
 			}
 			else 
 			{
+				lc.loginUser();
+
 				if(lc.getTitle().equalsIgnoreCase("teacher"))//if user is teacher
 				{
 					Stage primaryStage=new Stage();

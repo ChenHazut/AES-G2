@@ -8,7 +8,7 @@ public class User implements Serializable
 	private String uName;     //user name
 	private String password;  //user password
 	private String Title;
-	private int isLoggedIn;   //0 if user isn't logged in already, 1 else
+	private String isLoggedIn;   //0 if user isn't logged in already, 1 else
 	
 
 	public User(String uid, String upass) 
@@ -40,10 +40,10 @@ public class User implements Serializable
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getIsLoggedIn() {
+	public String getIsLoggedIn() {
 		return isLoggedIn;
 	}
-	public void setIsLoggedIn(int isLoggedIn) {
+	public void setIsLoggedIn(String isLoggedIn) {
 		this.isLoggedIn = isLoggedIn;
 	}
 

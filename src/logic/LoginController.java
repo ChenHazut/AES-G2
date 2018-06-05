@@ -39,6 +39,40 @@ public class LoginController
 			return false;
 		return true;
 	}
+	
+	public void loginUser() 
+	{
+		Message msg=new Message();
+		msg.setClassType("user");
+		msg.setqueryToDo("signIn");
+		user.setIsLoggedIn("YES");
+		msg.setSentObj(user);
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void logoutUser() 
+	{
+		Message msg=new Message();
+		msg.setClassType("user");
+		msg.setqueryToDo("logout");
+		user.setIsLoggedIn("NO");
+		msg.setSentObj(user);
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	public String getPassword() 
 	{
@@ -47,7 +81,7 @@ public class LoginController
 
 	public boolean isConnected() 
 	{
-		if(user.getIsLoggedIn()==0)
+		if(user.getIsLoggedIn().equals("NO"))
 			return false;
 		return true;
 	}

@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -43,31 +44,122 @@ public class QuestionDetailsGUI implements Initializable
 	TextField instructionLabel;
 	@FXML
 	TextField QuestionIDTF;
-	
+	@FXML
+	Label qid;
+	@FXML
+	Label qtxt;
+	@FXML
+	Label qans1;
+	@FXML
+	Label qans2;
+	@FXML
+	Label qans3;
+	@FXML
+	Label qans4;
+	@FXML
+	Label corAns;
+
 	Question q;
+	ClientConsole client;
 	GUImanager m;
 	
-
-	ClientConsole client;
+	
 	
 	public QuestionDetailsGUI() 
 	{
 		client=new ClientConsole();
 		m=new GUImanager();
 		q=m.getSelectedQuestion();
+		
 	}
 	
-	public void saveButtonAction(ActionEvent ae)
+	public void start(Stage primaryStage) throws IOException
+	{
+		System.out.println("bla bla bla bla");
+		Parent root = FXMLLoader.load(getClass().getResource("QuestionDetails.fxml"));
+		Scene Scene = new Scene(root);
+		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		primaryStage.setScene(Scene);
+		primaryStage.show();
+		
+	}
+
+	
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		QuestionIDTF.setText(q.getQuestionID());
+		QuestionIDTF.setDisable(true);
+		QuestionLabel.setText(q.getQuestionTxt());
+		answer1Label.setText(q.getAnswers()[0]);
+		answer2Label.setText(q.getAnswers()[1]);
+		answer3Label.setText(q.getAnswers()[2]);
+		answer4Label.setText(q.getAnswers()[3]);
+		teacherNameLabel.setText(q.getTeacherName());
+		teacherNameLabel.setDisable(true);
+		instructionLabel.setText(q.getInstruction());
+		correctAnswerLabel.setText(Integer.toString(q.getCorrectAnswer()));
+
+	}
+
+	protected Question getFilledDetails()
+	{
+		int flag=0;
+		int flagAns=0;
+		Question updatedQuestion=new Question();
+		if(QuestionIDTF.getText().equals(""))
+		{
+			qid.setText("*");
+			return null;
+		}
+		else updatedQuestion.setQuestionID(QuestionIDTF.getText());
+		updatedQuestion.setTeacherName(teacherNameLabel.getText());
+		if(QuestionLabel.getText().equals(""))
+		{
+			qtxt.setText("*");
+			return null;
+		}
+		else updatedQuestion.setQuestionTxt(QuestionLabel.getText());
+		updatedQuestion.setInstruction(instructionLabel.getText());
+		if(answer1Label.getText().equals(""))
+		{
+			qans1.setText("*");
+			return null;
+		}
+		if(answer2Label.getText().equals(""))
+		{
+			qans2.setText("*");
+			return null;
+		}
+		if(answer3Label.getText().equals(""))
+		{
+			qans3.setText("*");
+			return null;
+		}
+		if(answer4Label.getText().equals(""))
+		{
+			qans4.setText("*");
+			return null;
+		}
+		updatedQuestion.setAnswers(answer1Label.getText(), answer2Label.getText(), answer3Label.getText(), answer4Label.getText());
+		if(correctAnswerLabel.getText().equals(""))
+		{
+			corAns.setText("*");
+			return null;
+		}
+		else updatedQuestion.setCorrectAnswer(Integer.parseInt(correctAnswerLabel.getText()));
+		return updatedQuestion;	
+	}
+	
+	public void saveButtonAction(ActionEvent ae) throws Exception
 	{ 
 		
 		System.out.println("save has been pressed");
-		q.setCorrectAnswer(Integer.parseInt((correctAnswerLabel.getText())));
 		Message questionToSend=new Message();
-		questionToSend.setSentObj(q);
 		questionToSend.setClassType("Teacher");
 		questionToSend.setqueryToDo("updadeQuestion");
-		questionToSend.setColumnToUpdate("correctAns");
-		questionToSend.setValueToUpdate(Integer.parseInt((correctAnswerLabel.getText())));
+		Question updatedQuestion= getFilledDetails();
+		if(updatedQuestion==null)
+			return;
+		questionToSend.setSentObj(updatedQuestion);
 		client.accept(questionToSend);
 		try 
 		{
@@ -76,55 +168,27 @@ public class QuestionDetailsGUI implements Initializable
 		{
 			e.printStackTrace();
 		}
+		q=updatedQuestion;
+		m.setUpdatedQuestion(q);
 		Stage stage = (Stage) saveButton.getScene().getWindow();
-		stage.close();
+		m.setSelectedQuestion(null);
+		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+		qrg.start(stage);
 	}
-	
-	public void cancleButtonAction(ActionEvent ae)
+
+	public void cancleButtonAction(ActionEvent ae) throws Exception
 	{
 		System.out.println("cancle has been pressed");
 		Stage stage = (Stage) cancleButton.getScene().getWindow();
-		stage.close();
+		m.setSelectedQuestion(null);
+		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+		qrg.start(stage);
 	}
+	
 	
 	public void correctAnswerTextField(ActionEvent ae)
 	{
 	
 	}
-
-
-	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
-		QuestionIDTF.setText(q.getQuestionID());
-		QuestionIDTF.setDisable(true);
-		QuestionLabel.setText(q.getQuestionTxt());
-		QuestionLabel.setDisable(true);
-		answer1Label.setText(q.getAnswers()[0]);
-		answer1Label.setDisable(true);
-		answer2Label.setText(q.getAnswers()[1]);
-		answer2Label.setDisable(true);
-		answer3Label.setText(q.getAnswers()[2]);
-		answer3Label.setDisable(true);
-		answer4Label.setText(q.getAnswers()[3]);
-		answer4Label.setDisable(true);
-		teacherNameLabel.setText(q.getTeacherName());
-		teacherNameLabel.setDisable(true);
-		instructionLabel.setText(q.getInstruction());
-		instructionLabel.setDisable(true);
-		answer1Label.setText(q.getAnswers()[0]);
-		answer1Label.setDisable(true);
-		correctAnswerLabel.setText(Integer.toString(q.getCorrectAnswer()));
-		
-	}
-
-	public void start(Stage primaryStage) throws IOException
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("QuestionDetails.fxml"));
-		Scene Scene = new Scene(root);
-		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		primaryStage.setScene(Scene);
-		primaryStage.show();
-	}
-
 	
 }
