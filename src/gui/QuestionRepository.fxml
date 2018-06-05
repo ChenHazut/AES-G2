@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.QuestionRepositoryGUI">
+   <children>
+      <Button fx:id="deleteQuestionButton" layoutX="517.0" layoutY="170.0" mnemonicParsing="false" onAction="#deleteQuestionButtonAction" prefHeight="35.0" prefWidth="69.0" text="Delete">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="insert" layoutX="517.0" layoutY="90.0" mnemonicParsing="false" onAction="#insertButtonAction" prefHeight="35.0" prefWidth="69.0" text="Insert" textFill="#3e2d2d">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="editQuestionButton" layoutX="517.0" layoutY="130.0" mnemonicParsing="false" onAction="#editQuestionButtonAction" prefHeight="35.0" prefWidth="69.0" text="Edit">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
+      <Label layoutX="192.0" prefHeight="57.0" prefWidth="213.0" text="Question Menu" textFill="#c40e86">
+         <font>
+            <Font name="Cambria Bold" size="30.0" />
+         </font>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <effect>
+            <DropShadow blurType="TWO_PASS_BOX" height="41.755" radius="22.106250000000003" width="48.67" />
+         </effect>
+      </Label>
+      <TableView fx:id="table" layoutX="45.0" layoutY="65.0" prefHeight="303.0" prefWidth="443.0">
+        <columns>
+          <TableColumn fx:id="questionID" prefWidth="75.0" text="questionID" />
+          <TableColumn fx:id="QuestionTxt" prefWidth="259.99999237060547" text="QuestionTxt" />
+            <TableColumn fx:id="teacherName" prefWidth="106.0" text="teacherName" />
+        </columns>
+      </TableView>
+   </children>
+   <effect>
+      <Glow />
+   </effect>
+   <padding>
+      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
+</Pane>
