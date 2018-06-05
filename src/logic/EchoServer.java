@@ -51,7 +51,7 @@ public class EchoServer extends AbstractServer {
 	protected Connection connectToDB() {
 		Connection dbh = null;
 		try {
-			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/prototype", "root", "CQ1162");
+			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/aes", "root", "rotem");
 		} catch (SQLException ex) {
 			System.out.print("Sorry we had a problem, could not connect to DB server\n");
 			sendToAllClients("DBConnectFail");

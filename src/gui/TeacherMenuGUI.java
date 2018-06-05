@@ -49,7 +49,7 @@ public class TeacherMenuGUI implements Initializable
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
 		LoginController lc=new LoginController();
-		this.teacher=lc.getUser();
+		this.teacher=lc.getUser(); //save the teacher that connected to the system
 		helloMsgLabel.setText("Hello "+teacher.getuName()+",");
 	}
 
