@@ -273,8 +273,9 @@ public class EchoServer extends AbstractServer {
 			if(rs.next())
 			{
 				int temp= rs.getInt(3);
-				rs.updateInt(3, temp++);
 				String st=Integer.toString(temp);
+				temp++;
+				rs.updateInt(3, temp);
 				if(temp<10)
 					return subjectID+"00"+st;
 				else if(temp<100)
