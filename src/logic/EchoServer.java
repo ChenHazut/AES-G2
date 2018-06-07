@@ -147,26 +147,32 @@ public class EchoServer extends AbstractServer {
 	{
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch=(User) msg.getSentObj();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM question AS Q, question-course AS QC, teacherInCourse AS TC user AS U WHERE Q.questionID=QC.questionID AND QC.subjectID=TC.subjectID AND QC.courseID=TC.courseID AND TC.teacherID="+teacherToSearch.getuID()+" AND U.userID=TC.teacherID");
+		ResultSet rs = stmt.executeQuery("SELECT * FROM question AS Q, questionCourse AS QC, teacherInCourse AS TC, user AS U WHERE Q.questionID=QC.questionID AND QC.subjectID=TC.subjectID AND QC.courseID=TC.courseID AND TC.teacherID="+teacherToSearch.getuID()+" AND U.userID=TC.teacherID");
 		ArrayList<Question> tempArr=new ArrayList<Question>();	
+		HashMap<String,Integer> map=new HashMap<String,Integer>();
 		while(rs.next())
 		{
 			Question q=new Question();
 			q.setQuestionID(rs.getString(1));
-			q.setQuestionTxt(rs.getString(2));
-			q.setTeacherID(rs.getString(3));
-			q.setTeacherName(rs.getString(14));
-			q.setInstruction(rs.getString(4));
-			q.setCorrectAnswer(rs.getInt(5));
-			Statement stmt2 = (Statement) conn.createStatement();
-			ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID()+"ORDER BY answerID");
-			String[] ans=new String[4];
-			for(int i=0;rs2.next();i++)
-				ans[i]=rs2.getString(3);
-			q.setAnswers(ans);
-			tempArr.add(q);
-			stmt2.close();
-			rs2.close();
+			if(!map.containsKey(q.getQuestionID()))
+			{
+				q.setQuestionTxt(rs.getString(2));
+				q.setTeacherID(rs.getString(3));
+				q.setTeacherName(rs.getString(14));
+				q.setInstruction(rs.getString(4));
+				q.setCorrectAnswer(rs.getInt(5));
+				Statement stmt2 = (Statement) conn.createStatement();
+				ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID());
+				String[] ans=new String[4];
+				for(int i=0;rs2.next();i++)
+					ans[i]=rs2.getString(3);
+				q.setAnswers(ans);
+				tempArr.add(q);
+				map.put(q.getQuestionID(), 1);
+				stmt2.close();
+				rs2.close();
+			}
+			
 		}
 		rs.close();
 		stmt.close();
@@ -188,15 +194,15 @@ public class EchoServer extends AbstractServer {
 			rs.last();
 			rs.updateString(2,q.getQuestionTxt());
 			rs.updateString(4,q.getInstruction());
+			rs.updateInt(5, q.getCorrectAnswer());
+			rs.updateRow();
 			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			rs2= stmt.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID()+" ORDER BY QA.answerID");		
+			rs2= stmt.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID());		
 			for(int i=0;rs2.next();i++)
 			{
 				rs2.updateString(3,q.getAnswers()[i]);
 				rs2.updateRow();
 			}
-			rs.updateInt(5, q.getCorrectAnswer());
-			rs.updateRow();
 			rs.close();
 			rs2.close();
 			stmt.close();
@@ -219,7 +225,7 @@ public class EchoServer extends AbstractServer {
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			Question q=(Question)msg.getSentObj();
-			String s="SELECT * FROM questions WHERE QuestionID="+q.getQuestionID();
+			String s="SELECT * FROM question WHERE QuestionID="+q.getQuestionID();
 			rs= stmt.executeQuery(s);
 			rs.last();
 			rs.deleteRow();
@@ -240,7 +246,7 @@ public class EchoServer extends AbstractServer {
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			User user=(User)msg.getSentObj();
-			String s="SELECT * FROM users WHERE uID="+user.getuID();
+			String s="SELECT * FROM user WHERE userID="+user.getuID();
 			rs= stmt.executeQuery(s);
 			rs.last();
 			rs.updateInt(3,user.getIsLoggedIn().equals("YES")?1:0);
@@ -264,7 +270,7 @@ public class EchoServer extends AbstractServer {
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			User user=(User)msg.getSentObj();
-			String s="SELECT * FROM users WHERE uID="+user.getuID();
+			String s="SELECT * FROM user WHERE userID="+user.getuID();
 			rs= stmt.executeQuery(s);
 			rs.last();
 			rs.updateInt(3,user.getIsLoggedIn().equals("YES")?1:0);
@@ -294,6 +300,7 @@ public class EchoServer extends AbstractServer {
 			String st=Integer.toString(temp);
 			temp++;
 			rs.updateInt(3, temp);
+			rs.updateRow();
 			rs.close();
 			stmt.close();
 			if(temp<10)
@@ -310,15 +317,44 @@ public class EchoServer extends AbstractServer {
 		
 	}
 	
+	private void addToQuestionCourseTable(Question q,Connection conn)
+	{
+		Statement stmt;
+		ResultSet rs = null;
+	
+		try 
+		{
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			String s="SELECT * FROM questioncourse";
+			rs= stmt.executeQuery(s);
+			for(int i=0;i<q.getCourseList().size();i++)
+			{
+				rs.moveToInsertRow();
+				rs.updateString(1,q.getQuestionID());
+				rs.updateString(2,q.getQuestionID().substring(0, 2));
+				rs.updateString(3,q.getCourseList().get(i).getcID());
+				rs.insertRow();
+			}
+			
+			rs.close();
+			stmt.close();
+			System.out.println("00000000");
+		} 
+			catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 	private void createQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException
 	{
 		Statement stmt,stmt2;
 		ResultSet rs = null,rs2=null;
+	
 		try 
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
 			Question q=(Question)msg.getSentObj();
-			String s="SELECT * FROM questions";
+			String s="SELECT * FROM question";
 			rs= stmt.executeQuery(s);
 			rs.moveToInsertRow();
 			rs.updateString(2,q.getQuestionTxt());
@@ -326,10 +362,9 @@ public class EchoServer extends AbstractServer {
 			rs.updateString(1,q.getQuestionID());
 			rs.updateString(3,q.getTeacherID());
 			rs.updateString(4,q.getInstruction());
-//			rs.updateString(5,q.getAnswers()[0]);
-//			rs.updateString(6,q.getAnswers()[1]);
-//			rs.updateString(7,q.getAnswers()[2]);
-//			rs.updateString(8,q.getAnswers()[3]);
+			rs.updateInt(5, q.getCorrectAnswer());
+			rs.updateString(6, q.getQuestionID().substring(0, 2));
+			rs.insertRow();
 			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			rs2= stmt.executeQuery("SELECT * FROM answersInQuestion");		
 			for(int i=0;i<4;i++)
@@ -338,12 +373,14 @@ public class EchoServer extends AbstractServer {
 				rs2.updateString(1,q.getQuestionID());
 				rs2.updateString(2, Integer.toString(i));
 				rs2.updateString(3, q.getAnswers()[i]);
-				rs2.updateRow();
+				rs2.insertRow();
 			}
-			rs.updateInt(5, q.getCorrectAnswer());
-			rs.updateString(6, q.getQuestionID().substring(0, 2));
-			rs.insertRow();
+			System.out.println("***"+q.getCourseList().size());
+			addToQuestionCourseTable(q,conn);
+			rs2.close();
 			rs.close();
+			stmt.close();
+			stmt2.close();
 			msg.setReturnObj(q);
 			client.sendToClient(msg);
 		} 

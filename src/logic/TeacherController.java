@@ -64,7 +64,7 @@ public class TeacherController
 		client.accept(questionToSend);
 		try 
 		{
-			Thread.sleep(1500L);
+			Thread.sleep(2500L);
 		} catch (InterruptedException e) 
 		{
 			e.printStackTrace();

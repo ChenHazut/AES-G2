@@ -2,10 +2,12 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import client.ChatClient;
 import common.Message;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +18,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Course;
@@ -69,13 +74,15 @@ public class NewQuestionGUI implements Initializable
 	@FXML
 	ComboBox<String> subjectCombo;
 	@FXML
-	ComboBox<String> courseCombo;
-	
+	ListView <String> courseLV;
+	@FXML
+	HBox comboHBOX;
 	Question q;
 	ClientConsole client;
 	GUImanager m;
 	User teacher;
 	TeacherController tc;
+	ObservableList<String> coursesL;
 	
 	public NewQuestionGUI() 
 	{
@@ -102,7 +109,9 @@ public class NewQuestionGUI implements Initializable
 		tc.getTeacherCourse();
 		for(int i=0;i<tc.getSubjects().size();i++)
 			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
-		
+		coursesL=FXCollections.observableArrayList();
+		courseLV.setItems(coursesL);
+		courseLV.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
 	protected Question getFilledDetails()
@@ -160,19 +169,36 @@ public class NewQuestionGUI implements Initializable
 		if(updatedQuestion==null)
 			return;
 		
-		if (subjectCombo.getValue()==null||courseCombo.getValue()==null)
+		if (subjectCombo.getValue()==null||courseLV.getSelectionModel().getSelectedItem()==null)
 		{
-			System.out.println("no subject selected");
+			System.out.println("no subject or course selected");
 			combosErr.setText("*");
 			return;
 		}
 		Subject s = null;
+		ArrayList<Course> selectedcourses;
+		selectedcourses=new ArrayList<Course>();
+		ArrayList<String> selected=new ArrayList<String>();
+//		for(int i=0;i<courseLV.getSelectionModel().getSelectedItems().size();i++)
+//			9selected.add(courseLV.getSelectionModel().getSelectedItems().);
+		for(String c:coursesL)
+		{
+			selected.add(c);
+		}
+		int j;
+		for(int i=0;i<selected.size();i++)
+			for(j=0;j<tc.getCourses().size();j++)
+				if(selected.get(i).equals(tc.getCourses().get(j).getcName()))
+				{
+					selectedcourses.add(tc.getCourses().get(j));
+					break;
+				}
 		for(int i=0;i<tc.getSubjects().size();i++)
 		{
 			if(tc.getSubjects().get(i).getsName().equals(subjectCombo.getValue()))
 				s=tc.getSubjects().get(i);
 		}
-		
+		updatedQuestion.setCourseList(selectedcourses);
 		updatedQuestion.setQuestionID(s.getSubjectID());
 		q=tc.createNewQuestion(updatedQuestion);
 		
@@ -201,14 +227,16 @@ public class NewQuestionGUI implements Initializable
 	public void subjectComboBoxAction(ActionEvent ae)
 	{
 		int i;
+		for(i=0;i<coursesL.size();i++)
+			coursesL.remove(i);
+		System.out.println(tc.getCourses().size());
 		for(i=0;i<tc.getCourses().size();i++)
 			if(tc.getCourses().get(i).getSubject().getsName().equals(subjectCombo.getValue()))
-				courseCombo.getItems().add(tc.getCourses().get(i).getcName());
+				coursesL.add(tc.getCourses().get(i).getcName());
+			
+				
 	}
 	
-	public void courseComboBoxAction(ActionEvent ae)
-	{
-		
-	}
+	
 	
 }
