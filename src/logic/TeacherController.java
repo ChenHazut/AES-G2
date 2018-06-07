@@ -129,4 +129,27 @@ public class TeacherController
 		return teacher;
 	}
 
+	public void deleteExam(Exam tToDel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public ArrayList<Exam> getAllExams() {
+		Message msg=new Message();
+		msg.setSentObj(teacher);
+		msg.setqueryToDo("getAllExamsRelevantToTeacher");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg=client.getMessage();
+		ArrayList<Exam> arrOfExams=new ArrayList<Exam>();
+		arrOfExams=(ArrayList<Exam>)msg.getReturnObj();
+		return arrOfExams;
+	}
+
 }

@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
@@ -51,7 +52,7 @@ public class EchoServer extends AbstractServer {
 	protected Connection connectToDB() {
 		Connection dbh = null;
 		try {
-			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/aes", "root", "CQ1162");
+			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/aes", "root", "root");
 		} catch (SQLException ex) {
 			System.out.print("Sorry we had a problem, could not connect to DB server\n");
 			sendToAllClients("DBConnectFail");
@@ -112,11 +113,10 @@ public class EchoServer extends AbstractServer {
 			getCoursesByTeacher(msg,client,conn);
 		else if(msg.getqueryToDo().equals("getTeacherDetails"))
 			getTeacherdetails(msg,client,conn);
-		
+		else if(msg.getqueryToDo().equals("getAllExamsRelevantToTeacher"))
+			getExamsByTeacher(msg,client,conn);
 			
 	}
-	
-
 	
 
 	//********************************************************************************************
@@ -128,12 +128,12 @@ public class EchoServer extends AbstractServer {
 		User uToSearch=(User)msg.getSentObj();
 		User tmpUsr = new User();	
 		Statement stmt = (Statement) conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE uID="+uToSearch.getuID());
+		ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE userID="+uToSearch.getuID());
 		if(rs.next())
 		{
 			tmpUsr.setuID(rs.getString(1));
 			tmpUsr.setuName(rs.getString(2));
-			tmpUsr.setIsLoggedIn(rs.getString(3));
+			tmpUsr.setIsLoggedIn(rs.getInt(3)==0?"NO":"YES");
 			tmpUsr.setPassword(rs.getString(4));
 			tmpUsr.setTitle(rs.getString(5));
 		}
@@ -147,16 +147,29 @@ public class EchoServer extends AbstractServer {
 	{
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch=(User) msg.getSentObj();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM questions AS Q,courses AS C,users AS U WHERE U.uID=Q.TeacherID AND Q.qSubject=C.sID AND C.teacherID="+teacherToSearch.getuID());
+		ResultSet rs = stmt.executeQuery("SELECT * FROM question AS Q, question-course AS QC, teacherInCourse AS TC user AS U WHERE Q.questionID=QC.questionID AND QC.subjectID=TC.subjectID AND QC.courseID=TC.courseID AND TC.teacherID="+teacherToSearch.getuID()+" AND U.userID=TC.teacherID");
 		ArrayList<Question> tempArr=new ArrayList<Question>();	
 		while(rs.next())
 		{
-			Question q=new Question(rs.getString(1), rs.getString(2), rs.getString(3),
-					rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9));
-			q.setTeacherName(rs.getString(16));
+			Question q=new Question();
+			q.setQuestionID(rs.getString(1));
+			q.setQuestionTxt(rs.getString(2));
+			q.setTeacherID(rs.getString(3));
+			q.setTeacherName(rs.getString(14));
+			q.setInstruction(rs.getString(4));
+			q.setCorrectAnswer(rs.getInt(5));
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID()+"ORDER BY answerID");
+			String[] ans=new String[4];
+			for(int i=0;rs2.next();i++)
+				ans[i]=rs2.getString(3);
+			q.setAnswers(ans);
 			tempArr.add(q);
+			stmt2.close();
+			rs2.close();
 		}
 		rs.close();
+		stmt.close();
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
 	}
@@ -164,24 +177,30 @@ public class EchoServer extends AbstractServer {
 	//search in db for question with same qID and edit the requested field.
 	public void editQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException
 	{
-		Statement stmt;
-		ResultSet rs = null;
+		Statement stmt,stmt2;
+		ResultSet rs = null,rs2=null;
 		try 
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			Question q=(Question)msg.getSentObj();
-			String s="SELECT * FROM questions WHERE QuestionID="+q.getQuestionID();
+			String s="SELECT * FROM question AS Q WHERE Q.questionID="+q.getQuestionID();
 			rs= stmt.executeQuery(s);
 			rs.last();
-			rs.updateString(1,q.getQuestionTxt());
+			rs.updateString(2,q.getQuestionTxt());
 			rs.updateString(4,q.getInstruction());
-			rs.updateString(5,q.getAnswers()[0]);
-			rs.updateString(6,q.getAnswers()[1]);
-			rs.updateString(7,q.getAnswers()[2]);
-			rs.updateString(8,q.getAnswers()[3]);
-			rs.updateInt(9, q.getCorrectAnswer());
+			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			rs2= stmt.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID()+" ORDER BY QA.answerID");		
+			for(int i=0;rs2.next();i++)
+			{
+				rs2.updateString(3,q.getAnswers()[i]);
+				rs2.updateRow();
+			}
+			rs.updateInt(5, q.getCorrectAnswer());
 			rs.updateRow();
 			rs.close();
+			rs2.close();
+			stmt.close();
+			stmt2.close();
 			msg.setReturnObj(q);
 			client.sendToClient(msg);
 		} 
@@ -224,7 +243,7 @@ public class EchoServer extends AbstractServer {
 			String s="SELECT * FROM users WHERE uID="+user.getuID();
 			rs= stmt.executeQuery(s);
 			rs.last();
-			rs.updateString(3,user.getIsLoggedIn());
+			rs.updateInt(3,user.getIsLoggedIn().equals("YES")?1:0);
 			rs.updateRow();
 			rs.close();
 			msg.setReturnObj(user);
@@ -248,7 +267,7 @@ public class EchoServer extends AbstractServer {
 			String s="SELECT * FROM users WHERE uID="+user.getuID();
 			rs= stmt.executeQuery(s);
 			rs.last();
-			rs.updateString(3,user.getIsLoggedIn());
+			rs.updateInt(3,user.getIsLoggedIn().equals("YES")?1:0);
 			rs.updateRow();
 			rs.close();
 			msg.setReturnObj(user);
@@ -268,34 +287,33 @@ public class EchoServer extends AbstractServer {
 		try 
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-			String s="SELECT * FROM subjects WHERE sID="+subjectID;
+			String s="SELECT * FROM subject WHERE subjectID="+subjectID;
 			rs= stmt.executeQuery(s);
-			if(rs.next())
-			{
-				int temp= rs.getInt(3);
-				String st=Integer.toString(temp);
-				temp++;
-				rs.updateInt(3, temp);
-				if(temp<10)
-					return subjectID+"00"+st;
-				else if(temp<100)
-					return subjectID+"0"+st;
-				else return subjectID+st;
-			}
+			rs.last();
+			int temp= rs.getInt(3);
+			String st=Integer.toString(temp);
+			temp++;
+			rs.updateInt(3, temp);
 			rs.close();
+			stmt.close();
+			if(temp<10)
+				return subjectID+"00"+st;
+			else if(temp<100)
+				return subjectID+"0"+st;
+			else return subjectID+st;
 		} 
 			catch (SQLException e) 
-		{
-			e.printStackTrace();
-		}
+			{
+				e.printStackTrace();
+			}
 		return null;
 		
 	}
 	
 	private void createQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException
 	{
-		Statement stmt;
-		ResultSet rs = null;
+		Statement stmt,stmt2;
+		ResultSet rs = null,rs2=null;
 		try 
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
@@ -303,20 +321,30 @@ public class EchoServer extends AbstractServer {
 			String s="SELECT * FROM questions";
 			rs= stmt.executeQuery(s);
 			rs.moveToInsertRow();
-			rs.updateString(1,q.getQuestionTxt());
-			rs.updateString(2,getNextQuestionIDOfSubject(q.getQuestionID(),conn));
+			rs.updateString(2,q.getQuestionTxt());
+			q.setQuestionID(getNextQuestionIDOfSubject(q.getQuestionID(),conn));
+			rs.updateString(1,q.getQuestionID());
 			rs.updateString(3,q.getTeacherID());
 			rs.updateString(4,q.getInstruction());
-			rs.updateString(5,q.getAnswers()[0]);
-			rs.updateString(6,q.getAnswers()[1]);
-			rs.updateString(7,q.getAnswers()[2]);
-			rs.updateString(8,q.getAnswers()[3]);
-			rs.updateInt(9, q.getCorrectAnswer());
-			rs.updateString(10, q.getQuestionID().substring(0, 2));
+//			rs.updateString(5,q.getAnswers()[0]);
+//			rs.updateString(6,q.getAnswers()[1]);
+//			rs.updateString(7,q.getAnswers()[2]);
+//			rs.updateString(8,q.getAnswers()[3]);
+			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			rs2= stmt.executeQuery("SELECT * FROM answersInQuestion");		
+			for(int i=0;i<4;i++)
+			{
+				rs2.moveToInsertRow();
+				rs2.updateString(1,q.getQuestionID());
+				rs2.updateString(2, Integer.toString(i));
+				rs2.updateString(3, q.getAnswers()[i]);
+				rs2.updateRow();
+			}
+			rs.updateInt(5, q.getCorrectAnswer());
+			rs.updateString(6, q.getQuestionID().substring(0, 2));
 			rs.insertRow();
 			rs.close();
 			msg.setReturnObj(q);
-			System.out.println("dont worry");
 			client.sendToClient(msg);
 		} 
 			catch (SQLException e) 
@@ -329,22 +357,16 @@ public class EchoServer extends AbstractServer {
 	{
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch=(User) msg.getSentObj();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM courses AS C,subjects AS S WHERE C.sID=S.sID AND C.teacherID="+teacherToSearch.getuID());
+		ResultSet rs = stmt.executeQuery("SELECT * FROM teacherInCourse AS TC,subject AS S, courseInSubject AS C WHERE C.subjectID=TC.subjectID AND C.courseID=TC.courseID AND TC.subjectID=S.subjectID AND TC.teacherID="+teacherToSearch.getuID());
 		ArrayList<Course> courseList=new ArrayList<Course>();	
-		ArrayList<String> subjectFlag=new ArrayList<String>();
+		//ArrayList<String> subjectFlag=new ArrayList<String>();
 		ArrayList<Subject> subjectList=new ArrayList<Subject>();
 		System.out.println("here :)");
 		while(rs.next())
 		{
 			
-			Subject s=new Subject(rs.getString(5),rs.getString(6));
-			if(!subjectFlag.contains(s.getSubjectID()))
-			{
-				
-				subjectList.add(s);
-				subjectFlag.add(s.getSubjectID());
-			}
-			courseList.add(new Course(rs.getString(1), rs.getString(2), rs.getString(3),s));
+			Subject s=new Subject(rs.getString(1),rs.getString(5));
+			courseList.add(new Course(rs.getString(2), rs.getString(9), rs.getString(3),s));
 		}
 		rs.close();
 		msg.setReturnObj(courseList);
@@ -355,12 +377,12 @@ public class EchoServer extends AbstractServer {
 		String tid= (String) msg.getSentObj();
 		User tmpUsr = new User();	
 		Statement stmt = (Statement) conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE uID="+tid);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE userID="+tid);
 		if(rs.next())
 		{
 			tmpUsr.setuID(rs.getString(1));
 			tmpUsr.setuName(rs.getString(2));
-			tmpUsr.setIsLoggedIn(rs.getString(3));
+			tmpUsr.setIsLoggedIn(rs.getInt(3)==1?"YES":"NO");
 			tmpUsr.setPassword(rs.getString(4));
 			tmpUsr.setTitle(rs.getString(5));
 		}
@@ -369,6 +391,57 @@ public class EchoServer extends AbstractServer {
 		msg.setReturnObj(tmpUsr);
 		client.sendToClient(msg);
 		
+	}
+	
+	private void getExamsByTeacher(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		User teacherToSearch=(User) msg.getSentObj();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U WHERE E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID TC.teacherID="+teacherToSearch.getuID());
+		ArrayList<Exam> tempArr=new ArrayList<Exam>();	
+		//HashMap<Question,Integer> map=new HashMap<Question,Integer>();
+		while(rs.next())
+		{
+			Exam e=new Exam();
+			e.setExamID(rs.getString(1));
+			e.setCourse(new Course(rs.getString(8),rs.getString(14),rs.getString(2),(new Subject(rs.getString(7),rs.getString(16)))));
+			e.setWasUsed(rs.getInt(3)==1);
+			e.setInstructionForTeacher(rs.getString(4));
+			e.setInstructionForStudent(rs.getString(5));
+			e.setDuration(rs.getInt(6));
+			e.setTeacherID(rs.getString(2));
+			e.setTeacherName(rs.getString(19));
+			tempArr.add(e);
+		}
+		for(int i=0;i<tempArr.size();i++)
+		{
+			rs = stmt.executeQuery("SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID QE.questionID=Q.questionID AND QE.examID="+tempArr.get(i).getExamID());
+			HashMap<Question,Integer> map=new HashMap<Question,Integer>();
+			while(rs.next())
+			{
+				Question q=new Question();
+				q.setQuestionID(rs.getString(2));
+				q.setQuestionTxt(rs.getString(5));
+				String[] ans=new String[4];
+				Statement stmt2 = (Statement) conn.createStatement();
+				ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID="+q.getQuestionID());
+				for(int j=0;rs.next();j++)
+				{
+					ans[j]=rs2.getString(3);
+				}
+				rs2.close();
+				stmt2.close();
+				q.setAnswers(ans);
+				q.setTeacherID(rs.getString(6));
+				q.setTeacherName(rs.getString(11));
+				q.setCorrectAnswer(rs.getInt(8));
+				q.setInstruction(rs.getString(7));
+				map.put(q, rs.getInt(3));
+			}
+		}
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
 	}
 	
 	/**
