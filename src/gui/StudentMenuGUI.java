@@ -34,8 +34,8 @@ public class StudentMenuGUI implements Initializable
 		PerformanceExamsGUI PG=new PerformanceExamsGUI(); //CREATE THE NEXT WINDOW GUI
 		Stage primaryStage=new Stage();
 		PG.start(primaryStage); //RUN THE NEW WINDOW GUI
-		Stage stage = (Stage) PerformanceTestsButton.getScene().getWindow(); //close studentmenu window
-		stage.close();
+		//Stage stage = (Stage) PerformanceTestsButton.getScene().getWindow(); //close studentmenu window
+		//stage.close();
 	}
 	
 	public void ShowExamsScoresAction() throws Exception 
@@ -44,8 +44,8 @@ public class StudentMenuGUI implements Initializable
 		ShowExamsScoresGUI PG=new ShowExamsScoresGUI(); //CREATE THE NEXT WINDOW GUI
 		Stage primaryStage=new Stage();
 		PG.start(primaryStage); //RUN THE NEW WINDOW GUI
-		Stage stage = (Stage) ExamScoresButton.getScene().getWindow(); //close studentmenu window
-		stage.close();
+		//Stage stage = (Stage) ExamScoresButton.getScene().getWindow(); //close studentmenu window
+		//stage.close();
 		
 	}
 	

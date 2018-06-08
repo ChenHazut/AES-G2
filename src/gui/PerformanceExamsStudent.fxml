@@ -47,11 +47,6 @@
             <Image url="@../../../../../Desktop/מערכות%20מידע/שנה%20ג'/סמסטר%20ב'/שיטות%20הנדסיות/תמונות%20לפרויקט/Good-Luck-Transparent.png" />
          </image>
       </ImageView>
-      <Button fx:id="MainMenuButton" defaultButton="true" layoutX="455.0" layoutY="85.0" mnemonicParsing="false" onMouseClicked="#MainMenuButtonAction" prefHeight="35.0" prefWidth="108.0" text="Main Menu" textFill="#3e2d2d">
-         <font>
-            <Font name="FrankRuehl" size="15.0" />
-         </font>
-      </Button>
    </children>
    <effect>
       <Glow />

@@ -15,7 +15,7 @@
 
 <Pane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ShowExamsScoresGUI">
    <children>
-      <Button fx:id="ShowExamButton" defaultButton="true" layoutX="262.0" layoutY="299.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" prefHeight="25.0" prefWidth="94.0" text="Show Exam" textFill="#3e2d2d">
+      <Button fx:id="ShowExamButton" defaultButton="true" layoutX="483.0" layoutY="150.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" prefHeight="25.0" prefWidth="94.0" text="Show Exam" textFill="#3e2d2d">
          <font>
             <Font name="FrankRuehl" size="15.0" />
          </font>
@@ -42,12 +42,7 @@
             <Image url="@../../../../../Desktop/מערכות%20מידע/שנה%20ג'/סמסטר%20ב'/שיטות%20הנדסיות/תמונות%20לפרויקט/כובע%20סטודנט.png" />
          </image>
       </ImageView>
-      <Button fx:id="ShowGradesButton" defaultButton="true" layoutX="136.0" layoutY="299.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" prefHeight="25.0" prefWidth="94.0" text="Show Grade" textFill="#3e2d2d">
-         <font>
-            <Font name="FrankRuehl" size="15.0" />
-         </font>
-      </Button>
-      <Button fx:id="MainMenuButton" defaultButton="true" layoutX="384.0" layoutY="299.0" mnemonicParsing="false" onMouseClicked="#MainMenuButtonAction" prefHeight="25.0" prefWidth="94.0" text="Main Menu" textFill="#3e2d2d">
+      <Button fx:id="ShowGradesButton" defaultButton="true" layoutX="483.0" layoutY="211.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" prefHeight="25.0" prefWidth="94.0" text="Show Grade" textFill="#3e2d2d">
          <font>
             <Font name="FrankRuehl" size="15.0" />
          </font>
