@@ -21,6 +21,8 @@ public class ShowExamsScoresGUI implements Initializable {
 	@FXML
 	Button ShowExamButton; //THE BUTTON that show the exam of the student
 	@FXML
+	Button MainMenuButton; //THE BUTTON that go back to the main menu
+	@FXML
 	ComboBox ComoSubject; //combox to the subjects
 	@FXML
 	ComboBox Course; //combox to the courses
@@ -29,16 +31,22 @@ public class ShowExamsScoresGUI implements Initializable {
 	
 	private User student; // to save the student that loged in info
 	
-	public void PerformanceTestsButtonAction() throws Exception
-	{
-		PerformanceExamsGUI PG=new PerformanceExamsGUI(); //CREATE THE NEXT WINDOW GUI
-		Stage primaryStage=new Stage();
-		PG.start(primaryStage); //RUN THE NEW WINDOW GUI
-	}
+	private LoginController lc;
 	
 	public void ShowExamButtonAction() throws Exception
 	{
 		//need to show the student the checked exam
+		Stage stage = (Stage) MainMenuButton.getScene().getWindow(); //close window
+		stage.close();
+	}
+	
+	public void MainMenuButtonAction() throws Exception //open back the main menu
+	{
+		Stage primaryStage=new Stage();
+		StudentMenuGUI tmg= new StudentMenuGUI(); //to open the student menu
+		tmg.start(primaryStage);
+		Stage stage = (Stage) MainMenuButton.getScene().getWindow(); //close window
+		stage.close();
 	}
 	
 	
@@ -58,5 +66,9 @@ public class ShowExamsScoresGUI implements Initializable {
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
 		primaryStage.show();
+		lc=new LoginController();
+		primaryStage.setOnCloseRequest(event ->{ //LOG OUT THE USER IF HE PRESS "X"
+			lc.logoutUser();
+		});
 	}
 }

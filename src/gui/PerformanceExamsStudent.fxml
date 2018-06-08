@@ -12,21 +12,21 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PerformanceExamsGUI">
+<Pane maxHeight="406.0" maxWidth="605.0" minHeight="400.0" minWidth="600.0" prefHeight="406.0" prefWidth="605.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PerformanceExamsGUI">
    <children>
-      <Button fx:id="ManuallyButton" layoutX="454.0" layoutY="120.0" mnemonicParsing="false" onMouseClicked="#ManuallyButtonButtonAction" prefHeight="35.0" prefWidth="108.0" text="Manually" textFill="#3e2d2d">
+      <Button fx:id="ManuallyButton" defaultButton="true" layoutX="455.0" layoutY="129.0" mnemonicParsing="false" onMouseClicked="#ManuallyButtonButtonAction" prefHeight="35.0" prefWidth="108.0" text="Manually" textFill="#3e2d2d">
          <font>
             <Font name="FrankRuehl" size="15.0" />
          </font>
       </Button>
-      <Button fx:id="ComputerizedButton" layoutX="452.0" layoutY="175.0" mnemonicParsing="false" onMouseClicked="#ComputerizedButtonAction" prefHeight="35.0" prefWidth="108.0" text="Computerized">
+      <Button fx:id="ComputerizedButton" defaultButton="true" layoutX="452.0" layoutY="175.0" mnemonicParsing="false" onMouseClicked="#ComputerizedButtonAction" prefHeight="35.0" prefWidth="108.0" text="Computerized">
          <font>
             <Font name="FrankRuehl" size="15.0" />
          </font>
       </Button>
-      <Label layoutX="150.0" prefHeight="66.0" prefWidth="300.0" text="Performance Exams" textFill="#58f8c0">
+      <Label layoutX="153.0" layoutY="14.0" prefHeight="66.0" prefWidth="300.0" text="Performance Exams" textFill="#58f8c0">
          <font>
-            <Font name="Cambria Bold" size="30.0" />
+            <Font name="Cambria Bold Italic" size="32.0" />
          </font>
          <opaqueInsets>
             <Insets />
@@ -44,9 +44,14 @@
       </TableView>
       <ImageView fitHeight="136.0" fitWidth="181.0" layoutX="418.0" layoutY="229.0">
          <image>
-            <Image url="@../../../../../Desktop/Good-Luck-Transparent.png" />
+            <Image url="@../../../../../Desktop/מערכות%20מידע/שנה%20ג'/סמסטר%20ב'/שיטות%20הנדסיות/תמונות%20לפרויקט/Good-Luck-Transparent.png" />
          </image>
       </ImageView>
+      <Button fx:id="MainMenuButton" defaultButton="true" layoutX="455.0" layoutY="85.0" mnemonicParsing="false" onMouseClicked="#MainMenuButtonAction" prefHeight="35.0" prefWidth="108.0" text="Main Menu" textFill="#3e2d2d">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
    </children>
    <effect>
       <Glow />

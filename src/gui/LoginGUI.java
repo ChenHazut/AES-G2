@@ -79,9 +79,28 @@ public class LoginGUI implements Initializable
 					TeacherMenuGUI tmg= new TeacherMenuGUI();
 					tmg.start(primaryStage);
 				}
+				//Stage stage = (Stage) loginButton.getScene().getWindow(); //close login window
+				//stage.close();
+				
+				if(lc.getTitle().equalsIgnoreCase("Student"))//if user is Student
+				{
+					Stage primaryStage=new Stage();
+					StudentMenuGUI tmg= new StudentMenuGUI(); //to open the student menu
+					tmg.start(primaryStage);
+				}
+				
+				if(lc.getTitle().equalsIgnoreCase("Principle"))//if user is Student
+				{
+					Stage primaryStage=new Stage();
+					PrincipleMenuGUI2 tmg= new PrincipleMenuGUI2(); //to open the Principle menu
+					tmg.start(primaryStage);
+				}
+				
+				
 				Stage stage = (Stage) loginButton.getScene().getWindow(); //close login window
 				stage.close();
 			}
+			
 			
 		}
 		

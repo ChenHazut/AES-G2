@@ -15,14 +15,14 @@
 
 <Pane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ShowExamsScoresGUI">
    <children>
-      <Button fx:id="ShowExamButton" layoutX="250.0" layoutY="327.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" prefHeight="35.0" prefWidth="98.0" text="Show Exam" textFill="#3e2d2d">
+      <Button fx:id="ShowExamButton" defaultButton="true" layoutX="262.0" layoutY="299.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" prefHeight="25.0" prefWidth="94.0" text="Show Exam" textFill="#3e2d2d">
          <font>
             <Font name="FrankRuehl" size="15.0" />
          </font>
       </Button>
-      <Label layoutX="181.0" layoutY="108.0" prefHeight="57.0" prefWidth="209.0" text="Student Grade" textFill="#58f8c0">
+      <Label layoutX="187.0" layoutY="90.0" prefHeight="57.0" prefWidth="252.0" text="Student's Grade" textFill="#58f8c0">
          <font>
-            <Font name="Cambria Bold" size="30.0" />
+            <Font name="Cambria Bold Italic" size="32.0" />
          </font>
          <opaqueInsets>
             <Insets />
@@ -31,17 +31,27 @@
             <DropShadow blurType="TWO_PASS_BOX" height="41.755" radius="22.106250000000003" width="48.67" />
          </effect>
       </Label>
-      <ComboBox fx:id="ComoboxSubject" layoutX="233.0" layoutY="181.0" prefWidth="150.0" />
-      <Text layoutX="162.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subject:" />
-      <Text layoutX="163.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Course:" />
-      <ComboBox fx:id="ComoboxCourse" layoutX="233.0" layoutY="230.0" prefWidth="150.0" />
-      <Text layoutX="162.0" layoutY="295.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exam Scores:" />
-      <TextField fx:id="ExamScore" layoutX="234.0" layoutY="278.0" />
-      <ImageView fitHeight="95.0" fitWidth="162.0" layoutX="204.0" layoutY="27.0">
+      <ComboBox fx:id="ComoboxSubject" layoutX="234.0" layoutY="160.0" prefWidth="150.0" promptText="Select Subject" />
+      <Text layoutX="162.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Subject:" />
+      <Text layoutX="163.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Course:" />
+      <ComboBox fx:id="ComoboxCourse" layoutX="233.0" layoutY="200.0" prefWidth="150.0" promptText="Select Course" />
+      <Text layoutX="162.0" layoutY="261.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exam Scores:" />
+      <TextField fx:id="ExamScore" layoutX="234.0" layoutY="244.0" />
+      <ImageView fitHeight="76.0" fitWidth="149.0" layoutX="231.0" layoutY="14.0">
          <image>
             <Image url="@../../../../../Desktop/מערכות%20מידע/שנה%20ג'/סמסטר%20ב'/שיטות%20הנדסיות/תמונות%20לפרויקט/כובע%20סטודנט.png" />
          </image>
       </ImageView>
+      <Button fx:id="ShowGradesButton" defaultButton="true" layoutX="136.0" layoutY="299.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" prefHeight="25.0" prefWidth="94.0" text="Show Grade" textFill="#3e2d2d">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="MainMenuButton" defaultButton="true" layoutX="384.0" layoutY="299.0" mnemonicParsing="false" onMouseClicked="#MainMenuButtonAction" prefHeight="25.0" prefWidth="94.0" text="Main Menu" textFill="#3e2d2d">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
    </children>
    <effect>
       <Glow />
