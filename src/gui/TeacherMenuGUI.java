@@ -37,9 +37,12 @@ public class TeacherMenuGUI implements Initializable
 		qrg.start(primaryStage);
 	}
 	
-	public void testRepositoryButtonAction()
+	public void testRepositoryButtonAction() throws Exception
 	{
-		
+		ExamRepositoryGUI erg=new ExamRepositoryGUI();
+		System.out.println("error 1");
+		Stage primaryStage=new Stage();
+		erg.start(primaryStage);
 	}
 	
 	public void testInExecutionButtonAction()

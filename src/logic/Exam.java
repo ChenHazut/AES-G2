@@ -1,21 +1,22 @@
 package logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Exam 
+public class Exam implements Serializable
 {
-	HashMap<Question, Integer> questions;
-	String teacherID;
-	String teacherName;
-	Boolean wasUsed;
-	String ExamID;
-	String instructionForTeacher;
-	String instructionForStudent;
-	int duration;
-	Course course;
-	
+	private HashMap<Question, Integer> questions;
+	private String teacherID;
+	private String teacherName;
+	private Boolean wasUsed;
+	private String ExamID;
+	private String instructionForTeacher;
+	private String instructionForStudent;
+	private int duration;
+	private Course course;
+	private String courseName;
 	
 	public Exam() {
 		
@@ -85,6 +86,13 @@ public class Exam
 	}
 	public void setCourse(Course course) {
 		this.course = course;
+		courseName=course.getcName();
+	}
+	public String getCourseName() {
+		return courseName;
+	}
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
 	}
 	
 	

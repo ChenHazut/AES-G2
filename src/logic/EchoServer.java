@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
@@ -115,7 +117,10 @@ public class EchoServer extends AbstractServer {
 			getTeacherdetails(msg,client,conn);
 		else if(msg.getqueryToDo().equals("getAllExamsRelevantToTeacher"))
 			getExamsByTeacher(msg,client,conn);
-			
+		else if(msg.getqueryToDo().equals("deleteExam"))
+			deleteExam(msg,client,conn);
+		else if(msg.getqueryToDo().equals("updadeExam"))
+			editExam(msg,client,conn);
 	}
 	
 
@@ -225,7 +230,7 @@ public class EchoServer extends AbstractServer {
 		{
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			Question q=(Question)msg.getSentObj();
-			String s="SELECT * FROM question WHERE QuestionID="+q.getQuestionID();
+			String s="SELECT * FROM question WHERE questionID="+q.getQuestionID();
 			rs= stmt.executeQuery(s);
 			rs.last();
 			rs.deleteRow();
@@ -431,9 +436,11 @@ public class EchoServer extends AbstractServer {
 	}
 	
 	private void getExamsByTeacher(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
+		
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch=(User) msg.getSentObj();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U WHERE E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID TC.teacherID="+teacherToSearch.getuID());
+		String s="SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U WHERE E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID=TC.teacherID AND TC.teacherID="+teacherToSearch.getuID();
+		ResultSet rs = stmt.executeQuery(s);
 		ArrayList<Exam> tempArr=new ArrayList<Exam>();	
 		//HashMap<Question,Integer> map=new HashMap<Question,Integer>();
 		while(rs.next())
@@ -451,7 +458,7 @@ public class EchoServer extends AbstractServer {
 		}
 		for(int i=0;i<tempArr.size();i++)
 		{
-			rs = stmt.executeQuery("SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID QE.questionID=Q.questionID AND QE.examID="+tempArr.get(i).getExamID());
+			rs = stmt.executeQuery("SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="+tempArr.get(i).getExamID());
 			HashMap<Question,Integer> map=new HashMap<Question,Integer>();
 			while(rs.next())
 			{
@@ -461,7 +468,7 @@ public class EchoServer extends AbstractServer {
 				String[] ans=new String[4];
 				Statement stmt2 = (Statement) conn.createStatement();
 				ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID="+q.getQuestionID());
-				for(int j=0;rs.next();j++)
+				for(int j=0;rs2.next();j++)
 				{
 					ans[j]=rs2.getString(3);
 				}
@@ -480,6 +487,75 @@ public class EchoServer extends AbstractServer {
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
 	}
+	
+	private void deleteExam(Message msg, ConnectionToClient client, Connection conn) 
+	{
+		Statement stmt;
+		ResultSet rs = null;
+		try 
+		{
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Exam e=(Exam)msg.getSentObj();
+			String s="SELECT * FROM exam WHERE examIDID="+e.getExamID();
+			rs= stmt.executeQuery(s);
+			rs.last();
+			rs.deleteRow();
+			rs.close();
+		}
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}	
+	}
+	
+	//search in db for question with same qID and edit the requested field.
+		public void editExam(Message msg, ConnectionToClient client, Connection conn) throws IOException
+		{
+			Statement stmt,stmt2;
+			ResultSet rs = null,rs2=null;
+			try 
+			{
+				stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				Exam e=(Exam)msg.getSentObj();
+				String s="SELECT * FROM exam AS E WHERE E.examID="+e.getExamID();
+				rs= stmt.executeQuery(s);
+				rs.last();
+				rs.updateString(4,e.getInstructionForTeacher());
+				rs.updateString(5,e.getInstructionForStudent());
+				rs.updateInt(6, e.getDuration());
+				rs.updateRow();
+				stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				rs2= stmt.executeQuery("SELECT * FROM questionInExam AS QE WHERE QE.examID="+e.getExamID());
+				while(rs2.next())
+				{
+					rs2.deleteRow();
+				}
+				Iterator it = e.getQuestions().entrySet().iterator();
+				rs2= stmt.executeQuery("SELECT * FROM questionInExam AS QE WHERE QE.examID="+e.getExamID());
+				while(it.hasNext())
+				{
+					 Map.Entry pair = (Map.Entry)it.next();
+					 rs2.moveToInsertRow();
+					 rs2.updateString(1, e.getExamID());
+					 rs2.updateString(2, ((Question)pair.getKey()).getQuestionID());
+					 rs2.updateInt(3, (int)pair.getValue());
+					 rs2.insertRow();
+					 it.remove();
+				}
+
+				rs.close();
+				rs2.close();
+				stmt.close();
+				stmt2.close();
+				msg.setReturnObj(e);
+				client.sendToClient(msg);
+			} 
+				catch (SQLException e) 
+			{
+				e.printStackTrace();
+			}
+				
+		}
 	
 	/**
 	 * This method overrides the one in the superclass. Called when the server

@@ -37,13 +37,13 @@ public class ExamRepositoryGUI implements Initializable
 	@FXML
 	private TableView table;
 	@FXML
-	private TableColumn <Exam,String> ExamIDCol;
+	private TableColumn <Exam,String> examIDCol;
 	@FXML
-	private TableColumn <Exam,String> courseNameCol;
+	private TableColumn <Exam,String> cNameCol;
 	@FXML
 	private TableColumn <Exam,String> teacherNameCol;
 	@FXML
-	private TableColumn <Exam,String> duration;
+	private TableColumn <Exam,String> durationCol;
 	@FXML
 	private Button editButton;
 	private ArrayList<Exam> arr;
@@ -70,7 +70,7 @@ public class ExamRepositoryGUI implements Initializable
 		ntg.start(stage);
 	}
 	
-	public void deleteExamButtonAction(ActionEvent ae)
+	public void deleteButtonAction(ActionEvent ae)
 	{
 		System.out.println("Exam is deleted");
 		Exam tToDel=(Exam) table.getSelectionModel().getSelectedItem();
@@ -85,7 +85,7 @@ public class ExamRepositoryGUI implements Initializable
 			}
 	}
 	
-	public void editExamButtonAction(ActionEvent ae) throws Exception
+	public void editButtonAction(ActionEvent ae) throws Exception
 	{
 		Exam t=(Exam) table.getSelectionModel().getSelectedItem();
 		if(t==null)
@@ -107,11 +107,12 @@ public class ExamRepositoryGUI implements Initializable
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		ExamIDCol.setCellValueFactory(new PropertyValueFactory<>("ExamID"));
-		courseNameCol.setCellValueFactory(new PropertyValueFactory<>("course"));
+		examIDCol.setCellValueFactory(new PropertyValueFactory<>("ExamID"));
+		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
-		duration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
 		arr=tc.getAllExams();
+		System.out.println("size of exam array: "+arr.size());
 		examList = FXCollections.observableArrayList();
 		examList.addAll(arr);
 		table.setItems(examList);

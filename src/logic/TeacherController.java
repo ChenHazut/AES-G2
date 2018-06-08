@@ -129,8 +129,18 @@ public class TeacherController
 		return teacher;
 	}
 
-	public void deleteExam(Exam tToDel) {
-		// TODO Auto-generated method stub
+	public void deleteExam(Exam eToDel) {
+		Message msg=new Message();
+		msg.setClassType("teacher");
+		msg.setqueryToDo("deleteExam");
+		msg.setSentObj(eToDel);
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -139,9 +149,10 @@ public class TeacherController
 		msg.setSentObj(teacher);
 		msg.setqueryToDo("getAllExamsRelevantToTeacher");
 		msg.setClassType("Teacher");
+		
 		client.accept(msg);
 		try {
-			Thread.sleep(1500L);
+			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
