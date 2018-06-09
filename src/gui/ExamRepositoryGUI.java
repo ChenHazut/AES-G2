@@ -46,6 +46,10 @@ public class ExamRepositoryGUI implements Initializable
 	private TableColumn <Exam,String> durationCol;
 	@FXML
 	private Button editButton;
+	@FXML
+	private Button insertButton;
+	
+	
 	private ArrayList<Exam> arr;
 	private ExamDetailsGUI tdg;
 	ObservableList<Exam> examList ;
@@ -62,11 +66,11 @@ public class ExamRepositoryGUI implements Initializable
 		primaryStage.show(); 
 	}
 	
-	public void insertButtonAction(ActionEvent ae) throws IOException
+	public void insertButtonAction(ActionEvent ae) throws Exception
 	{
 		System.out.println("Exam is added");
-		Stage stage = (Stage) editButton.getScene().getWindow();
-		NewExamGUI ntg=new NewExamGUI();
+		Stage stage = (Stage) insertButton.getScene().getWindow();
+		CreateExamGUI ntg=new CreateExamGUI();
 		ntg.start(stage);
 	}
 	
