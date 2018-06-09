@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Question;
@@ -23,7 +22,7 @@ import logic.TeacherController;
 public class CreateExamGUI implements Initializable {
 	
 	@FXML
-	private TableView table;
+	private TableView<Question> table;
 	@FXML
 	private TableColumn <Question,String> questionID;
 	@FXML

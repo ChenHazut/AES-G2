@@ -13,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import logic.LoginController;
-import logic.TeacherController;
 import logic.User;
 
 
@@ -61,7 +60,7 @@ public class TeacherMenuGUI implements Initializable
 
 	public void start(Stage primaryStage) throws IOException
 	{
-		Parent root = FXMLLoader.load(getClass().getResource("teacherMenu.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("TeacherMenu.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
