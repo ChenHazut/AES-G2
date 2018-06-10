@@ -64,7 +64,7 @@ public class TeacherController
 		client.accept(questionToSend);
 		try 
 		{
-			Thread.sleep(1500L);
+			Thread.sleep(2500L);
 		} catch (InterruptedException e) 
 		{
 			e.printStackTrace();
@@ -127,6 +127,40 @@ public class TeacherController
 		msg=client.getMessage();
 		User teacher = (User)msg.getReturnObj();
 		return teacher;
+	}
+
+	public void deleteExam(Exam eToDel) {
+		Message msg=new Message();
+		msg.setClassType("teacher");
+		msg.setqueryToDo("deleteExam");
+		msg.setSentObj(eToDel);
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	public ArrayList<Exam> getAllExams() {
+		Message msg=new Message();
+		msg.setSentObj(teacher);
+		msg.setqueryToDo("getAllExamsRelevantToTeacher");
+		msg.setClassType("Teacher");
+		
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg=client.getMessage();
+		ArrayList<Exam> arrOfExams=new ArrayList<Exam>();
+		arrOfExams=(ArrayList<Exam>)msg.getReturnObj();
+		return arrOfExams;
 	}
 
 }

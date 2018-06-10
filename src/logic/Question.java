@@ -1,6 +1,7 @@
 package logic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Question  implements Serializable
 {
@@ -11,6 +12,7 @@ public class Question  implements Serializable
 	private int correctAnswer;
 	private String instruction;
 	private String teacherName;
+	private ArrayList<Course> courseList;
 	
 	public Question(String questionTxt, String questionID, String teacherId, String instruction,String answer1,String answer2,String answer3,String answer4, int correctAnswer) {
 		this.QuestionTxt = questionTxt;
@@ -23,6 +25,7 @@ public class Question  implements Serializable
 		this.answers[3] = answer4;
 		this.correctAnswer = correctAnswer;
 		this.instruction=instruction;
+		courseList=new ArrayList<Course>();
 	}
 	
 	
@@ -108,6 +111,16 @@ public class Question  implements Serializable
 
 	public void setTeacherName(String teacherName) {
 		this.teacherName = teacherName;
+	}
+
+
+	public ArrayList<Course> getCourseList() {
+		return courseList;
+	}
+
+
+	public void setCourseList(ArrayList<Course> courseList) {
+		this.courseList = courseList;
 	}
 
 

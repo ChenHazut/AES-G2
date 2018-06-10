@@ -1,11 +1,14 @@
 package gui;
 
+import logic.Exam;
 import logic.Question;
+
 
 public  class GUImanager
 {
 	 public static Question selectedQuestion;
 	 public static Question updatedQuestion;
+	public  static Exam selectedExam;
 
 	public Question getSelectedQuestion() {
 		return selectedQuestion;
