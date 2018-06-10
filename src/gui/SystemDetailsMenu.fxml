@@ -63,7 +63,7 @@
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                <center>
-                  <Button fx:id="SudentsListButton" mnemonicParsing="false" onAction="#SudentsListButton" prefHeight="65.0" prefWidth="237.0" text="Sudents List" BorderPane.alignment="CENTER" />
+                  <Button fx:id="StudentsListButton" mnemonicParsing="false" onAction="#StudentsListButtonAction" prefHeight="65.0" prefWidth="237.0" text="Students List" BorderPane.alignment="CENTER" />
                </center>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -78,6 +78,34 @@
                <center>
                   <Button fx:id="SubjectsListButton" mnemonicParsing="false" onAction="#SubjectsListButtonAction" prefHeight="65.0" prefWidth="237.0" text="Subjects List" BorderPane.alignment="CENTER" />
                </center></BorderPane>
+         </children>
+      </GridPane>
+      <GridPane>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
+               <right>
+                  <Button fx:id="BeckButton" mnemonicParsing="false" onAction="#BackButtonAction" prefHeight="35.0" prefWidth="69.0" text="Back" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="FrankRuehl" size="15.0" />
+                     </font>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                  </Button>
+               </right>
+            </BorderPane>
          </children>
       </GridPane>
    </children>

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,43 +24,64 @@ public class SystemDetailsMenuGUI implements Initializable
 	@FXML
 	Button QuestionsListButton;
 	@FXML
-	Button SudentsListButton;
+	Button StudentsListButton;
 	@FXML
 	Button TeachersListButton;
 	@FXML
 	Button CoursesListButton;
 	@FXML
 	Button SubjectsListButton;
+	@FXML
+	Button BeckButton;
 	private User principle;
 	
-	public void ExamsListButtonAction()
+	public void BeckButtonAction(ActionEvent ae) throws Exception
 	{
-		
+		PrincipleMenuGUI2 qrg=new PrincipleMenuGUI2();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
 	}
 	
-	public void QuestionsListButtonAction()
+	public void ExamsListButtonAction() throws Exception
 	{
-		
+		ExamsListForPrincipleGUI qrg=new ExamsListForPrincipleGUI();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
 	}
 	
-	public void SudentsListButtonAction()
+	public void QuestionsListButtonAction() throws Exception
 	{
-		
+		QuestionsListForPrincipleGUI qrg=new QuestionsListForPrincipleGUI();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
 	}
 	
-	public void TeachersListButtonAction()
+	public void StudentsListButtonAction() throws Exception
 	{
-		
+		StudentsListForPrincipleGUI qrg=new StudentsListForPrincipleGUI();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
 	}
 	
-	public void CoursesListButtonAction()
+	public void TeachersListButtonAction() throws Exception
 	{
-		
+		TeachersListForPrincipleGUI qrg=new TeachersListForPrincipleGUI();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
 	}
 	
-	public void SubjectsListButtonAction()
+	public void CoursesListButtonAction() throws Exception
 	{
-		
+		CoursesListForPrincipleGUI qrg=new CoursesListForPrincipleGUI();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
+	}
+	
+	public void SubjectsListButtonAction() throws Exception
+	{
+		SubjectsListForPrincipleGUI qrg=new SubjectsListForPrincipleGUI();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
 	}
 	
 	@Override

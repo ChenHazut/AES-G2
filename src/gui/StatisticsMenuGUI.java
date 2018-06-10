@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,7 +25,16 @@ public class StatisticsMenuGUI implements Initializable
 	Button StudentStatisticsButton;
 	@FXML
 	Button CourseStatisticsButton;
+	@FXML
+	Button BeckButton;
 	private User principle;
+	
+	public void BeckButtonAction(ActionEvent ae) throws Exception
+	{
+		PrincipleMenuGUI2 qrg=new PrincipleMenuGUI2();
+		Stage primaryStage=new Stage();
+		qrg.start(primaryStage);
+	}
 	
 	public void TeacherStatisticsButtonAction()
 	{
