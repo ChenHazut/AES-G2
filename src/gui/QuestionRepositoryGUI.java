@@ -34,7 +34,7 @@ public class QuestionRepositoryGUI implements Initializable
 	@FXML
 	private TableView table;
 	@FXML
-	private TableColumn <Question,String> questionID;
+	private TableColumn <Question,String> questionID; 
 	@FXML
 	private TableColumn <Question,String> QuestionTxt;
 	@FXML
@@ -49,15 +49,6 @@ public class QuestionRepositoryGUI implements Initializable
 	ClientConsole client;
 	GUImanager m;
 	TeacherController tc;
-	
-	public void start(Stage primaryStage) throws Exception
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("QuestionRepository.fxml"));
-		Scene Scene = new Scene(root);
-		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		primaryStage.setScene(Scene);
-		primaryStage.show(); 
-	}
 	
 	public void insertButtonAction(ActionEvent ae) throws IOException
 	{
@@ -105,7 +96,8 @@ public class QuestionRepositoryGUI implements Initializable
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+	public void initialize(URL location, ResourceBundle resources)
+	{
 		questionID.setCellValueFactory(new PropertyValueFactory<>("questionID"));
 		QuestionTxt.setCellValueFactory(new PropertyValueFactory<>("QuestionTxt"));
 		teacherName.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
@@ -113,5 +105,14 @@ public class QuestionRepositoryGUI implements Initializable
 		questionList = FXCollections.observableArrayList();
 		questionList.addAll(arr);
 		table.setItems(questionList);
+	}
+	
+	public void start(Stage primaryStage) throws Exception
+	{
+		Parent root = FXMLLoader.load(getClass().getResource("QuestionRepository.fxml"));
+		Scene Scene = new Scene(root);
+		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		primaryStage.setScene(Scene);
+		primaryStage.show(); 
 	}
 }

@@ -48,7 +48,7 @@ public class PerformanceExamsGUI implements Initializable{
 	
 	public void ComputerizedButtonAction() throws Exception
 	{
-		//NewQuestionGUI nqg=new NewQuestionGUI();//to change the info of gui window
+		//NewQuestionGUI nqg=new NewQuestionGUI();
 		//nqg.start(stage);
 	}
 	
