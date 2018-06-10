@@ -5,8 +5,16 @@ public class StudentInExam {
 	private int grade;
 	private int actualdoration; //how long it takes to do the exam
 	private int examID;
-	private int studentID;
+	private String studentID;
 	private String date; //the date of the exam
+	
+	public StudentInExam(int examID ,int grade , String date, String studentID)
+	{
+		this.grade=grade;
+		this.examID=examID;
+		this.date=date;
+		this.studentID = studentID;
+	}
 	
 	public void SetGrade(int grade)
 	{
@@ -25,7 +33,7 @@ public class StudentInExam {
 	
 	public int Get_actualdoration()
 	{
-		return this.actualdoration=actualdoration;
+		return this.actualdoration;
 	}
 	
 	public void Set_examID(int examID)
@@ -38,12 +46,12 @@ public class StudentInExam {
 		return this.examID;
 	}
 	
-	public void Set_studentID(int studentID)
+	public void Set_studentID(String studentID)
 	{
 		this.studentID=studentID;
 	}
 	
-	public int Get_studentID()
+	public String Get_studentID()
 	{
 		return this.studentID;
 	}

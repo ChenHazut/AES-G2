@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,19 +34,21 @@ public class ShowExamsScoresGUI implements Initializable {
 	//Button MainMenuButton; //THE BUTTON that go back to the main menu
 	
 	@FXML
-	private TableView<Question> table;
+	private TableView<StudentInExam> table;
 	@FXML
-	private TableColumn <Question,String> ExamID; 
+	private TableColumn <StudentInExam,String> ExamID; 
 	@FXML
-	private TableColumn <Question,String> ExamDate;
+	private TableColumn <StudentInExam,String> ExamDate;
 	@FXML
-	private TableColumn <Question,String> Grade;
+	private TableColumn <StudentInExam,String> Grade;
 	
 	private User student; // to save the student that loged in info
 	
 	private ArrayList<StudentInExam> arr; //for all the grades of the student 
 	
 	StudentController st;
+	
+	ObservableList<StudentInExam> GradesList ;
 	
 	public void ShowExamButtonAction() throws Exception
 	{
@@ -66,19 +69,16 @@ public class ShowExamsScoresGUI implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
-		//here need to set the combox
-		LoginController lc=new LoginController();//save the user detailed
-		this.student=lc.getUser(); //save the teacher that connected to the system
 		
 		ExamID.setCellValueFactory(new PropertyValueFactory<>("Exam ID"));
 		ExamDate.setCellValueFactory(new PropertyValueFactory<>("Exam Date"));
 		Grade.setCellValueFactory(new PropertyValueFactory<>("Grade"));
 		
-	/*	arr=st.getAllgrades(); //save all the student grades in arr
+		arr=st.getAllgrades(); //save all the student grades in arr
 		
-		questionList = FXCollections.observableArrayList();
-		questionList.addAll(arr);
-		table.setItems(questionList);*/
+		GradesList = FXCollections.observableArrayList();
+		GradesList.addAll(arr);
+		table.setItems(GradesList);
 	}
 
 	public void start(Stage primaryStage) throws IOException

@@ -81,6 +81,8 @@ public class EchoServer extends AbstractServer {
 			userHandler(m,client,conn);
 		else if(m.getClassType().equalsIgnoreCase("Teacher"))
 			teacherHandler(m,client,conn);
+		else if(m.getClassType().equalsIgnoreCase("Student"))
+			StudentrHandler(m,client,conn);
 		conn.close();
 
 	}
@@ -123,7 +125,53 @@ public class EchoServer extends AbstractServer {
 			editExam(msg,client,conn);
 	}
 	
+	//student handler= handle client request about student class
+		private void StudentrHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
+		{
+			if (msg.getqueryToDo().equals("getAllGradesRelevantToStusent") ) //send to client the details 												// e.g to logIn
+				GetGradeByStudentDB(msg, client, conn);
+			
+		}
 
+		private void GetGradeByStudentDB(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
+		{
+			Statement stmt = (Statement) conn.createStatement();
+			User StudentToSearch=(User) msg.getSentObj();
+			ResultSet rs = stmt.executeQuery(
+					"SELECT examID , grade , examDate "
+					+ "FROM studentresultinexam AS sr "
+					+ "sr.approved=1 AND sr.studentID="+StudentToSearch.getuID());
+			ArrayList<StudentInExam> tempArr=new ArrayList<StudentInExam>();//to save all the relevant exams grade of rhe student	
+			HashMap<String,Integer> map=new HashMap<String,Integer>();
+			while(rs.next())
+			{
+				StudentInExam sGrade = new StudentInExam(rs.getInt("examID"),rs.getInt("grade"),rs.getString("examDate"),StudentToSearch.getuID());
+				tempArr.add(sGrade);
+				/*if(!map.containsKey(q.getQuestionID()))
+				{
+					q.setQuestionTxt(rs.getString(2));
+					q.setTeacherID(rs.getString(3));
+					q.setTeacherName(rs.getString(14));
+					q.setInstruction(rs.getString(4));
+					q.setCorrectAnswer(rs.getInt(5));
+					Statement stmt2 = (Statement) conn.createStatement();
+					ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID());
+					String[] ans=new String[4];
+					for(int i=0;rs2.next();i++)
+						ans[i]=rs2.getString(3);
+					q.setAnswers(ans);
+					tempArr.add(q);
+					map.put(q.getQuestionID(), 1);
+					stmt2.close();
+					rs2.close();
+				}*/
+				
+			}
+			rs.close();
+			stmt.close();
+			msg.setReturnObj(tempArr);
+			client.sendToClient(msg);
+		}
 	//********************************************************************************************
 	//get data or change data in DB methods
 	//********************************************************************************************

@@ -1,5 +1,6 @@
 package logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import common.Message;
@@ -22,8 +23,7 @@ public class StudentController {
 	
 	public ArrayList<StudentInExam> getAllgrades()//send request to db to get all grades of the student  
 	{
-		return null;
-		/*Message msg=new Message();
+		Message msg=new Message();
 		//msg.setSentObj(student); //save the object of client
 		msg.setqueryToDo("getAllGradesRelevantToStusent");
 		msg.setClassType("Student");
@@ -37,10 +37,10 @@ public class StudentController {
 		}
 		
 		msg=client.getMessage();
-		ArrayList<StudentInExam> arrOfQuestions=new ArrayList<StudentInExam>();
-		arrOfQuestions=(ArrayList<Question>)msg.getReturnObj();
+		ArrayList<StudentInExam> arrOfGrades=new ArrayList<StudentInExam>();
+		arrOfGrades=(ArrayList<StudentInExam>)msg.getReturnObj();
 		System.out.println("***************");
-		return arrOfQuestions;*/
+		return arrOfGrades;
 		
 	}
 }
