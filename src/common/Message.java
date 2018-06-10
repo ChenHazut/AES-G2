@@ -23,7 +23,7 @@ public class Message implements Serializable
 	{
 		sentObj=null;
 		returnObj=null;
-		queryToDo=queryTodo; 
+		queryToDo=queryTodo;
 	}
 	
 	public Message()
