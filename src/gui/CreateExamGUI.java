@@ -15,6 +15,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Question;
@@ -23,18 +25,18 @@ import logic.TeacherController;
 public class CreateExamGUI implements Initializable {
 	
 	@FXML
-	private TableView<Question> table;
+	private TableView<QuestionGUI> table;
 	@FXML
-	private TableColumn <Question,String> questionID;
+	private TableColumn <QuestionGUI,String> questionID;
 	@FXML
-	private TableColumn <Question,String> questionText;
+	private TableColumn <QuestionGUI,String> questionText;
 	@FXML
-	private TableColumn <Question,String> author;
+	private TableColumn <QuestionGUI,String> author;
 	@FXML
-	private TableColumn <Question,CheckBox> selected;
+	private TableColumn <QuestionGUI,CheckBox> selected;
 	
 	private ArrayList<Question> questionArr;
-	ObservableList<Question> questionsList ;
+	ObservableList<QuestionGUI> questionsList ;
 	ClientConsole client;
 	GUImanager m;
 	TeacherController tc;
@@ -60,21 +62,22 @@ public class CreateExamGUI implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		questionID.setCellValueFactory(new PropertyValueFactory<Question,String>("questionID"));
-		questionText.setCellValueFactory(new PropertyValueFactory<Question,String>("QuestionTxt"));
-		author.setCellValueFactory(new PropertyValueFactory<Question,String>("teacherName"));
-		selected.setCellValueFactory(new PropertyValueFactory<Question,CheckBox>("checkButton"));
+		questionID.setCellValueFactory(new PropertyValueFactory<QuestionGUI,String>("questionID"));
+		questionText.setCellValueFactory(new PropertyValueFactory<QuestionGUI,String>("questionTxt"));
+		author.setCellValueFactory(new PropertyValueFactory<QuestionGUI,String>("teacherName"));
+		selected.setCellValueFactory(new PropertyValueFactory<QuestionGUI,CheckBox>("checkButton"));
 		questionArr=tc.getAllQuestions();
+		questionsList = FXCollections.observableArrayList();
 		for(int i=0;i<questionArr.size();i++)
 		{
-			CheckBox c=new CheckBox();
-			c.setVisible(true);
-			questionArr.get(i).setcheckButton(c);
+			CheckBox cb=new CheckBox();
+			cb.setVisible(true);
+			QuestionGUI qgui=new QuestionGUI(questionArr.get(i).getQuestionID(),questionArr.get(i).getTeacherName(),
+					questionArr.get(i).getQuestionTxt(),cb);
+			questionsList.add(qgui);
 		}
-		questionsList = FXCollections.observableArrayList();
-		questionsList.addAll(questionArr);
+		
 		table.setItems(questionsList);
-		
-		
+				
 	}
 }

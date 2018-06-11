@@ -2,6 +2,7 @@ package gui;
 
 import java.io.Serializable;
 
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 
 public class QuestionGUI implements Serializable{
@@ -9,6 +10,7 @@ public class QuestionGUI implements Serializable{
 	private String teacherName;
 	private String questionTxt;
     private ImageView image;
+    private CheckBox checkButton;
 
   
 
@@ -18,6 +20,14 @@ public class QuestionGUI implements Serializable{
 		this.teacherName = teacherName;
 		this.questionTxt = questionTxt;
 		this.image = image;
+	}
+    
+    public QuestionGUI(String questionID, String teacherName, String questionTxt, CheckBox cb) {
+		super();
+		this.questionID = questionID;
+		this.teacherName = teacherName;
+		this.questionTxt = questionTxt;
+		this.checkButton = cb;
 	}
 
 	public void setImage(ImageView value) {
@@ -52,6 +62,15 @@ public class QuestionGUI implements Serializable{
 	public void setQuestionID(String questionID) {
 		this.questionID = questionID;
 	}
+
+	public CheckBox getCheckButton() {
+		return checkButton;
+	}
+
+	public void setCheckButton(CheckBox checkButton) {
+		this.checkButton = checkButton;
+	}
+	
 	
 	
 }
