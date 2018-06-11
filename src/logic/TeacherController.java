@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 
 import common.Message;
+import gui.QuestionGUI;
 
 public class TeacherController 
 {
@@ -35,7 +36,6 @@ public class TeacherController
 		msg=client.getMessage();
 		ArrayList<Question> arrOfQuestions=new ArrayList<Question>();
 		arrOfQuestions=(ArrayList<Question>)msg.getReturnObj();
-		System.out.println("***************");
 		return arrOfQuestions;
 		
 	}
