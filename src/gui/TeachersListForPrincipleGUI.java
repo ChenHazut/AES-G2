@@ -50,11 +50,6 @@ public class TeachersListForPrincipleGUI implements Initializable
 	GUImanager m;
 	TeacherController tc;
 	
-	/**
-	 * 
-	 * @param primaryStage
-	 * @throws Exception
-	 */
 	public void start(Stage primaryStage) throws Exception
 	{
 		Parent root = FXMLLoader.load(getClass().getResource("TeachersListForPrinciple.fxml"));

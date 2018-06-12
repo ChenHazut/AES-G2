@@ -3,8 +3,6 @@ package logic;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import javafx.scene.image.ImageView;
-
 public class Question  implements Serializable
 {
 	private String QuestionTxt;
@@ -33,7 +31,6 @@ public class Question  implements Serializable
 	
 	public Question() {
 		this.answers=new String[4];
-		courseList=new ArrayList<Course>();
 	}
 
 
@@ -126,10 +123,6 @@ public class Question  implements Serializable
 		this.courseList = courseList;
 	}
 
-
-	
-	
-	
 
 	
 	
