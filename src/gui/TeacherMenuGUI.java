@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,46 +27,28 @@ public class TeacherMenuGUI implements Initializable
 	Button testInExecutionButton;
 	@FXML
 	Label helloMsgLabel;
-	@FXML
-	Button logoutButton;
 	private User teacher;
 	private LoginController lc;
 	
-	public void questionRepositoryButtonAction(ActionEvent ae) throws Exception
+	public void questionRepositoryButtonAction() throws Exception
 	{
 		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
 		Stage primaryStage=new Stage();
 		qrg.start(primaryStage);
 	}
 	
-	public void testRepositoryButtonAction(ActionEvent ae) throws Exception
+	public void testRepositoryButtonAction() throws Exception
 	{
 		ExamRepositoryGUI erg=new ExamRepositoryGUI();
+		System.out.println("error 1");
 		Stage primaryStage=new Stage();
 		erg.start(primaryStage);
 	}
 	
-	public void testInExecutionButtonAction(ActionEvent ae)
+	public void testInExecutionButtonAction()
 	{
 		
 	}
-	
-	public void reportButtonAction(ActionEvent ae) throws Exception
-	{
-		ReportMenuGUI rmg=new ReportMenuGUI();
-		Stage primaryStage=new Stage();
-		rmg.start(primaryStage);
-	}
-	
-	public void logoutButtonAction(ActionEvent ae) throws IOException
-	{
-		lc=new LoginController();
-		lc.logoutUser();
-		Stage stage=(Stage) logoutButton.getScene().getWindow();
-		LoginGUI lg = new LoginGUI();   //run login window
-		lg.start(stage);
-	}
-	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
@@ -88,8 +69,6 @@ public class TeacherMenuGUI implements Initializable
 		lc=new LoginController();
 		primaryStage.setOnCloseRequest(event ->{
 			lc.logoutUser();
-			System.out.println("exit AES Application");
-			System.exit(0);	
 		});
 	}
 }
