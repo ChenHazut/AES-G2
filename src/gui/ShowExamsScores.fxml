@@ -35,11 +35,10 @@
             <Image url="@../../../../../Desktop/מערכות%20מידע/שנה%20ג'/סמסטר%20ב'/שיטות%20הנדסיות/תמונות%20לפרויקט/כובע%20סטודנט.png" />
          </image>
       </ImageView>
-      <TableView fx:id="table" layoutX="24.0" layoutY="107.0" prefHeight="266.0" prefWidth="382.0">
+      <TableView fx:id="gradeTable" layoutX="24.0" layoutY="107.0" prefHeight="266.0" prefWidth="382.0">
          <columns>
-            <TableColumn fx:id="ExamID" prefWidth="113.66665649414062" text="Exam ID" />
-            <TableColumn fx:id="ExamDate" prefWidth="128.0" text="Exam Date" />
-            <TableColumn fx:id="Grade" prefWidth="139.0" text="Grade" />
+            <TableColumn fx:id="examID" prefWidth="113.66665649414062" text="Exam ID" />
+            <TableColumn fx:id="grade" prefWidth="139.0" text="Grade" />
          </columns>
       </TableView>
    </children>

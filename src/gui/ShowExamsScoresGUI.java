@@ -34,13 +34,13 @@ public class ShowExamsScoresGUI implements Initializable {
 	//Button MainMenuButton; //THE BUTTON that go back to the main menu
 	
 	@FXML
-	private TableView<StudentInExam> table;
+	private TableView gradeTable;
 	@FXML
-	private TableColumn <StudentInExam,String> ExamID; 
+	private TableColumn <StudentInExam,String> examID; 
+	//@FXML
+//	private TableColumn <StudentInExam,String> examDate;
 	@FXML
-	private TableColumn <StudentInExam,String> ExamDate;
-	@FXML
-	private TableColumn <StudentInExam,String> Grade;
+	private TableColumn <StudentInExam,Integer> grade;
 	
 	private User student; // to save the student that loged in info
 	
@@ -69,16 +69,17 @@ public class ShowExamsScoresGUI implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
-		
-		ExamID.setCellValueFactory(new PropertyValueFactory<>("Exam ID"));
-		ExamDate.setCellValueFactory(new PropertyValueFactory<>("Exam Date"));
-		Grade.setCellValueFactory(new PropertyValueFactory<>("Grade"));
-		
+		st=new StudentController();
+		examID.setCellValueFactory(new PropertyValueFactory<>("examID"));
+		//examDate.setCellValueFactory(new PropertyValueFactory<StudentInExam,String>("Exam Date"));
+		grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
+//		
 		arr=st.getAllgrades(); //save all the student grades in arr
-		
+//		
 		GradesList = FXCollections.observableArrayList();
-		GradesList.addAll(arr);
-		table.setItems(GradesList);
+		if(arr!=null)
+			GradesList.addAll(arr);
+		gradeTable.setItems(GradesList);
 	}
 
 	public void start(Stage primaryStage) throws IOException

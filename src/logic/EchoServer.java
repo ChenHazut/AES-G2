@@ -75,14 +75,19 @@ public class EchoServer extends AbstractServer {
 	{
 		Connection conn = null;
 		conn=connectToDB();
-		System.out.println("SQL connection succeed");
 		Message m=(Message)msg;
+		System.out.println("heree"+m.getqueryToDo());
+		System.out.println("SQL connection succeed");
+		
 		if (m.getClassType().equalsIgnoreCase("User"))
 			userHandler(m,client,conn);
 		else if(m.getClassType().equalsIgnoreCase("Teacher"))
 			teacherHandler(m,client,conn);
 		else if(m.getClassType().equalsIgnoreCase("Student"))
-			StudentrHandler(m,client,conn);
+			{
+				System.out.println("bla bla");
+				StudentrHandler(m,client,conn);
+			}
 		conn.close();
 
 	}
@@ -128,8 +133,12 @@ public class EchoServer extends AbstractServer {
 	//student handler= handle client request about student class
 		private void StudentrHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
 		{
+			System.out.println("***********student handler");
 			if (msg.getqueryToDo().equals("getAllGradesRelevantToStusent") ) //send to client the details 												// e.g to logIn
-				GetGradeByStudentDB(msg, client, conn);
+				{
+					System.out.println("1212122121121");
+					GetGradeByStudentDB(msg, client, conn);
+				}
 			
 		}
 
@@ -138,14 +147,14 @@ public class EchoServer extends AbstractServer {
 			Statement stmt = (Statement) conn.createStatement();
 			User StudentToSearch=(User) msg.getSentObj();
 			ResultSet rs = stmt.executeQuery(
-					"SELECT examID , grade , examDate "
+					"SELECT sr.examID , sr.grade  "
 					+ "FROM studentresultinexam AS sr "
-					+ "sr.approved=1 AND sr.studentID="+StudentToSearch.getuID());
+					+ "WHERE sr.approved=1 AND sr.studentID="+StudentToSearch.getuID());
 			ArrayList<StudentInExam> tempArr=new ArrayList<StudentInExam>();//to save all the relevant exams grade of rhe student	
 			HashMap<String,Integer> map=new HashMap<String,Integer>();
 			while(rs.next())
 			{
-				StudentInExam sGrade = new StudentInExam(rs.getInt("examID"),rs.getInt("grade"),rs.getString("examDate"),StudentToSearch.getuID());
+				StudentInExam sGrade = new StudentInExam(rs.getString("examID"),rs.getInt("grade"),StudentToSearch.getuID());
 				tempArr.add(sGrade);
 				/*if(!map.containsKey(q.getQuestionID()))
 				{

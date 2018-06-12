@@ -40,10 +40,9 @@ public class StudentMenuGUI implements Initializable
 	
 	public void ShowExamsScoresAction() throws Exception 
 	{
-		
+		Stage stage = (Stage) ExamScoresButton.getScene().getWindow();
 		ShowExamsScoresGUI PG=new ShowExamsScoresGUI(); //CREATE THE NEXT WINDOW GUI
-		Stage primaryStage=new Stage();
-		PG.start(primaryStage); //RUN THE NEW WINDOW GUI
+		PG.start(stage); //RUN THE NEW WINDOW GUI
 		
 	}
 	

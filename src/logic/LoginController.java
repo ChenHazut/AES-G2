@@ -28,7 +28,7 @@ public class LoginController
 		client.accept(userMsg);
 		
 		try {
-			Thread.sleep(1500L);
+			Thread.sleep(2500L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

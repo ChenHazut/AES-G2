@@ -24,20 +24,20 @@ public class StudentController {
 	public ArrayList<StudentInExam> getAllgrades()//send request to db to get all grades of the student  
 	{
 		Message msg=new Message();
-		//msg.setSentObj(student); //save the object of client
+		msg.setSentObj(student); //save the object of client
 		msg.setqueryToDo("getAllGradesRelevantToStusent");
 		msg.setClassType("Student");
 		client.accept(msg);//send the message to the client
 		
 		try {
-			Thread.sleep(1500L);
+			Thread.sleep(2500L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		msg=client.getMessage();
-		ArrayList<StudentInExam> arrOfGrades=new ArrayList<StudentInExam>();
+		ArrayList<StudentInExam> arrOfGrades;
 		arrOfGrades=(ArrayList<StudentInExam>)msg.getReturnObj();
 		System.out.println("***************");
 		return arrOfGrades;
