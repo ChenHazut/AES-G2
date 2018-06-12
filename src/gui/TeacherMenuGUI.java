@@ -47,9 +47,11 @@ public class TeacherMenuGUI implements Initializable
 		erg.start(primaryStage);
 	}
 	
-	public void testInExecutionButtonAction(ActionEvent ae)
+	public void testInExecutionButtonAction(ActionEvent ae) throws IOException
 	{
-		
+		ExamInExecutionMenuGUI eInExecutionMg=new ExamInExecutionMenuGUI();
+		Stage primaryStage=new Stage();
+		eInExecutionMg.start(primaryStage);
 	}
 	
 	public void reportButtonAction(ActionEvent ae) throws Exception

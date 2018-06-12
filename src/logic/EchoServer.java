@@ -121,6 +121,8 @@ public class EchoServer extends AbstractServer {
 			deleteExam(msg,client,conn);
 		else if(msg.getqueryToDo().equals("updadeExam"))
 			editExam(msg,client,conn);
+		else if(msg.getqueryToDo().equals("getAllExamsInExecutionRelevantToTeacher"))
+			getExamsInExecutionByTeacher(msg,client,conn);
 	}
 	
 
@@ -506,6 +508,50 @@ public class EchoServer extends AbstractServer {
 		stmt.close();
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
+	}
+	
+private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
+		
+		Statement stmt = (Statement) conn.createStatement();
+		User teacherToSearch=(User) msg.getSentObj();
+		String s="SELECT EE.examID,EE.executionID,C.courseName FROM examinexecution AS EE,exam AS E,courseInSubject AS C WHERE EE.locked=0 AND EE.executingTeacherID="+teacherToSearch.getuID()+" AND E.examID=EE.examID AND C.courseID=E.courseID AND C.subjectID=E.subjectID";
+		ResultSet rs = stmt.executeQuery(s);
+		ArrayList<ExamInExecution> tempArr=new ArrayList<ExamInExecution>();	
+		while(rs.next())
+		{
+			ExamInExecution ein=new ExamInExecution();
+			System.out.println(rs.getString(1));
+			ein.getExamDet().setExamID("010101");
+			System.out.println("har far i'll go");
+			ein.setExecutionID(rs.getInt(2));
+			ein.setCourseName(rs.getString(3));
+//			Statement stmt2 = (Statement) conn.createStatement();
+//			ResultSet rs2 = stmt.executeQuery("SELECT * FROM exam AS E WHERE examID="+ein.getExamDet().getExamID());
+//			ein.getExamDet().setDuration(rs2.getInt(6));
+//			ein.getExamDet().setInstructionForStudent(rs2.getString(5));
+//			ein.getExamDet().setInstructionForTeacher(rs2.getString(4));
+//			ein.getExamDet().setTeacherID(rs2.getString(2));
+//			ein.getExamDet().getCourse().setcID(rs2.getString(8));
+//			ein.getExamDet().getCourse().getSubject().setSubjectID(rs2.getString(7));
+//			ein.getExamDet().setWasUsed(rs.getInt(3)==1?true:false);
+//			stmt2 = (Statement) conn.createStatement();
+//			rs2 = stmt.executeQuery("SELECT * FROM questioninexam AS QE WHERE examID="+ein.getExamDet().getExamID());
+//			while(rs2.next())
+//			{
+//				Question q=new Question();
+//				q.setQuestionID(rs2.getString(1));
+//				q.setQuestionTxt(rs2.getString(2));
+//				q.setTeacherID(teacherId);
+//				ein.getExamDet().getQuestions().put(arg0, arg1)
+//			}
+			tempArr.add(ein);
+		}
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+		
+		
 	}
 	
 	private void deleteExam(Message msg, ConnectionToClient client, Connection conn) 
