@@ -1,47 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="Window" maxHeight="360.0" maxWidth="640.0" minHeight="358.0" minWidth="640.0" prefHeight="358.0" prefWidth="641.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.LoginGUI">
+<VBox maxHeight="500.0" maxWidth="400.0" minHeight="400.0" minWidth="300.0" prefHeight="400.0" prefWidth="300.0" style="-fx-background-color: #fff5ee;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.LoginGUI"> 
    <children>
-      <ImageView fx:id="ImageAES" fitHeight="358.0" fitWidth="641.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../images/loginBackGraond.png" />
-         </image>
-      </ImageView>
-      <Label fx:id="UserNameLabel" layoutX="191.0" layoutY="198.0" text="UserID:">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label fx:id="Password" layoutX="170.0" layoutY="248.0" text="Password:">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <TextField fx:id="userIDTF" layoutX="295.0" layoutY="198.0" prefHeight="30.0" prefWidth="177.0" promptText="Enter your username" />
-      <PasswordField fx:id="passwordTF" layoutX="294.0" layoutY="248.0" prefHeight="30.0" prefWidth="177.0" promptText="Enter Your Password" />
-      <Button fx:id="loginButton" layoutX="139.0" layoutY="292.0" mnemonicParsing="false" onAction="#loginButtonAction" prefHeight="36.0" prefWidth="167.0" text="Login" />
-      <Button fx:id="btnExit" layoutX="315.0" layoutY="292.0" mnemonicParsing="false" onAction="#Exit" prefHeight="36.0" prefWidth="167.0" text="Exit" />
-      <Label layoutX="549.0" layoutY="75.0" text="Port:" textFill="#080000">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="txtPORT" layoutX="583.0" layoutY="73.0" opacity="0.7" prefHeight="25.0" prefWidth="44.0" promptText="5555" />
-      <Label layoutX="409.0" layoutY="76.0" text="IP:">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="txtServerIP" layoutX="435.0" layoutY="73.0" opacity="0.7" prefHeight="25.0" prefWidth="97.0" promptText="localhost" />
-      <Label fx:id="errorL" layoutX="197.0" layoutY="171.0" prefHeight="17.0" prefWidth="259.0" textFill="#ff1212" />
+      <FlowPane prefHeight="163.0" prefWidth="300.0">
+         <children>
+            <BorderPane prefHeight="200.0" prefWidth="301.0">
+               <center>
+                  <ImageView fx:id="logoIV" fitHeight="150.0" fitWidth="196.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets left="50.0" right="50.0" />
+                     </BorderPane.margin>
+                     <image>
+                        <Image url="@logo.png" />
+                     </image>
+                  </ImageView>
+               </center>
+               <bottom>
+                  <Label fx:id="errorL" textFill="#da0a0a" BorderPane.alignment="CENTER" />
+               </bottom>
+            </BorderPane>
+         </children>
+      </FlowPane>
+      <GridPane prefHeight="131.0" prefWidth="300.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.33331298828125" minWidth="10.0" prefWidth="113.33332061767578" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="223.66666158040368" minWidth="10.0" prefWidth="214.33334859212243" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="186.66667938232422" minWidth="10.0" prefWidth="35.33331807454425" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="70.33331298828125" minWidth="10.0" prefWidth="19.333313941955566" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.00003337860107" minWidth="10.0" prefWidth="84.00001939137776" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="139.00003337860107" minWidth="10.0" prefWidth="15.666653951009124" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="17.333343505859375" minHeight="8.0" prefHeight="8.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="51.99998474121094" minHeight="10.0" prefHeight="51.99998474121094" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="20.666656494140625" minHeight="6.0000152587890625" prefHeight="6.0000152587890625" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label prefHeight="31.0" prefWidth="107.0" text="User ID:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </GridPane>
+            <GridPane GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="52.33331298828125" minWidth="8.999970436096191" prefWidth="8.999970436096191" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="105.00002956390381" minWidth="10.0" prefWidth="93.66665013631184" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="105.00002956390381" minWidth="10.0" prefWidth="11.000016530354827" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="16.66668701171875" minHeight="10.0" prefHeight="11.333343505859375" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="51.666666666666664" minHeight="10.0" prefHeight="51.666666666666664" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="21.666656494140618" minHeight="4.999999999999993" prefHeight="4.999999999999993" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label prefHeight="31.0" prefWidth="85.0" text="Password:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </GridPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <right>
+                  <TextField fx:id="userIDTF" prefHeight="25.0" prefWidth="193.0" BorderPane.alignment="CENTER">
+                     <opaqueInsets>
+                        <Insets right="20.0" />
+                     </opaqueInsets>
+                  </TextField>
+               </right>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <center>
+                  <PasswordField fx:id="passwordTF" prefHeight="25.0" prefWidth="171.0" BorderPane.alignment="CENTER">
+                     <opaqueInsets>
+                        <Insets right="20.0" />
+                     </opaqueInsets>
+                  </PasswordField>
+               </center>
+            </BorderPane>
+         </children>
+      </GridPane>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="21.66668701171875" minHeight="10.0" prefHeight="10.333343982696533" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="61.333309173583984" minHeight="10.0" prefHeight="57.999996185302734" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="21.3333740234375" minHeight="4.666690826416016" prefHeight="8.000003814697266" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginButtonAction" prefHeight="34.0" prefWidth="80.0" text="Login" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <opaqueInsets>
+                  <Insets bottom="15.0" />
+               </opaqueInsets>
+            </Button>
+         </children>
+      </GridPane>
    </children>
-</AnchorPane>
+</VBox>
