@@ -43,9 +43,9 @@
       <TableView fx:id="table" layoutX="42.0" layoutY="87.0" prefHeight="303.0" prefWidth="443.0" AnchorPane.bottomAnchor="23.666666666666686" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="122.00000000000006" AnchorPane.topAnchor="87.0">
         <columns>
             <TableColumn fx:id="labelCol" prefWidth="51.33334732055664" />
-          <TableColumn fx:id="questionID" prefWidth="70.66667938232422" text="questionID" />
-          <TableColumn fx:id="QuestionTxt" prefWidth="229.3332977294922" text="QuestionTxt" />
-            <TableColumn fx:id="teacherName" prefWidth="89.3333740234375" text="teacherName" />
+          <TableColumn fx:id="questionID" prefWidth="70.66667938232422" text="Question ID" />
+          <TableColumn fx:id="QuestionTxt" prefWidth="229.3332977294922" text="Question Text" />
+            <TableColumn fx:id="teacherName" prefWidth="89.3333740234375" text="Author Name" />
         </columns>
       </TableView>
    </children>

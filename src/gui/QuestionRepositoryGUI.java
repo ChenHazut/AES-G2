@@ -34,10 +34,12 @@ import logic.ClientConsole;
 import logic.Question;
 import logic.TeacherController;
 
+
 public class QuestionRepositoryGUI implements Initializable
 {
 	@FXML
 	private TableView table;
+
 	@FXML
 	private TableColumn <QuestionGUI,String> questionID;
 	@FXML

@@ -43,7 +43,6 @@ public class TeacherMenuGUI implements Initializable
 	public void testRepositoryButtonAction(ActionEvent ae) throws Exception
 	{
 		ExamRepositoryGUI erg=new ExamRepositoryGUI();
-		System.out.println("error 1");
 		Stage primaryStage=new Stage();
 		erg.start(primaryStage);
 	}
@@ -53,9 +52,11 @@ public class TeacherMenuGUI implements Initializable
 		
 	}
 	
-	public void reportButtonAction(ActionEvent ae)
+	public void reportButtonAction(ActionEvent ae) throws Exception
 	{
-		
+		ReportMenuGUI rmg=new ReportMenuGUI();
+		Stage primaryStage=new Stage();
+		rmg.start(primaryStage);
 	}
 	
 	public void logoutButtonAction(ActionEvent ae) throws IOException
