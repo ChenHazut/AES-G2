@@ -1,41 +1,30 @@
 package gui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
-import client.ChatClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import logic.ClientConsole;
-import logic.Course;
-import logic.Question;
-import logic.TeacherController;
 import logic.Exam;
+import logic.TeacherController;
 
 public class ExamRepositoryGUI implements Initializable
 {
 	@FXML
-	private TableView table;
+	private TableView<Exam> table;
 	@FXML
 	private TableColumn <Exam,String> examIDCol;
 	@FXML
@@ -46,6 +35,10 @@ public class ExamRepositoryGUI implements Initializable
 	private TableColumn <Exam,String> durationCol;
 	@FXML
 	private Button editButton;
+	@FXML
+	private Button insertButton;
+	
+	
 	private ArrayList<Exam> arr;
 	private ExamDetailsGUI tdg;
 	ObservableList<Exam> examList ;
@@ -62,11 +55,11 @@ public class ExamRepositoryGUI implements Initializable
 		primaryStage.show(); 
 	}
 	
-	public void insertButtonAction(ActionEvent ae) throws IOException
+	public void insertButtonAction(ActionEvent ae) throws Exception
 	{
 		System.out.println("Exam is added");
-		Stage stage = (Stage) editButton.getScene().getWindow();
-		NewExamGUI ntg=new NewExamGUI();
+		Stage stage = (Stage) insertButton.getScene().getWindow();
+		CreateExamGUI ntg=new CreateExamGUI();
 		ntg.start(stage);
 	}
 	
