@@ -1,9 +1,12 @@
 package gui;
 
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import org.controlsfx.control.CheckComboBox;
 
 import client.ChatClient;
 import common.Message;
@@ -20,7 +23,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import logic.ClientConsole;
@@ -34,29 +37,26 @@ public class NewQuestionGUI implements Initializable
 {
 	
 	@FXML
-	TextField correctAnswerLabel;
+	ComboBox<String> correctAnswerCombo;
 	@FXML
 	Button cancleButton;
 	@FXML
 	Button saveButton;
 	@FXML
-	TextField QuestionLabel;
+	TextArea QuestionLabel;
 	@FXML
-	TextField answer1Label;
+	TextArea answer1Label;
 	@FXML
-	TextField answer2Label;
+	TextArea answer2Label;
 	@FXML
-	TextField answer3Label;
+	TextArea answer3Label;
 	@FXML
-	TextField answer4Label;
+	TextArea answer4Label;
 	@FXML
-	TextField teacherNameLabel;
+	Label teacherNameLabel;
 	@FXML
-	TextField instructionLabel;
-	@FXML
-	TextField QuestionIDTF;
-	@FXML
-	Label qid;
+	TextArea instructionLabel;
+
 	@FXML
 	Label qtxt;
 	@FXML
@@ -70,13 +70,12 @@ public class NewQuestionGUI implements Initializable
 	@FXML
 	Label corAns;
 	@FXML
-	Label combosErr;
+	Label subjectcourseL;
 	@FXML
 	ComboBox<String> subjectCombo;
 	@FXML
-	ListView <String> courseLV;
-	@FXML
-	HBox comboHBOX;
+	CheckComboBox <String> courseCombo;
+
 	Question q;
 	ClientConsole client;
 	GUImanager m;
@@ -94,7 +93,7 @@ public class NewQuestionGUI implements Initializable
 	
 	public void start(Stage primaryStage) throws IOException
 	{
-		Parent root = FXMLLoader.load(getClass().getResource("NewQuestion.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("NewQuestion1.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
@@ -110,8 +109,9 @@ public class NewQuestionGUI implements Initializable
 		for(int i=0;i<tc.getSubjects().size();i++)
 			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
 		coursesL=FXCollections.observableArrayList();
-		courseLV.setItems(coursesL);
-		courseLV.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+		courseCombo.getItems().addAll(coursesL);
+		correctAnswerCombo.getItems().addAll("1","2","3","4");
 	}
 
 	protected Question getFilledDetails()
@@ -124,39 +124,39 @@ public class NewQuestionGUI implements Initializable
 		updatedQuestion.setTeacherID(tc.getTeacher().getuID());
 		if(QuestionLabel.getText().equals(""))
 		{
-			qtxt.setText("*");
+			qtxt.setVisible(true);
 			flag=1;
 		}
 		else updatedQuestion.setQuestionTxt(QuestionLabel.getText());
 		updatedQuestion.setInstruction(instructionLabel.getText());
 		if(answer1Label.getText().equals(""))
 		{
-			qans1.setText("*");
+			qans1.setVisible(true);
 			flag=1;
 		}
 		if(answer2Label.getText().equals(""))
 		{
-			qans2.setText("*");
+			qans2.setVisible(true);
 			flag=1;
 		}
 		if(answer3Label.getText().equals(""))
 		{
-			qans3.setText("*");
+			qans3.setVisible(true);
 			flag=1;
 		}
 		if(answer4Label.getText().equals(""))
 		{
-			qans4.setText("*");
+			qans4.setVisible(true);
 			flag=1;
 		}
 		if(flag==0)
 			updatedQuestion.setAnswers(answer1Label.getText(), answer2Label.getText(), answer3Label.getText(), answer4Label.getText());
-		if(correctAnswerLabel.getText().equals(""))
+		if(correctAnswerCombo.getValue()==null)
 		{
-			corAns.setText("*");
+			corAns.setVisible(true);
 			flag=1;
 		}
-		else updatedQuestion.setCorrectAnswer(Integer.parseInt(correctAnswerLabel.getText()));
+		else updatedQuestion.setCorrectAnswer(Integer.parseInt((String)correctAnswerCombo.getValue()));
 		if(flag==0)
 			return updatedQuestion;	
 		return null;
@@ -169,18 +169,17 @@ public class NewQuestionGUI implements Initializable
 		if(updatedQuestion==null)
 			return;
 		
-		if (subjectCombo.getValue()==null||courseLV.getSelectionModel().getSelectedItem()==null)
+		if (subjectCombo.getValue()==null||courseCombo.getCheckModel().getCheckedItems()==null)
 		{
 			System.out.println("no subject or course selected");
-			combosErr.setText("*");
+			subjectcourseL.setVisible(true);
 			return;
 		}
 		Subject s = null;
 		ArrayList<Course> selectedcourses;
 		selectedcourses=new ArrayList<Course>();
 		ArrayList<String> selected=new ArrayList<String>();
-//		for(int i=0;i<courseLV.getSelectionModel().getSelectedItems().size();i++)
-//			9selected.add(courseLV.getSelectionModel().getSelectedItems().);
+
 		for(String c:coursesL)
 		{
 			selected.add(c);
@@ -229,11 +228,10 @@ public class NewQuestionGUI implements Initializable
 		int i;
 		for(i=0;i<coursesL.size();i++)
 			coursesL.remove(i);
-		System.out.println(tc.getCourses().size());
 		for(i=0;i<tc.getCourses().size();i++)
 			if(tc.getCourses().get(i).getSubject().getsName().equals(subjectCombo.getValue()))
 				coursesL.add(tc.getCourses().get(i).getcName());
-			
+		courseCombo.getItems().addAll(coursesL);
 				
 	}
 	

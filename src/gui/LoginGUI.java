@@ -24,16 +24,23 @@ import logic.User;
 public class LoginGUI implements Initializable
 {
 	@FXML
-	ImageView logoIV;
+	private ImageView logoIV;
 	@FXML
-	TextField userIDTF;
+	private TextField userIDTF;
 	@FXML
-	PasswordField passwordTF;
+	private PasswordField passwordTF;
 	@FXML
-	Button loginButton;
+	private Button loginButton;
 	@FXML
-	Label errorL;
-	
+	private Label errorL;
+	@FXML
+    private ImageView ImageZerli;
+	@FXML
+	private Button btnExit;
+    @FXML
+    private TextField txtServerIP;
+    @FXML
+    private TextField txtPORT;
 	String uid;
 	String upass;
 	
@@ -42,6 +49,14 @@ public class LoginGUI implements Initializable
 	{
 		
 	}
+	
+	  @FXML
+	void Exit(ActionEvent event) 
+	{
+		  System.out.println("exit AES Application");
+		  System.exit(0);	
+	}
+	
 	//listen to presses on the login button
 	public void loginButtonAction(ActionEvent ae) throws Exception
 	{

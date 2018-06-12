@@ -3,10 +3,11 @@ package logic;
 import java.util.ArrayList;
 
 import common.Message;
+import gui.QuestionGUI;
 
 public class TeacherController 
 {
-	User teacher;
+	public User teacher;
 	LoginController lc;
 	ClientConsole client;
 	ArrayList<Course> courses;
@@ -19,6 +20,7 @@ public class TeacherController
 		client=new ClientConsole();
 	}
 	
+
 	public ArrayList<Question> getAllQuestions()//send request to db to get all question which belong to subject this teacher teach 
 	{
 		Message msg=new Message();
@@ -35,7 +37,6 @@ public class TeacherController
 		msg=client.getMessage();
 		ArrayList<Question> arrOfQuestions=new ArrayList<Question>();
 		arrOfQuestions=(ArrayList<Question>)msg.getReturnObj();
-		System.out.println("***************");
 		return arrOfQuestions;
 		
 	}
