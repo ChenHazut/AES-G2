@@ -34,9 +34,9 @@
             <TableColumn fx:id="durationCol" prefWidth="78.66667683919275" text="duration" />
          </columns>
       </TableView>
-      <ComboBox fx:id="subjectCombo" layoutX="32.0" layoutY="91.0" prefHeight="25.0" prefWidth="175.0" promptText="choose subject" />
+      <ComboBox fx:id="subjectCombo" layoutX="32.0" layoutY="91.0" onAction="#choseSubject" prefHeight="25.0" prefWidth="175.0" promptText="choose subject" />
       <ComboBox fx:id="courseCombo" layoutX="32.0" layoutY="129.0" prefHeight="25.0" prefWidth="175.0" promptText="choose course" />
-      <TextField layoutX="262.0" layoutY="89.0" promptText="examID" />
+      <TextField fx:id="searchByExamTF" layoutX="262.0" layoutY="89.0" promptText="examID" />
       <ImageView fitHeight="39.0" fitWidth="48.0" layoutX="481.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../images/search.png" />
@@ -64,5 +64,16 @@
          </font>
       </Label>
       <Button fx:id="nextBtn" layoutX="442.0" layoutY="323.0" mnemonicParsing="false" onAction="#nextBtnAction" opacity="0.0" prefHeight="61.0" prefWidth="111.0" text="Button" />
+      <ImageView fitHeight="41.0" fitWidth="55.0" layoutX="369.0" layoutY="326.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../images/previous.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="339.0" layoutY="367.0" text="back to menu">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Button fx:id="backBtn1" layoutX="334.0" layoutY="324.0" mnemonicParsing="false" onAction="#backBtnAction" opacity="0.0" prefHeight="61.0" prefWidth="111.0" text="Button" />
    </children>
 </AnchorPane>
