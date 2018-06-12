@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.controlsfx.control.CheckComboBox;
+
 import client.ChatClient;
 import common.Message;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +19,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import logic.ClientConsole;
@@ -23,29 +29,28 @@ import logic.Question;
 public class QuestionDetailsGUI implements Initializable
 {
 	@FXML
-	TextField correctAnswerLabel;
+	Label questionIDLabel;
+	@FXML
+	ComboBox<String> correctAnswerCombo;
 	@FXML
 	Button cancleButton;
 	@FXML
 	Button saveButton;
 	@FXML
-	TextField QuestionLabel;
+	TextArea QuestionLabel;
 	@FXML
-	TextField answer1Label;
+	TextArea answer1Label;
 	@FXML
-	TextField answer2Label;
+	TextArea answer2Label;
 	@FXML
-	TextField answer3Label;
+	TextArea answer3Label;
 	@FXML
-	TextField answer4Label;
+	TextArea answer4Label;
 	@FXML
-	TextField teacherNameLabel;
+	Label teacherNameLabel;
 	@FXML
-	TextField instructionLabel;
-	@FXML
-	TextField QuestionIDTF;
-	@FXML
-	Label qid;
+	TextArea instructionLabel;
+
 	@FXML
 	Label qtxt;
 	@FXML
@@ -58,7 +63,14 @@ public class QuestionDetailsGUI implements Initializable
 	Label qans4;
 	@FXML
 	Label corAns;
+	@FXML
+	Label subjectcourseL;
+	@FXML
+	ComboBox<String> subjectCombo;
+	@FXML
+	ListView coursesList;
 
+	ObservableList<String> cList;
 	Question q;
 	ClientConsole client;
 	GUImanager m;
@@ -76,7 +88,7 @@ public class QuestionDetailsGUI implements Initializable
 	public void start(Stage primaryStage) throws IOException
 	{
 		System.out.println("bla bla bla bla");
-		Parent root = FXMLLoader.load(getClass().getResource("QuestionDetails.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("editQuestion.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
@@ -86,8 +98,8 @@ public class QuestionDetailsGUI implements Initializable
 
 	
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		QuestionIDTF.setText(q.getQuestionID());
-		QuestionIDTF.setDisable(true);
+		questionIDLabel.setText(q.getQuestionID());
+		questionIDLabel.setDisable(true);
 		QuestionLabel.setText(q.getQuestionTxt());
 		answer1Label.setText(q.getAnswers()[0]);
 		answer2Label.setText(q.getAnswers()[1]);
@@ -96,7 +108,15 @@ public class QuestionDetailsGUI implements Initializable
 		teacherNameLabel.setText(q.getTeacherName());
 		teacherNameLabel.setDisable(true);
 		instructionLabel.setText(q.getInstruction());
-		correctAnswerLabel.setText(Integer.toString(q.getCorrectAnswer()));
+		correctAnswerCombo.getItems().addAll("1","2","3","4");
+		correctAnswerCombo.setPromptText(Integer.toString(q.getCorrectAnswer()));
+		subjectCombo.getSelectionModel().select(q.getCourseList().get(0).getSubject().getsName());
+		subjectCombo.setDisable(true);
+		cList=FXCollections.observableArrayList();
+		for(int i=0;i<q.getCourseList().size();i++)
+			cList.add(q.getCourseList().get(i).getcName());
+		coursesList.getItems().add(cList);
+		coursesList.disabledProperty();
 
 	}
 
@@ -105,12 +125,8 @@ public class QuestionDetailsGUI implements Initializable
 		int flag=0;
 		int flagAns=0;
 		Question updatedQuestion=new Question();
-		if(QuestionIDTF.getText().equals(""))
-		{
-			qid.setText("*");
-			return null;
-		}
-		else updatedQuestion.setQuestionID(QuestionIDTF.getText());
+
+		updatedQuestion.setQuestionID(questionIDLabel.getText());
 		updatedQuestion.setTeacherName(teacherNameLabel.getText());
 		if(QuestionLabel.getText().equals(""))
 		{
@@ -140,12 +156,7 @@ public class QuestionDetailsGUI implements Initializable
 			return null;
 		}
 		updatedQuestion.setAnswers(answer1Label.getText(), answer2Label.getText(), answer3Label.getText(), answer4Label.getText());
-		if(correctAnswerLabel.getText().equals(""))
-		{
-			corAns.setText("*");
-			return null;
-		}
-		else updatedQuestion.setCorrectAnswer(Integer.parseInt(correctAnswerLabel.getText()));
+		updatedQuestion.setCorrectAnswer(Integer.parseInt(correctAnswerCombo.getValue()));
 		return updatedQuestion;	
 	}
 	
