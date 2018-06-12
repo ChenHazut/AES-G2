@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.04488188976377953" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="532.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.NewQuestionGUI">
+   <items>
+      <Label minHeight="95.0" prefHeight="95.0" prefWidth="249.0" text="New Question" textFill="#b211b8">
+         <font>
+            <Font name="System Bold Italic" size="36.0" />
+         </font>
+         <effect>
+            <DropShadow color="#585858" />
+         </effect>
+      </Label>
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="425.0" prefWidth="600.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.33331298828125" minWidth="10.0" prefWidth="32.33331298828125" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="249.33333333333337" minWidth="10.0" prefWidth="136.00001017252603" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="184.6667022705078" minWidth="10.0" prefWidth="19.999979654947907" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="386.000020345052" minWidth="10.0" prefWidth="386.000020345052" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="114.66668701171875" minWidth="10.0" prefWidth="27.3333740234375" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="27.66668701171875" minHeight="4.333343505859375" prefHeight="4.333343505859375" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="68.66668701171875" minHeight="10.0" prefHeight="68.66668701171875" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="31.33331298828125" minHeight="10.0" prefHeight="29.33331298828125" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <center>
+                  <Label minHeight="40.0" minWidth="60.0" prefHeight="40.0" prefWidth="67.0" text="Question:" textOverrun="CLIP" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="qtxt" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <center>
+                  <Label text="Anwser 1:" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="qans1" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <center>
+                  <Label text="Anwser 2:" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="qans2" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <center>
+                  <Label text="Anwser 3:" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="qans3" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <center>
+                  <Label text="Anwser 4:" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="qans4" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <center>
+                  <Label prefHeight="21.0" prefWidth="125.0" text="   Correct Anwser: " BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="corAns" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+               <center>
+                  <Label text="Teacher's Name:" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="teacher" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+               <center>
+                  <Label text="Instructions:" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </center>
+               <left>
+                  <Label fx:id="instruction" textFill="#de0909" BorderPane.alignment="CENTER" />
+               </left>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <center>
+                  <TextField fx:id="QuestionLabel" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <center>
+                  <TextField fx:id="answer1Label" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
+               <center>
+                  <TextField fx:id="answer2Label" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
+               <center>
+                  <TextField fx:id="answer3Label" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
+               <center>
+                  <TextField fx:id="answer4Label" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="6">
+               <center>
+                  <TextField fx:id="correctAnswerLabel" onInputMethodTextChanged="#correctAnswerTextField" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="7">
+               <center>
+                  <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <center>
+                        <TextField fx:id="teacherNameLabel" BorderPane.alignment="CENTER" />
+                     </center>
+                  </BorderPane>
+               </center>
+            </BorderPane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="8">
+               <center>
+                  <TextField fx:id="instructionLabel" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+            <HBox fx:id="comboHBOX" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="10">
+               <children>
+                  <ComboBox fx:id="subjectCombo" onAction="#subjectComboBoxAction" prefWidth="150.0" promptText="Choose Subject" />
+                  <ListView fx:id="courseLV" prefHeight="69.0" prefWidth="233.0">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </ListView>
+               </children>
+            </HBox>
+            <Label fx:id="combosErr" textFill="#d60b0b" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="11">
+               <children>
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonAction" prefHeight="25.0" prefWidth="48.0" text="Save" />
+                  <Button fx:id="cancleButton" mnemonicParsing="false" onAction="#cancleButtonAction" text="Cancle">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </GridPane>
+   </items>
+</SplitPane>
