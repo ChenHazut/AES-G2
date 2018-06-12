@@ -108,7 +108,7 @@ public class NewQuestionGUI implements Initializable
 		tc.getTeacherCourse();
 		for(int i=0;i<tc.getSubjects().size();i++)
 			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
-		coursesL=FXCollections.observableArrayList();
+		
 
 		courseCombo.getItems().addAll(coursesL);
 		correctAnswerCombo.getItems().addAll("1","2","3","4");
