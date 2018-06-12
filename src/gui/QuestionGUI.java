@@ -12,8 +12,6 @@ public class QuestionGUI implements Serializable{
     private ImageView image;
     private CheckBox checkButton;
 
-  
-
     public QuestionGUI(String questionID, String teacherName, String questionTxt, ImageView image) {
 		super();
 		this.questionID = questionID;
@@ -39,7 +37,6 @@ public class QuestionGUI implements Serializable{
     }
 
 	public String getQuestionID() {
-		// TODO Auto-generated method stub
 		return questionID;
 	}
 

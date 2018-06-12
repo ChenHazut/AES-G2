@@ -1,9 +1,7 @@
 package logic;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Exam implements Serializable
 {

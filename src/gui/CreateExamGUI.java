@@ -11,12 +11,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Question;
@@ -34,6 +33,10 @@ public class CreateExamGUI implements Initializable {
 	private TableColumn <QuestionGUI,String> author;
 	@FXML
 	private TableColumn <QuestionGUI,CheckBox> selected;
+	@FXML
+	private Button cancleButton;
+	@FXML
+	private Button saveButton;
 	
 	private ArrayList<Question> questionArr;
 	ObservableList<QuestionGUI> questionsList ;
@@ -49,6 +52,21 @@ public class CreateExamGUI implements Initializable {
 				
 	}
 	
+	public void cancleButtonAction() throws Exception {
+		System.out.println("cancle has been pressed");
+		Stage stage = (Stage) cancleButton.getScene().getWindow();
+		m.setSelectedQuestion(null);
+		ExamRepositoryGUI exam = new ExamRepositoryGUI();
+		exam.start(stage);
+	}
+	
+	public void saveButtonAction() throws Exception {
+		for (int i=0; i<questionsList.size(); i++) {
+			if(!questionsList.get(i).getCheckButton().isSelected())
+				questionsList.remove(i);
+		}
+		ExamForm eForm = new ExamForm(questionsList);
+	}
 	
 	public void start(Stage primaryStage) throws Exception
 	{
@@ -68,7 +86,7 @@ public class CreateExamGUI implements Initializable {
 		selected.setCellValueFactory(new PropertyValueFactory<QuestionGUI,CheckBox>("checkButton"));
 		questionArr=tc.getAllQuestions();
 		questionsList = FXCollections.observableArrayList();
-		for(int i=0;i<questionArr.size();i++)
+		for(int i=0; i<questionArr.size(); i++)
 		{
 			CheckBox cb=new CheckBox();
 			cb.setVisible(true);
@@ -76,8 +94,6 @@ public class CreateExamGUI implements Initializable {
 					questionArr.get(i).getQuestionTxt(),cb);
 			questionsList.add(qgui);
 		}
-		
-		table.setItems(questionsList);
-				
+		table.setItems(questionsList);		
 	}
 }
