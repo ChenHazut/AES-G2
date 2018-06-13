@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.controlsfx.control.textfield.CustomTextField;
+
 import common.Message;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,36 +17,46 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Course;
 import logic.Exam;
+import logic.ExamInExecution;
+import logic.StudentInExam;
 import logic.TeacherController;
+import logic.User;
 
 public class ExecuteNewExamGUI implements Initializable {
 
     @FXML
-    private TableView<Exam> table;
+    private TableView<ExamInExecutionRow> table;
 
     @FXML
-    private TableColumn<Exam, Label> previewCol;
+    private TableColumn<ExamInExecutionRow, ImageView> previewCol;
 
     @FXML
-    private TableColumn<Exam, String> examIDCol;
+    private TableColumn<ExamInExecutionRow, String> examIDCol;
 
     @FXML
-    private TableColumn<Exam, String> teacherNameCol;
+    private TableColumn<ExamInExecutionRow, String> teacherNameCol;
 
     @FXML
-    private TableColumn<Exam, String> cNameCol;
+    private TableColumn<ExamInExecutionRow, String> cNameCol;
 
     @FXML
-    private TableColumn<Exam, Integer> durationCol;
+    private TableColumn<ExamInExecutionRow, Integer> durationCol;
 
     @FXML
     private ComboBox<String> subjectCombo;
@@ -64,75 +76,177 @@ public class ExecuteNewExamGUI implements Initializable {
     @FXML
     private TextField searchByExamTF;
     
+    @FXML
+    private RadioButton searchByCourseRadio;
+    
+    @FXML
+    private RadioButton searchByExamIDRadio;
+    
+    @FXML 
+    private Button confirmBtn;
+    
+    @FXML 
+    private Button cancleBtn;
+    
+    @FXML
+    private TableView<UserRow> studentTable;
+    
+    @FXML
+    private TableColumn<UserRow, ComboBox> checkboxCol;
+
+    @FXML
+    private TableColumn<UserRow, String> sIDCol;
+
+    @FXML
+    private TableColumn<UserRow, String> sNameCol;
+    
+    @FXML
+    private Button selectExamBtn;
+    
+    @FXML
+    private CustomTextField examCodeTF;
+    
+    
     TeacherController tc;
     
     ObservableList<String> coursesL;
     
+    ObservableList<UserRow> students;
+    
     ClientConsole client;
+
+	private ArrayList<Exam> examsList;
+	
+	final ToggleGroup group;
+	
+	private ObservableList<ExamInExecutionRow> examOL;
+	
+	ExamInExecutionRow chosenExam;
+	private ArrayList<User> studentList;
+    ImageView warningImage;
+    ImageView okImage;
+    Boolean examCodeFlag;
+    ArrayList<StudentInExam> selectedStudentsList;
     
     public ExecuteNewExamGUI() {
 		super();
 		tc=new TeacherController();
 		client=new ClientConsole();
+		group=new ToggleGroup();
+		studentList=new ArrayList<User>();
+		examCodeFlag=false;
+		selectedStudentsList=new ArrayList<StudentInExam>();
 	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1)
 	{
+		
     	tc.getTeacherCourse();
 		for(int i=0;i<tc.getSubjects().size();i++)
 			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
 		coursesL=FXCollections.observableArrayList();
+		examOL=FXCollections.observableArrayList();
+		examsList=tc.getAllExams();
+		for(int i=0;i<examsList.size();i++)
+		{
+			ExamInExecutionRow e=new ExamInExecutionRow();
+			ImageView im=new ImageView(new Image("/images/preview.png"));
+    		im.setVisible(true);
+			im.setFitHeight(30);
+			im.setFitWidth(30);
+    		e.setPreview(im);
+    		e.setAuthorTeacherName(examsList.get(i).getTeacherName());
+    		e.setDuration(examsList.get(i).getDuration());
+    		e.setCourseName(examsList.get(i).getCourseName());
+    		e.setExamID(examsList.get(i).getExamID());
+    		e.setCourseID(examsList.get(i).getCourse().getcID());
+    		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
+    		examOL.add(e);
+		}
+		previewCol.setCellValueFactory(new PropertyValueFactory<>("preview"));
+		examIDCol.setCellValueFactory(new PropertyValueFactory<>("examID"));
+		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("authorTeacherName"));
+		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+		table.setItems(examOL);
+		searchByCourseRadio.setToggleGroup(group);
+		searchByExamIDRadio.setToggleGroup(group);
+		searchByExamIDRadio.setSelected(true);
+		students=FXCollections.observableArrayList();
+		studentList=new ArrayList<User>();
+		checkboxCol.setCellValueFactory(new PropertyValueFactory<>("check"));
+		sIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
+		sNameCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
+		warningImage=new ImageView("/images/warning.png");
+		warningImage.setFitHeight(20);
+		warningImage.setFitWidth(20);
+		okImage=new ImageView("/images/ok.png");
+		okImage.setFitHeight(20);
+		okImage.setFitWidth(20);
+		examCodeTF.setLeft(warningImage);
+		
 		
 	}
-    
-    @FXML
-    void nextBtnAction(ActionEvent event) throws IOException
-    {
-    	Stage stage = (Stage) nextBtn.getScene().getWindow();
-		ExamInExecutionMenuGUI eInExecMenu=new ExamInExecutionMenuGUI();
-		eInExecMenu.start(stage);
-    }
-    
-    @FXML
-    void backBtnAction(ActionEvent event) throws IOException
-    {
-    	Stage stage = (Stage) backBtn.getScene().getWindow();
-		ExamInExecutionMenuGUI eInExecMenu=new ExamInExecutionMenuGUI();
-		eInExecMenu.start(stage);
-    }
+
     
     @FXML
     void searchButtonAction(ActionEvent event) 
     {
-    	Message msg=new Message();
-    	msg.setClassType("Teacher");
-    	if(searchByExamTF.getText()!=null)
-    	{
-    		msg.setSentObj(searchByExamTF.getText());
-    		msg.setqueryToDo("getExamByExamID");
-    	}
-    	else if(subjectCombo.getValue()!=null && courseCombo.getValue()!=null)
-    	{
-    		Course c=new Course(courseCombo.getValue(),subjectCombo.getValue());
-    		msg.setSentObj(c);
-    		msg.setqueryToDo("getExamsBycourse");
-    	}
-    	else return;
-    	client.accept(msg);
-    	try {
-			Thread.sleep(1500L);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	msg=client.getMessage();
-    	ArrayList<Exam> exams=new ArrayList<Exam>();
     	
+        RadioButton button = (RadioButton) group.getSelectedToggle();
+    
+       	if(button.getText().equals("choose examID:"))
+    	{
+       		examOL.clear();
+    		for(int i=0;i<examsList.size();i++)
+    		{
+    			if(examsList.get(i).getExamID().equals(searchByExamTF.getText()))
+    			{
+    				ExamInExecutionRow e=new ExamInExecutionRow();
+    				ImageView im=new ImageView(new Image("/images/preview.png"));
+    	    		im.setVisible(true);
+    				im.setFitHeight(30);
+    				im.setFitWidth(30);
+    	    		e.setPreview(im);
+    	    		e.setAuthorTeacherName(examsList.get(i).getTeacherName());
+    	    		e.setDuration(examsList.get(i).getDuration());
+    	    		e.setCourseName(examsList.get(i).getCourseName());
+    	    		e.setExamID(examsList.get(i).getExamID());
+    	    		e.setCourseID(examsList.get(i).getCourse().getcID());
+    	    		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
+    	    		examOL.add(e);
+    			}
+    		}
+    	}
+       	else
+       	{
+       		examOL.clear();
+    		for(int i=0;i<examsList.size();i++)
+    		{
+    			if(courseCombo.getValue()!=null && examsList.get(i).getCourseName().equals(courseCombo.getValue()))
+    			{
+    				ExamInExecutionRow e=new ExamInExecutionRow();
+    				ImageView im=new ImageView(new Image("/images/preview.png"));
+    	    		im.setVisible(true);
+    				im.setFitHeight(30);
+    				im.setFitWidth(30);
+    	    		e.setPreview(im);
+    	    		e.setAuthorTeacherName(examsList.get(i).getTeacherName());
+    	    		e.setDuration(examsList.get(i).getDuration());
+    	    		e.setCourseName(examsList.get(i).getCourseName());
+    	    		e.setExamID(examsList.get(i).getExamID());
+    	    		e.setCourseID(examsList.get(i).getCourse().getcID());
+    	    		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
+    	    		examOL.add(e);
+    			}
+    		}
+       	}
+
     }
     
     @FXML
-    void choseSubject(ActionEvent event) 
+    public void chooseSubject(ActionEvent event) 
     {
 		int i;
 		courseCombo.getItems().removeAll(coursesL);
@@ -143,9 +257,95 @@ public class ExecuteNewExamGUI implements Initializable {
 				coursesL.add(tc.getCourses().get(i).getcName());
 		courseCombo.getItems().addAll(coursesL);
     }
+    
+    public void confirmBtnAction(ActionEvent event) throws IOException
+    {
+    	ExamInExecution e=new ExamInExecution();
+    	ExamInExecutionRow ex=new ExamInExecutionRow();
+    	ex=table.getSelectionModel().getSelectedItem();
+    	e.setExecTeacher(tc.getTeacher());
+    	e.setLocked(false);
+    	e.setCourseID(ex.getCourseID());
+    	e.setSubjectID(ex.getSubjectID());
+    	e.getExamDet().setDuration(ex.getDuration());
+    	e.getExamDet().setExamID(ex.getExamID());
+    	e.getExamDet().setCourseName(ex.getCourseName());
+    	e.getExamDet().setTeacherName(ex.getAuthorTeacherName());
+    	if(examCodeFlag)
+    		e.setExamCode(examCodeTF.getText());
+    	else return;
+    	for(UserRow u:students)
+    	{
+    		if(u.getCheck().isSelected())
+    		{
+    			StudentInExam s=new StudentInExam();
+    			s.setStudentID(u.getUserID());
+    			s.setStudentName(u.getUserName());
+    			selectedStudentsList.add(s);
+    		}
+    	}
+    	e.setStudents(selectedStudentsList);
+    	e=tc.executeNewExam(e);
+    	Stage stage = (Stage) confirmBtn.getScene().getWindow();
+		ExamInExecutionMenuGUI eInExecMenu=new ExamInExecutionMenuGUI();
+		eInExecMenu.start(stage);
+    }
+    
+    public void cancleBtnAction(ActionEvent event) throws IOException
+    {
+    	Stage stage = (Stage) cancleBtn.getScene().getWindow();
+		ExamInExecutionMenuGUI eInExecMenu=new ExamInExecutionMenuGUI();
+		eInExecMenu.start(stage);
+    }
+    
+    @FXML
+    public void selectExamBtnAction(ActionEvent event)
+    {
+    	chosenExam=table.getSelectionModel().getSelectedItem();
+    	table.getItems().removeAll(students);
+    	students.clear();
+    	if(chosenExam==null)
+    		return;
+    	studentList=tc.getAllStudentsInCourse(chosenExam.getSubjectID(),chosenExam.getCourseID());
+    	for(int i=0;i<studentList.size();i++)
+    	{
+    		CheckBox c=new CheckBox();
+    		c.setVisible(true);
+    		UserRow u=new UserRow(studentList.get(i),c);
+    		students.add(u);
+    	}
+    	studentTable.setItems(students);    	
+    }
+    
+    @FXML
+    public void examCodeAction(KeyEvent event) 
+    {
+    	System.out.println("text is:"+examCodeTF.getText());
+    	char[] c;
+    	if(examCodeTF.getText().length()<4)
+    	{
+    		examCodeTF.setLeft(warningImage);
+    		examCodeFlag=false;
+    		return;
+    	}
+    	for(int i=0;i<examCodeTF.getText().length();i++)
+    	{
+    		c=examCodeTF.getText().toCharArray();
+    		if(!Character.isLetterOrDigit(c[i]))
+    		{
+    			examCodeFlag=false;
+    			examCodeTF.setLeft(warningImage);
+    			return;
+    		}
+    	}
+    	examCodeTF.setLeft(okImage);
+    	examCodeFlag=true;
+    	System.out.println("everything gonna be alright");
+    	
+    }
 
 	public void start(Stage stage) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("executeNewExam.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("ExecuteNewExam.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		stage.setScene(Scene);

@@ -64,19 +64,18 @@ public class ExamInExecutionMenuGUI implements Initializable {
     @Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
     {
-		System.out.println("hhhhiiiiiiiiiii");
 		examIDCol.setCellValueFactory(new PropertyValueFactory<>("examID"));
 		executionIDCol.setCellValueFactory(new PropertyValueFactory<>("executionID") );
 		courseNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		imageCol.setCellValueFactory(new PropertyValueFactory<>("preview"));
-		
-		for(int i=0;i<arr.size();i++)
+		int i;
+		for(i=0;i<arr.size();i++)
     	{
     		ExamInExecutionRow e=new ExamInExecutionRow();
     		e.setExamID(arr.get(i).getExamDet().getExamID());
     		e.setExecutionID(arr.get(i).getExecutionID());
     		e.setCourseName(arr.get(i).getCourseName());
-    		ImageView im=new ImageView(new Image("file:C:/Users/chen1/Documents/GitHub/AES-G2/images/preview.png"));
+    		ImageView im=new ImageView(new Image("/images/preview.png"));
     		im.setVisible(true);
 			im.setFitHeight(30);
 			im.setFitWidth(30);
@@ -86,10 +85,11 @@ public class ExamInExecutionMenuGUI implements Initializable {
     	}
 		examsTable.setItems(examArr);
 		
-		
 	}
     
-    @FXML
+
+
+	@FXML
     void approveGradesViewBtnAction(ActionEvent event) 
     {
 

@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -12,68 +13,87 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ExecuteNewExamGUI">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ExecuteNewExamGUI">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true">
+      <ImageView fitHeight="600.0" fitWidth="600.0" pickOnBounds="true">
          <image>
-            <Image url="@../../images/backgraond.png" />
+            <Image url="@../images/biggerBackground.png" />
          </image>
       </ImageView>
-      <Label layoutX="43.0" layoutY="325.0" prefHeight="17.0" prefWidth="101.0" text="set exam code:" textFill="#2d31f5">
+      <Label layoutX="40.0" layoutY="359.0" prefHeight="17.0" prefWidth="101.0" text="set exam code:" textFill="#2d31f5">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <CustomTextField layoutX="170.0" layoutY="325.0" />
-      <TableView fx:id="table" layoutX="32.0" layoutY="170.0" prefHeight="142.0" prefWidth="535.0">
-         <columns>
-            <TableColumn fx:id="previewCol" prefWidth="66.66662979125977" text="preview" />
-            <TableColumn fx:id="examIDCol" prefWidth="178.66669464111328" text="examID" />
-            <TableColumn fx:id="teacherNameCol" prefWidth="98.00004577636719" text="teacherName" />
-            <TableColumn fx:id="cNameCol" prefWidth="110.66668701171875" text="courseName" />
-            <TableColumn fx:id="durationCol" prefWidth="78.66667683919275" text="duration" />
-         </columns>
-      </TableView>
-      <ComboBox fx:id="subjectCombo" layoutX="32.0" layoutY="91.0" onAction="#choseSubject" prefHeight="25.0" prefWidth="175.0" promptText="choose subject" />
-      <ComboBox fx:id="courseCombo" layoutX="32.0" layoutY="129.0" prefHeight="25.0" prefWidth="175.0" promptText="choose course" />
-      <TextField fx:id="searchByExamTF" layoutX="262.0" layoutY="89.0" promptText="examID" />
-      <ImageView fitHeight="39.0" fitWidth="48.0" layoutX="481.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+      <CustomTextField fx:id="examCodeTF" layoutX="167.0" layoutY="359.0" onKeyReleased="#examCodeAction" />
+      <ComboBox fx:id="subjectCombo" layoutX="54.0" layoutY="127.0" onAction="#chooseSubject" prefHeight="25.0" prefWidth="175.0" promptText="choose subject" />
+      <ComboBox fx:id="courseCombo" layoutX="54.0" layoutY="169.0" prefHeight="25.0" prefWidth="175.0" promptText="choose course" />
+      <TextField fx:id="searchByExamTF" layoutX="312.0" layoutY="128.0" promptText="examID" />
+      <ImageView fitHeight="39.0" fitWidth="48.0" layoutX="499.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../images/search.png" />
+            <Image url="@../images/search.png" />
          </image>
       </ImageView>
-      <Label layoutX="482.0" layoutY="121.0" text="Search">
+      <Label layoutX="500.0" layoutY="153.0" text="Search">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button fx:id="searchButton" layoutX="468.0" layoutY="78.0" mnemonicParsing="false" onAction="#searchButtonAction" opacity="0.0" prefHeight="61.0" prefWidth="64.0" text="Button" />
+      <Button fx:id="searchButton" layoutX="486.0" layoutY="110.0" mnemonicParsing="false" onAction="#searchButtonAction" opacity="0.0" prefHeight="61.0" prefWidth="64.0" text="Button" />
       <Label layoutX="91.0" layoutY="14.0" prefHeight="41.0" prefWidth="332.0" text="Execute New Exam" textFill="#1f23fc">
          <font>
             <Font name="Lemon Regular" size="30.0" />
          </font>
       </Label>
-      <ImageView fitHeight="41.0" fitWidth="55.0" layoutX="474.0" layoutY="325.0" pickOnBounds="true" preserveRatio="true">
+      <RadioButton fx:id="searchByExamIDRadio" layoutX="289.0" layoutY="102.0" mnemonicParsing="false" text="choose examID:" />
+      <RadioButton fx:id="searchByCourseRadio" layoutX="28.0" layoutY="102.0" mnemonicParsing="false" text="choose subject and course:" />
+      <TableView fx:id="table" layoutX="21.0" layoutY="208.0" prefHeight="142.0" prefWidth="497.0">
+         <columns>
+            <TableColumn fx:id="previewCol" prefWidth="66.66662979125977" text="preview" />
+            <TableColumn fx:id="examIDCol" prefWidth="72.00003814697266" text="examID" />
+            <TableColumn fx:id="teacherNameCol" prefWidth="97.99998474121094" text="teacherName" />
+            <TableColumn fx:id="cNameCol" prefWidth="182.0" text="courseName" />
+            <TableColumn fx:id="durationCol" prefWidth="76.00003051757812" text="duration" />
+         </columns>
+      </TableView>
+      <TableView fx:id="studentTable" layoutX="157.0" layoutY="393.0" prefHeight="129.0" prefWidth="311.0">
+        <columns>
+          <TableColumn fx:id="checkboxCol" prefWidth="45.333343505859375" />
+          <TableColumn fx:id="sIDCol" prefWidth="76.66661071777344" text="ID" />
+            <TableColumn fx:id="sNameCol" prefWidth="186.66668701171875" text="Name" />
+        </columns>
+      </TableView>
+      <Label layoutX="37.0" layoutY="393.0" prefHeight="20.0" prefWidth="114.0" text="choose students:" textFill="#2d31f5">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="41.0" fitWidth="47.0" layoutX="317.0" layoutY="533.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../images/next.png" />
+            <Image url="@../images/confirm.png" />
          </image>
       </ImageView>
-      <Label layoutX="447.0" layoutY="366.0" text="set student group">
+      <Label layoutX="316.0" layoutY="571.0" text="Confirm">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button fx:id="nextBtn" layoutX="442.0" layoutY="323.0" mnemonicParsing="false" onAction="#nextBtnAction" opacity="0.0" prefHeight="61.0" prefWidth="111.0" text="Button" />
-      <ImageView fitHeight="41.0" fitWidth="55.0" layoutX="369.0" layoutY="326.0" pickOnBounds="true" preserveRatio="true">
+      <Button fx:id="confirmBtn" layoutX="300.0" layoutY="533.0" mnemonicParsing="false" onAction="#confirmBtnAction" opacity="0.0" prefHeight="61.0" prefWidth="77.0" text="Button" />
+      <ImageView fitHeight="41.0" fitWidth="47.0" layoutX="418.0" layoutY="533.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../images/previous.png" />
+            <Image url="@../images/cancle.png" />
          </image>
       </ImageView>
-      <Label layoutX="339.0" layoutY="367.0" text="back to menu">
+      <Label layoutX="417.0" layoutY="571.0" text="Cancle">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button fx:id="backBtn1" layoutX="334.0" layoutY="324.0" mnemonicParsing="false" onAction="#backBtnAction" opacity="0.0" prefHeight="61.0" prefWidth="111.0" text="Button" />
+      <Button fx:id="cancleBtn" layoutX="401.0" layoutY="533.0" mnemonicParsing="false" onAction="#cancleBtnAction" opacity="0.0" prefHeight="61.0" prefWidth="77.0" text="Button" />
+      <Button fx:id="selectExamBtn" layoutX="521.0" layoutY="263.0" mnemonicParsing="false" onAction="#selectExamBtnAction" prefHeight="25.0" prefWidth="77.0" text="select exam">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

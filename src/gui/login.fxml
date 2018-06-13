@@ -13,7 +13,7 @@
    <children>
       <ImageView fx:id="ImageAES" fitHeight="358.0" fitWidth="641.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../images/loginBackGraond.png" />
+            <Image url="@../images/loginBackGraond.png" />
          </image>
       </ImageView>
       <Label fx:id="UserNameLabel" layoutX="191.0" layoutY="198.0" text="UserID:">

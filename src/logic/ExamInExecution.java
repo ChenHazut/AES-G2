@@ -1,6 +1,7 @@
 package logic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ExamInExecution implements Serializable
 {
@@ -9,11 +10,17 @@ public class ExamInExecution implements Serializable
 	private boolean isLocked;
 	private User execTeacher;
 	private String courseName;
+	private String courseID;
+	private String subjectID;
+	private String examCode;
+	private ArrayList<StudentInExam> students;
+	private boolean isGroup;
 	
 	public ExamInExecution()
 	{
 		examDet=new Exam();
 		execTeacher=new User();
+		students=new ArrayList<StudentInExam>();
 	}
 	
 	public Exam getExamDet() {
@@ -46,6 +53,47 @@ public class ExamInExecution implements Serializable
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
 	}
+
+	public ArrayList<StudentInExam> getStudents() {
+		return students;
+	}
+
+	public void setStudents(ArrayList<StudentInExam> students) {
+		this.students = students;
+	}
+
+	public String getCourseID() {
+		return courseID;
+	}
+
+	public void setCourseID(String courseID) {
+		this.courseID = courseID;
+	}
+
+	public String getSubjectID() {
+		return subjectID;
+	}
+
+	public void setSubjectID(String subjectID) {
+		this.subjectID = subjectID;
+	}
+
+	public String getExamCode() {
+		return examCode;
+	}
+
+	public void setExamCode(String examCode) {
+		this.examCode = examCode;
+	}
+
+	public boolean isGroup() {
+		return isGroup;
+	}
+
+	public void setIsGroup(boolean isGroup) {
+		this.isGroup = isGroup;
+	}
+	
 	
 	
 }

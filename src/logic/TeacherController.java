@@ -183,4 +183,44 @@ public class TeacherController
 		return arrOfExams;
 	}
 
+
+	public ArrayList<User> getAllStudentsInCourse(String sID, String cID) 
+	{
+		Message msg= new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("getStudentsInCourse");
+		Course c=new Course(cID, sID);
+		msg.setSentObj(c);
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg=client.getMessage();
+		ArrayList<User> arrOfstudents=new ArrayList<User>();
+		arrOfstudents=(ArrayList<User>)msg.getReturnObj();
+		return arrOfstudents;
+	}
+	
+	public ExamInExecution executeNewExam(ExamInExecution exam) 
+	{
+		Message msg= new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("executeNewExam");
+		msg.setSentObj(exam);
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg=client.getMessage();
+		ExamInExecution examInExec=new ExamInExecution();
+		examInExec=(ExamInExecution)msg.getReturnObj();
+		return examInExec;
+	}
+
 }

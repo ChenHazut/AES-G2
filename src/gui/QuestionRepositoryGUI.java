@@ -141,7 +141,7 @@ public class QuestionRepositoryGUI implements Initializable
 		
 		for(int i=0;i<arr.size();i++)
 		{
-			ImageView im=new ImageView(new Image("file:C:/Users/chen1/Documents/GitHub/AES-G2/images/questionIcon.png"));
+			ImageView im=new ImageView(new Image("/images/questionIcon.png"));
 			im.setVisible(true);
 			im.setFitHeight(30);
 			im.setFitWidth(30);

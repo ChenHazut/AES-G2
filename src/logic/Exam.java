@@ -3,6 +3,8 @@ package logic;
 import java.io.Serializable;
 import java.util.HashMap;
 
+import javafx.scene.image.ImageView;
+
 public class Exam implements Serializable
 {
 	private HashMap<Question, Integer> questions;
@@ -92,6 +94,8 @@ public class Exam implements Serializable
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
 	}
+	
+	
 	
 	
 	

@@ -12,12 +12,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ExamRepositoryGUI">
    <children>
       <ImageView fitHeight="414.0" fitWidth="600.0" pickOnBounds="true">
          <image>
-            <Image url="@../../images/backgraond.png" />
+            <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
       <Pane layoutY="14.0" maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">

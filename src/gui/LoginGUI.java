@@ -47,7 +47,8 @@ public class LoginGUI implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) 
 	{
-		
+		userIDTF.setText("11111");
+		passwordTF.setText("1111");
 	}
 	
 	  @FXML

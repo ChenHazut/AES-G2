@@ -93,7 +93,7 @@ public class NewQuestionGUI implements Initializable
 	
 	public void start(Stage primaryStage) throws IOException
 	{
-		Parent root = FXMLLoader.load(getClass().getResource("NewQuestion1.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("NewQuestion.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
@@ -108,7 +108,7 @@ public class NewQuestionGUI implements Initializable
 		tc.getTeacherCourse();
 		for(int i=0;i<tc.getSubjects().size();i++)
 			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
-		
+		coursesL=FXCollections.observableArrayList();
 
 		courseCombo.getItems().addAll(coursesL);
 		correctAnswerCombo.getItems().addAll("1","2","3","4");
@@ -226,6 +226,7 @@ public class NewQuestionGUI implements Initializable
 	public void subjectComboBoxAction(ActionEvent ae)
 	{
 		int i;
+		courseCombo.getItems().removeAll(coursesL);
 		for(i=0;i<coursesL.size();i++)
 			coursesL.remove(i);
 		for(i=0;i<tc.getCourses().size();i++)

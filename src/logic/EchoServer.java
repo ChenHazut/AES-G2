@@ -123,6 +123,10 @@ public class EchoServer extends AbstractServer {
 			editExam(msg,client,conn);
 		else if(msg.getqueryToDo().equals("getAllExamsInExecutionRelevantToTeacher"))
 			getExamsInExecutionByTeacher(msg,client,conn);
+		else if(msg.getqueryToDo().equals("getStudentsInCourse"))
+			getStudentsInCourse(msg,client,conn);
+		else if(msg.getqueryToDo().equals("executeNewExam"))
+			executeNewExam(msg,client,conn);
 	}
 	
 
@@ -514,7 +518,7 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 		
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch=(User) msg.getSentObj();
-		String s="SELECT EE.examID,EE.executionID,C.courseName FROM examinexecution AS EE,exam AS E,courseInSubject AS C WHERE EE.locked=0 AND EE.executingTeacherID="+teacherToSearch.getuID()+" AND E.examID=EE.examID AND C.courseID=E.courseID AND C.subjectID=E.subjectID";
+		String s="SELECT EE.examID,EE.executionID,C.courseName, C.courseID, C.subjectID FROM examinexecution AS EE,exam AS E,courseInSubject AS C WHERE EE.locked=0 AND EE.executingTeacherID="+teacherToSearch.getuID()+" AND E.examID=EE.examID AND C.courseID=E.courseID AND C.subjectID=E.subjectID";
 		ResultSet rs = stmt.executeQuery(s);
 		ArrayList<ExamInExecution> tempArr=new ArrayList<ExamInExecution>();	
 		while(rs.next())
@@ -525,6 +529,8 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 			System.out.println("har far i'll go");
 			ein.setExecutionID(rs.getInt(2));
 			ein.setCourseName(rs.getString(3));
+			ein.setCourseID(rs.getString(4));
+			ein.setSubjectID(rs.getString(5));
 //			Statement stmt2 = (Statement) conn.createStatement();
 //			ResultSet rs2 = stmt.executeQuery("SELECT * FROM exam AS E WHERE examID="+ein.getExamDet().getExamID());
 //			ein.getExamDet().setDuration(rs2.getInt(6));
@@ -622,6 +628,65 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 			}
 				
 		}
+		
+	private void getStudentsInCourse(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException
+	{
+		Course c= (Course) msg.getSentObj();
+		ArrayList<User> tmpUsrArr = new ArrayList<User>();	
+		Statement stmt = (Statement) conn.createStatement();
+		System.out.println("subject: "+c.getSubject().getSubjectID()+" course:"+c.getcID());
+		ResultSet rs = stmt.executeQuery("SELECT U.userID,U.userName FROM studentincourse AS SC,user AS U WHERE SC.subjectID="+c.getSubject().getSubjectID()+" AND SC.courseID="+c.getcID()+" AND U.userID=SC.studentID");
+		while(rs.next())
+		{
+			User u=new User();
+			u.setuID(rs.getString(1));
+			u.setuName(rs.getString(2));
+			tmpUsrArr.add(u);
+		}
+		
+		rs.close();
+		msg.setReturnObj(tmpUsrArr);
+		client.sendToClient(msg);
+		
+	}
+	
+	private void executeNewExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException
+	{
+		ExamInExecution exam=(ExamInExecution)msg.getSentObj();
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM examInExecution");
+		rs.moveToInsertRow();
+		rs.updateString(1, exam.getExamDet().getExamID());
+		rs.updateString(3, exam.getExamCode());
+		rs.updateString(4, exam.getExecTeacher().getuID());
+		rs.updateInt(5, 0);
+		rs.insertRow();
+		rs = stmt.executeQuery("SELECT * FROM examInExecution AS E WHERE E.examID="+exam.getExamDet().getExamID());
+		rs.last();
+		exam.setExecutionID(rs.getInt(2));
+		rs = stmt.executeQuery("SELECT * FROM examnieegroup");
+		for(int i=0;i<exam.getStudents().size();i++)
+		{
+			rs.moveToInsertRow();
+			rs.updateString(1, exam.getExamDet().getExamID());
+			rs.updateInt(2, exam.getExecutionID());
+			rs.updateString(3, exam.getStudents().get(i).getStudentID());
+			rs.updateInt(4,exam.isGroup()?1:0);
+			rs.insertRow();
+		}
+		rs = stmt.executeQuery("SELECT * FROM exam WHERE examID="+exam.getExamDet().getExamID());
+		rs.last();
+		int temp=rs.getInt(3);
+		if(temp==0)
+		{
+			rs.updateInt(3, 1);
+			rs.updateRow();
+		}
+		rs.close();
+		msg.setReturnObj(exam);
+		client.sendToClient(msg);
+	}
+
 	
 	/**
 	 * This method overrides the one in the superclass. Called when the server

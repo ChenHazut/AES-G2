@@ -15,9 +15,9 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.TeacherMenuGUI">
    <children>
-      <ImageView fitHeight="407.0" fitWidth="600.0" pickOnBounds="true">
+      <ImageView fitHeight="407.0" fitWidth="614.0" pickOnBounds="true">
          <image>
-            <Image url="@../../images/backgraond.png" />
+            <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
       <VBox layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
@@ -38,7 +38,7 @@
                      <children>
                         <ImageView fitHeight="28.0" fitWidth="159.0" layoutX="142.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/exit.png" />
+                              <Image url="@../images/exit.png" />
                            </image>
                         </ImageView>
                         <Label layoutX="170.0" layoutY="2.0" prefHeight="55.0" prefWidth="45.0" text="logout">
@@ -53,12 +53,12 @@
                      <children>
                         <ImageView fitHeight="41.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../images/conference.png" />
+                              <Image url="@../images/conference.png" />
                            </image>
                         </ImageView>
-                        <Label fx:id="helloMsgLabel" prefHeight="36.0" prefWidth="209.0" textFill="#1348bd">
+                        <Label fx:id="helloMsgLabel" prefHeight="36.0" prefWidth="269.0" textFill="#1348bd">
                            <font>
-                              <Font name="System Bold Italic" size="25.0" />
+                              <Font name="System Bold Italic" size="20.0" />
                            </font>
                         </Label>
                      </children>
@@ -84,7 +84,7 @@
                            <children>
                               <ImageView fitHeight="71.0" fitWidth="104.0" layoutX="61.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../images/test.png" />
+                                    <Image url="@../images/test.png" />
                                  </image>
                               </ImageView>
                               <Label layoutX="142.0" layoutY="22.0" prefHeight="39.0" prefWidth="109.0" text="Exam repository">
@@ -103,7 +103,7 @@
                            <children>
                               <ImageView fitHeight="83.0" fitWidth="72.0" layoutX="46.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../images/question.png" />
+                                    <Image url="@../images/question.png" />
                                  </image>
                               </ImageView>
                               <Label layoutX="134.0" layoutY="14.0" prefHeight="55.0" prefWidth="139.0" text="Questions repository">
@@ -122,7 +122,7 @@
                            <children>
                               <ImageView fitHeight="83.0" fitWidth="96.0" layoutX="48.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../images/examInExecution.png" />
+                                    <Image url="@../images/examInExecution.png" />
                                  </image>
                               </ImageView>
                               <Label layoutX="141.0" layoutY="39.0" prefHeight="55.0" prefWidth="109.0" text="Exam execution">
@@ -141,7 +141,7 @@
                            <children>
                               <ImageView fitHeight="83.0" fitWidth="96.0" layoutX="56.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../images/report.png" />
+                                    <Image url="@../images/report.png" />
                                  </image>
                               </ImageView>
                               <Label layoutX="139.0" layoutY="40.0" prefHeight="55.0" prefWidth="109.0" text="reports">

@@ -13,7 +13,7 @@
    <children>
       <ImageView fitHeight="400.0" fitWidth="600.0" layoutX="-7.0" pickOnBounds="true">
          <image>
-            <Image url="@../../images/backgraond.png" />
+            <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
       <TableView fx:id="examsTable" layoutX="266.0" layoutY="123.0" prefHeight="248.0" prefWidth="315.0">
@@ -31,7 +31,7 @@
       </Label>
       <ImageView fitHeight="83.0" fitWidth="94.0" layoutX="32.0" layoutY="136.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../images/outExam.png" />
+            <Image url="@../images/outExam.png" />
          </image>
       </ImageView>
       <Label layoutX="122.0" layoutY="161.0" prefHeight="33.0" prefWidth="125.0" text="execute new exam">
@@ -42,7 +42,7 @@
       <Button fx:id="executeNewExamBtn" layoutX="27.0" layoutY="127.0" mnemonicParsing="false" onAction="#executeNewExamBtnAction" opacity="0.0" prefHeight="101.0" prefWidth="227.0" text="Button" />
       <ImageView fitHeight="83.0" fitWidth="83.0" layoutX="27.0" layoutY="251.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../images/grades.png" />
+            <Image url="@../images/grades.png" />
          </image>
       </ImageView>
       <Label layoutX="106.0" layoutY="259.0" prefHeight="33.0" prefWidth="138.0" text="view Grades waiting ">
