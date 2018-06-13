@@ -1,34 +1,64 @@
 package logic;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 public class StudentInExam implements Serializable{
 
 	private int grade;
-	private int actualdoration; //how long it takes to do the exam
 	private String examID;
-	private String studentID;
-	//private String date; //the date of the exam
+	private Timestamp date; //the date of the exam
+	private String course_name; //the name of the course
 	
-	public StudentInExam(String examID ,int grade ,  String studentID)
+	public StudentInExam(String examID ,int grade ,Timestamp date,String course_name )
 	{
 		this.grade=grade;
 		this.examID=examID;
-		//this.date=date;
-		this.studentID = studentID;
+		this.date=date;
+		this.course_name= course_name;
 	}
 	
-	public void SetGrade(int grade)
-	{
-		this.grade=grade;
+	public String getCourse_name() {
+		return course_name;
+	}
+
+
+	public void setCourse_name(String course_name) {
+		this.course_name = course_name;
+	}
+
+
+	public Timestamp getDate() {
+		return date;
+	}
+
+
+	public void setDate(Timestamp date) {
+		this.date = date;
 	}
 	
-	public int GetGrade()
-	{
-		return this.grade;
+
+	public int getGrade() {
+		return grade;
+	}
+
+
+
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
+
+
+
+	public String getExamID() {
+		return examID;
+	}
+
+	public void setExamID(String examID) {
+		this.examID = examID;
 	}
 	
-	public void Set_actualdoration(int actualdoration)
+	/*public void Set_actualdoration(int actualdoration)
 	{
 		this.actualdoration=actualdoration;
 	}
@@ -36,19 +66,11 @@ public class StudentInExam implements Serializable{
 	public int Get_actualdoration()
 	{
 		return this.actualdoration;
-	}
+	}*/
 	
-	public void Set_examID(String examID)
-	{
-		this.examID=examID;
-	}
+
 	
-	public String Get_examID()
-	{
-		return this.examID;
-	}
-	
-	public void Set_studentID(String studentID)
+	/*public void Set_studentID(String studentID)
 	{
 		this.studentID=studentID;
 	}
@@ -56,7 +78,7 @@ public class StudentInExam implements Serializable{
 	public String Get_studentID()
 	{
 		return this.studentID;
-	}
+	}*/
 	
 	/*public void Set_date(String date)
 	{

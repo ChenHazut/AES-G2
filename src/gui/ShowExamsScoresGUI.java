@@ -2,7 +2,10 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -34,13 +37,15 @@ public class ShowExamsScoresGUI implements Initializable {
 	//Button MainMenuButton; //THE BUTTON that go back to the main menu
 	
 	@FXML
-	private TableView gradeTable;
+	private TableView<StudentInExam> gradeTable;
 	@FXML
 	private TableColumn <StudentInExam,String> examID; 
-	//@FXML
-//	private TableColumn <StudentInExam,String> examDate;
 	@FXML
 	private TableColumn <StudentInExam,Integer> grade;
+	@FXML
+	private TableColumn <StudentInExam,Timestamp> dateCol;
+	@FXML
+	private TableColumn <StudentInExam,String> courseName;
 	
 	private User student; // to save the student that loged in info
 	
@@ -71,14 +76,14 @@ public class ShowExamsScoresGUI implements Initializable {
 	{
 		st=new StudentController();
 		examID.setCellValueFactory(new PropertyValueFactory<>("examID"));
-		//examDate.setCellValueFactory(new PropertyValueFactory<StudentInExam,String>("Exam Date"));
 		grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
-//		
+		dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
+		courseName.setCellValueFactory(new PropertyValueFactory<>("course_name"));
+		
 		arr=st.getAllgrades(); //save all the student grades in arr
-//		
+		
 		GradesList = FXCollections.observableArrayList();
-		if(arr!=null)
-			GradesList.addAll(arr);
+		GradesList.addAll(arr);
 		gradeTable.setItems(GradesList);
 	}
 

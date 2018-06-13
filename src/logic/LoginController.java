@@ -49,7 +49,7 @@ public class LoginController
 		msg.setSentObj(user);
 		client.accept(msg);
 		try {
-			Thread.sleep(1500L);
+			Thread.sleep(2500L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

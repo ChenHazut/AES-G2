@@ -147,33 +147,16 @@ public class EchoServer extends AbstractServer {
 			Statement stmt = (Statement) conn.createStatement();
 			User StudentToSearch=(User) msg.getSentObj();
 			ResultSet rs = stmt.executeQuery(
-					"SELECT sr.examID , sr.grade  "
-					+ "FROM studentresultinexam AS sr "
-					+ "WHERE sr.approved=1 AND sr.studentID="+StudentToSearch.getuID());
+					"SELECT sr.examID , sr.grade, sr.examDate , cs.courseName "
+					+ "FROM studentresultinexam AS sr , exam AS e , courseinsubject AS cs "
+					+ "WHERE sr.approved=1 AND sr.studentID="+StudentToSearch.getuID() 
+					+"AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID");
 			ArrayList<StudentInExam> tempArr=new ArrayList<StudentInExam>();//to save all the relevant exams grade of rhe student	
 			HashMap<String,Integer> map=new HashMap<String,Integer>();
 			while(rs.next())
 			{
-				StudentInExam sGrade = new StudentInExam(rs.getString("examID"),rs.getInt("grade"),StudentToSearch.getuID());
+				StudentInExam sGrade = new StudentInExam(rs.getString("examID"),rs.getInt("grade"),rs.getTimestamp("examDate"),rs.getString("courseName"));
 				tempArr.add(sGrade);
-				/*if(!map.containsKey(q.getQuestionID()))
-				{
-					q.setQuestionTxt(rs.getString(2));
-					q.setTeacherID(rs.getString(3));
-					q.setTeacherName(rs.getString(14));
-					q.setInstruction(rs.getString(4));
-					q.setCorrectAnswer(rs.getInt(5));
-					Statement stmt2 = (Statement) conn.createStatement();
-					ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AS AQ WHERE AQ.questionID="+q.getQuestionID());
-					String[] ans=new String[4];
-					for(int i=0;rs2.next();i++)
-						ans[i]=rs2.getString(3);
-					q.setAnswers(ans);
-					tempArr.add(q);
-					map.put(q.getQuestionID(), 1);
-					stmt2.close();
-					rs2.close();
-				}*/
 				
 			}
 			rs.close();

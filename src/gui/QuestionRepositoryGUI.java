@@ -100,8 +100,7 @@ public class QuestionRepositoryGUI implements Initializable
 	{
 		client= new ClientConsole();
 		m=new GUImanager();
-		tc=new TeacherController();
-				
+		tc=new TeacherController();		
 	}
 
 	@Override
