@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 
 import common.Message;
+import gui.ExamInExecutionRow;
 import gui.QuestionGUI;
 
 public class TeacherController 
@@ -221,6 +222,25 @@ public class TeacherController
 		ExamInExecution examInExec=new ExamInExecution();
 		examInExec=(ExamInExecution)msg.getReturnObj();
 		return examInExec;
+	}
+	
+	public ArrayList<StudentInExam> getExamnieesOfExam(ExamInExecution exam)
+	{
+		Message msg= new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("getExamnieesOfExam");
+		msg.setSentObj(exam);
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg=client.getMessage();
+		ArrayList<StudentInExam> sList=new ArrayList<StudentInExam>();
+		sList=(ArrayList<StudentInExam>)msg.getReturnObj();
+		return sList;
 	}
 
 }

@@ -5,7 +5,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.controlsfx.control.MaskerPane;
+import org.controlsfx.control.ToggleSwitch;
 import org.controlsfx.control.textfield.CustomTextField;
+
+import javafx.application.Application;
+import javafx.concurrent.Task;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.controlsfx.control.MaskerPane;
 
 import common.Message;
 import javafx.collections.FXCollections;
@@ -23,12 +34,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Course;
@@ -57,6 +70,9 @@ public class ExecuteNewExamGUI implements Initializable {
 
     @FXML
     private TableColumn<ExamInExecutionRow, Integer> durationCol;
+    
+    @FXML
+    private TableColumn<ExamInExecutionRow, RadioButton> selectExamCol;
 
     @FXML
     private ComboBox<String> subjectCombo;
@@ -106,6 +122,11 @@ public class ExecuteNewExamGUI implements Initializable {
     @FXML
     private CustomTextField examCodeTF;
     
+    @FXML
+    private ToggleSwitch isGroupToggle;
+    
+    @FXML
+    private TextArea infoMessage;
     
     TeacherController tc;
     
@@ -117,7 +138,8 @@ public class ExecuteNewExamGUI implements Initializable {
 
 	private ArrayList<Exam> examsList;
 	
-	final ToggleGroup group;
+	final ToggleGroup groupSearchOption;
+	final ToggleGroup groupExamSelection;
 	
 	private ObservableList<ExamInExecutionRow> examOL;
 	
@@ -132,7 +154,8 @@ public class ExecuteNewExamGUI implements Initializable {
 		super();
 		tc=new TeacherController();
 		client=new ClientConsole();
-		group=new ToggleGroup();
+		groupSearchOption=new ToggleGroup();
+		groupExamSelection=new ToggleGroup();
 		studentList=new ArrayList<User>();
 		examCodeFlag=false;
 		selectedStudentsList=new ArrayList<StudentInExam>();
@@ -162,16 +185,23 @@ public class ExecuteNewExamGUI implements Initializable {
     		e.setExamID(examsList.get(i).getExamID());
     		e.setCourseID(examsList.get(i).getCourse().getcID());
     		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
+    		RadioButton rb= new RadioButton();
+    		rb.setVisible(true);
+    		rb.setText(e.getExamID());
+    		e.setSelectExamRB(rb);
+    		e.getSelectExamRB().setToggleGroup(groupExamSelection);
+    		e.getSelectExamRB().setOnAction(ev-> selectExam());
     		examOL.add(e);
 		}
 		previewCol.setCellValueFactory(new PropertyValueFactory<>("preview"));
+		selectExamCol.setCellValueFactory(new PropertyValueFactory<>("selectExamRB"));
 		examIDCol.setCellValueFactory(new PropertyValueFactory<>("examID"));
 		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("authorTeacherName"));
 		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
 		table.setItems(examOL);
-		searchByCourseRadio.setToggleGroup(group);
-		searchByExamIDRadio.setToggleGroup(group);
+		searchByCourseRadio.setToggleGroup(groupSearchOption);
+		searchByExamIDRadio.setToggleGroup(groupSearchOption);
 		searchByExamIDRadio.setSelected(true);
 		students=FXCollections.observableArrayList();
 		studentList=new ArrayList<User>();
@@ -194,7 +224,7 @@ public class ExecuteNewExamGUI implements Initializable {
     void searchButtonAction(ActionEvent event) 
     {
     	
-        RadioButton button = (RadioButton) group.getSelectedToggle();
+        RadioButton button = (RadioButton) groupSearchOption.getSelectedToggle();
     
        	if(button.getText().equals("choose examID:"))
     	{
@@ -215,6 +245,12 @@ public class ExecuteNewExamGUI implements Initializable {
     	    		e.setExamID(examsList.get(i).getExamID());
     	    		e.setCourseID(examsList.get(i).getCourse().getcID());
     	    		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
+    	    		RadioButton rb= new RadioButton();
+    	    		rb.setVisible(true);
+    	    		rb.setText(e.getExamID());
+    	    		e.setSelectExamRB(rb);
+    	    		e.getSelectExamRB().setToggleGroup(groupExamSelection);
+    	    		e.getSelectExamRB().setOnAction(ev-> selectExam());
     	    		examOL.add(e);
     			}
     		}
@@ -238,6 +274,12 @@ public class ExecuteNewExamGUI implements Initializable {
     	    		e.setExamID(examsList.get(i).getExamID());
     	    		e.setCourseID(examsList.get(i).getCourse().getcID());
     	    		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
+    	    		RadioButton rb= new RadioButton();
+    	    		rb.setVisible(true);
+    	    		rb.setText(e.getExamID());
+    	    		e.setSelectExamRB(rb);
+    	    		e.getSelectExamRB().setToggleGroup(groupExamSelection);
+    	    		e.getSelectExamRB().setOnAction(ev-> selectExam());
     	    		examOL.add(e);
     			}
     		}
@@ -258,11 +300,14 @@ public class ExecuteNewExamGUI implements Initializable {
 		courseCombo.getItems().addAll(coursesL);
     }
     
-    public void confirmBtnAction(ActionEvent event) throws IOException
+    public void confirmBtnAction(ActionEvent event) throws IOException 
     {
+    	
     	ExamInExecution e=new ExamInExecution();
     	ExamInExecutionRow ex=new ExamInExecutionRow();
-    	ex=table.getSelectionModel().getSelectedItem();
+    	ex=chosenExam;
+    	if(chosenExam==null)
+    		return;
     	e.setExecTeacher(tc.getTeacher());
     	e.setLocked(false);
     	e.setCourseID(ex.getCourseID());
@@ -271,41 +316,62 @@ public class ExecuteNewExamGUI implements Initializable {
     	e.getExamDet().setExamID(ex.getExamID());
     	e.getExamDet().setCourseName(ex.getCourseName());
     	e.getExamDet().setTeacherName(ex.getAuthorTeacherName());
+    	e.setIsGroup(isGroupToggle.isSelected());
     	if(examCodeFlag)
     		e.setExamCode(examCodeTF.getText());
     	else return;
-    	for(UserRow u:students)
+    	if(isGroupToggle.isSelected())
     	{
-    		if(u.getCheck().isSelected())
-    		{
-    			StudentInExam s=new StudentInExam();
-    			s.setStudentID(u.getUserID());
-    			s.setStudentName(u.getUserName());
-    			selectedStudentsList.add(s);
-    		}
+    		for(UserRow u:students)
+        	{
+        		if(u.getCheck().isSelected())
+        		{
+        			StudentInExam s=new StudentInExam();
+        			s.setStudentID(u.getUserID());
+        			s.setStudentName(u.getUserName());
+        			selectedStudentsList.add(s);
+        		}
+        	}
+        	e.setStudents(selectedStudentsList);
     	}
-    	e.setStudents(selectedStudentsList);
     	e=tc.executeNewExam(e);
-    	Stage stage = (Stage) confirmBtn.getScene().getWindow();
-		ExamInExecutionMenuGUI eInExecMenu=new ExamInExecutionMenuGUI();
-		eInExecMenu.start(stage);
+    	FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("examInExecutionMenu.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        ExamInExecutionMenuGUI examInExecMenu=loader.getController();
+        examInExecMenu.initData();
+        Stage window = (Stage)confirmBtn.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
+		System.out.println("just checking");
     }
     
     public void cancleBtnAction(ActionEvent event) throws IOException
     {
-    	Stage stage = (Stage) cancleBtn.getScene().getWindow();
-		ExamInExecutionMenuGUI eInExecMenu=new ExamInExecutionMenuGUI();
-		eInExecMenu.start(stage);
+    	
+    	FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("examInExecutionMenu.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        ExamInExecutionMenuGUI examInExecMenu=loader.getController();
+        examInExecMenu.initData();
+        Stage window = (Stage)cancleBtn.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
     }
     
-    @FXML
-    public void selectExamBtnAction(ActionEvent event)
+    public void selectExam()
     {
-    	chosenExam=table.getSelectionModel().getSelectedItem();
+    	RadioButton r=new RadioButton();
+    	r=(RadioButton) groupExamSelection.getSelectedToggle();
+    	for(ExamInExecutionRow examInExec:examOL)
+    	{
+    		if(examInExec.getExamID().equals(r.getText()))
+    			chosenExam=examInExec;
+    	}
     	table.getItems().removeAll(students);
     	students.clear();
-    	if(chosenExam==null)
-    		return;
     	studentList=tc.getAllStudentsInCourse(chosenExam.getSubjectID(),chosenExam.getCourseID());
     	for(int i=0;i<studentList.size();i++)
     	{
@@ -322,7 +388,7 @@ public class ExecuteNewExamGUI implements Initializable {
     {
     	System.out.println("text is:"+examCodeTF.getText());
     	char[] c;
-    	if(examCodeTF.getText().length()<4)
+    	if(examCodeTF.getText().length()<4||examCodeTF.getText().length()>4)
     	{
     		examCodeTF.setLeft(warningImage);
     		examCodeFlag=false;
@@ -341,9 +407,29 @@ public class ExecuteNewExamGUI implements Initializable {
     	examCodeTF.setLeft(okImage);
     	examCodeFlag=true;
     	System.out.println("everything gonna be alright");
-    	
+    }
+    
+    public void isGroupToggeleAction()
+    {
+    	if(isGroupToggle.isSelected())
+    	{
+    		studentTable.setVisible(true);
+    	}
+    	else studentTable.setVisible(false);
     }
 
+    @FXML
+    public void infoEntered(MouseEvent event) 
+    {
+    	infoMessage.setVisible(true);
+    }
+
+    @FXML
+    public void infoExit(MouseEvent event) 
+    {
+    	infoMessage.setVisible(false);
+    }
+    
 	public void start(Stage stage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("ExecuteNewExam.fxml"));
 		Scene Scene = new Scene(root);
@@ -352,6 +438,7 @@ public class ExecuteNewExamGUI implements Initializable {
 		stage.show();
 		
 	}
+	
 	
 
 }

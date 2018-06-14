@@ -6,11 +6,14 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.MaskerPane?>
+<?import org.controlsfx.control.ToggleSwitch?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ExecuteNewExamGUI">
@@ -47,12 +50,13 @@
       </Label>
       <RadioButton fx:id="searchByExamIDRadio" layoutX="289.0" layoutY="102.0" mnemonicParsing="false" text="choose examID:" />
       <RadioButton fx:id="searchByCourseRadio" layoutX="28.0" layoutY="102.0" mnemonicParsing="false" text="choose subject and course:" />
-      <TableView fx:id="table" layoutX="21.0" layoutY="208.0" prefHeight="142.0" prefWidth="497.0">
+      <TableView fx:id="table" fixedCellSize="30.0" layoutX="21.0" layoutY="208.0" prefHeight="142.0" prefWidth="570.0">
          <columns>
-            <TableColumn fx:id="previewCol" prefWidth="66.66662979125977" text="preview" />
-            <TableColumn fx:id="examIDCol" prefWidth="72.00003814697266" text="examID" />
-            <TableColumn fx:id="teacherNameCol" prefWidth="97.99998474121094" text="teacherName" />
-            <TableColumn fx:id="cNameCol" prefWidth="182.0" text="courseName" />
+            <TableColumn fx:id="selectExamCol" prefWidth="21.999971389770508" />
+            <TableColumn fx:id="previewCol" prefWidth="51.99996566772461" text="preview" />
+            <TableColumn fx:id="examIDCol" prefWidth="67.33332061767578" text="examID" />
+            <TableColumn fx:id="teacherNameCol" prefWidth="92.66667175292969" text="teacherName" />
+            <TableColumn fx:id="cNameCol" prefWidth="262.6666564941406" text="courseName" />
             <TableColumn fx:id="durationCol" prefWidth="76.00003051757812" text="duration" />
          </columns>
       </TableView>
@@ -90,10 +94,17 @@
          </font>
       </Label>
       <Button fx:id="cancleBtn" layoutX="401.0" layoutY="533.0" mnemonicParsing="false" onAction="#cancleBtnAction" opacity="0.0" prefHeight="61.0" prefWidth="77.0" text="Button" />
-      <Button fx:id="selectExamBtn" layoutX="521.0" layoutY="263.0" mnemonicParsing="false" onAction="#selectExamBtnAction" prefHeight="25.0" prefWidth="77.0" text="select exam">
+      <ToggleSwitch fx:id="isGroupToggle" layoutX="397.0" layoutY="360.0" onMouseClicked="#isGroupToggeleAction" selected="true" text="is group? " textFill="#331ada">
          <font>
-            <Font size="11.0" />
+            <Font name="System Bold" size="12.0" />
          </font>
-      </Button>
+      </ToggleSwitch>
+      <MaskerPane fx:id="masker" layoutX="9.0" layoutY="98.0" prefHeight="467.0" prefWidth="586.0" visible="false" />
+      <ImageView fitHeight="25.0" fitWidth="28.0" layoutX="11.0" layoutY="357.0" onMouseEntered="#infoEntered" onMouseExited="#infoExit" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/info.png" />
+         </image>
+      </ImageView>
+      <TextArea fx:id="infoMessage" layoutX="14.0" layoutY="313.0" opacity="0.7" prefHeight="53.0" prefWidth="141.0" style="-fx-background-color: #ADD8E6; -fx-control-inner-background: #ADD8E6;" text="please enter 4 letters&#10;or digits" visible="false" />
    </children>
 </AnchorPane>

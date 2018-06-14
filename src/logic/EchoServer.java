@@ -127,7 +127,11 @@ public class EchoServer extends AbstractServer {
 			getStudentsInCourse(msg,client,conn);
 		else if(msg.getqueryToDo().equals("executeNewExam"))
 			executeNewExam(msg,client,conn);
+		else if(msg.getqueryToDo().equals("getExamnieesOfExam"))
+			getExamnieesOfExam(msg,client,conn);
 	}
+	
+
 	
 
 	//********************************************************************************************
@@ -369,7 +373,6 @@ public class EchoServer extends AbstractServer {
 			
 			rs.close();
 			stmt.close();
-			System.out.println("00000000");
 		} 
 			catch (SQLException e) 
 		{
@@ -406,7 +409,6 @@ public class EchoServer extends AbstractServer {
 				rs2.updateString(3, q.getAnswers()[i]);
 				rs2.insertRow();
 			}
-			System.out.println("***"+q.getCourseList().size());
 			addToQuestionCourseTable(q,conn);
 			rs2.close();
 			rs.close();
@@ -429,7 +431,6 @@ public class EchoServer extends AbstractServer {
 		ArrayList<Course> courseList=new ArrayList<Course>();	
 		//ArrayList<String> subjectFlag=new ArrayList<String>();
 		ArrayList<Subject> subjectList=new ArrayList<Subject>();
-		System.out.println("here :)");
 		while(rs.next())
 		{
 			
@@ -518,19 +519,19 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 		
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch=(User) msg.getSentObj();
-		String s="SELECT EE.examID,EE.executionID,C.courseName, C.courseID, C.subjectID FROM examinexecution AS EE,exam AS E,courseInSubject AS C WHERE EE.locked=0 AND EE.executingTeacherID="+teacherToSearch.getuID()+" AND E.examID=EE.examID AND C.courseID=E.courseID AND C.subjectID=E.subjectID";
+		String s="SELECT EE.examID,EE.executionID,C.courseName, C.courseID, C.subjectID, EE.isGroup FROM examinexecution AS EE,exam AS E,courseInSubject AS C WHERE EE.locked=0 AND EE.executingTeacherID="+teacherToSearch.getuID()+" AND E.examID=EE.examID AND C.courseID=E.courseID AND C.subjectID=E.subjectID";
 		ResultSet rs = stmt.executeQuery(s);
 		ArrayList<ExamInExecution> tempArr=new ArrayList<ExamInExecution>();	
 		while(rs.next())
 		{
 			ExamInExecution ein=new ExamInExecution();
-			System.out.println(rs.getString(1));
-			ein.getExamDet().setExamID("010101");
+			ein.getExamDet().setExamID(rs.getString(1));
 			System.out.println("har far i'll go");
 			ein.setExecutionID(rs.getInt(2));
 			ein.setCourseName(rs.getString(3));
 			ein.setCourseID(rs.getString(4));
 			ein.setSubjectID(rs.getString(5));
+			ein.setIsGroup(rs.getInt(6)==1?true:false);
 //			Statement stmt2 = (Statement) conn.createStatement();
 //			ResultSet rs2 = stmt.executeQuery("SELECT * FROM exam AS E WHERE examID="+ein.getExamDet().getExamID());
 //			ein.getExamDet().setDuration(rs2.getInt(6));
@@ -671,7 +672,6 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 			rs.updateString(1, exam.getExamDet().getExamID());
 			rs.updateInt(2, exam.getExecutionID());
 			rs.updateString(3, exam.getStudents().get(i).getStudentID());
-			rs.updateInt(4,exam.isGroup()?1:0);
 			rs.insertRow();
 		}
 		rs = stmt.executeQuery("SELECT * FROM exam WHERE examID="+exam.getExamDet().getExamID());
@@ -685,6 +685,29 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 		rs.close();
 		msg.setReturnObj(exam);
 		client.sendToClient(msg);
+	}
+	
+	private void getExamnieesOfExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
+	{
+		Statement stmt = (Statement) conn.createStatement();
+		ExamInExecution exam=(ExamInExecution) msg.getSentObj();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM examnieegroup as E, user AS U WHERE E.examID="+exam.getExamDet().getExamID()+" AND E.executionID="+exam.getExecutionID()+" AND U.userID=E.studentID");
+		ArrayList<StudentInExam> sList=new ArrayList<StudentInExam>();	
+		while(rs.next())
+		{
+			
+			StudentInExam student=new StudentInExam();
+			student.setExamID(exam.getExamDet().getExamID());
+			student.setExecutionID(rs.getInt(2));
+			student.setStudentID(rs.getString(3));
+			student.setStudentName(rs.getString(6));
+			student.setStudentStatus(rs.getString(4));
+			sList.add(student);
+		}
+		rs.close();
+		msg.setReturnObj(sList);
+		client.sendToClient(msg);
+		
 	}
 
 	

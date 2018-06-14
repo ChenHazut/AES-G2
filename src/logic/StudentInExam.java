@@ -8,8 +8,10 @@ public class StudentInExam implements Serializable{
 	private String studentName;
 	private int grade;
 	private String examID;
+	private int executionID;
 	private Timestamp date; //the date of the exam
 	private String course_name; //the name of the course
+	private String studentStatus;
 	
 	
 	
@@ -79,6 +81,22 @@ public class StudentInExam implements Serializable{
 
 	public void setStudentName(String studentName) {
 		this.studentName = studentName;
+	}
+
+	public String getStudentStatus() {
+		return studentStatus;
+	}
+
+	public void setStudentStatus(String studentStatus) {
+		this.studentStatus = studentStatus;
+	}
+
+	public int getExecutionID() {
+		return executionID;
+	}
+
+	public void setExecutionID(int executionID) {
+		this.executionID = executionID;
 	}
 	
 	

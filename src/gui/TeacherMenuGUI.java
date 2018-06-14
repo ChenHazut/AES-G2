@@ -49,9 +49,15 @@ public class TeacherMenuGUI implements Initializable
 	
 	public void testInExecutionButtonAction(ActionEvent ae) throws IOException
 	{
-		ExamInExecutionMenuGUI eInExecutionMg=new ExamInExecutionMenuGUI();
-		Stage primaryStage=new Stage();
-		eInExecutionMg.start(primaryStage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("examInExecutionMenu.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        ExamInExecutionMenuGUI examInExecMenu=loader.getController();
+        examInExecMenu.initData();
+        Stage window = new Stage();
+        window.setScene(scene);
+        window.show();
 	}
 	
 	public void reportButtonAction(ActionEvent ae) throws Exception
@@ -65,7 +71,7 @@ public class TeacherMenuGUI implements Initializable
 	{
 		lc=new LoginController();
 		lc.logoutUser();
-		Stage stage=(Stage) logoutButton.getScene().getWindow();
+		Stage stage=new Stage();
 		LoginGUI lg = new LoginGUI();   //run login window
 		lg.start(stage);
 	}

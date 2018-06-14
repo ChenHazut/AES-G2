@@ -16,7 +16,7 @@
             <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
-      <TableView fx:id="examsTable" layoutX="266.0" layoutY="123.0" prefHeight="248.0" prefWidth="315.0">
+      <TableView fx:id="examsTable" layoutX="266.0" layoutY="123.0" onMouseClicked="#chooseExamInExecution" prefHeight="248.0" prefWidth="315.0">
         <columns>
             <TableColumn fx:id="imageCol" prefWidth="52.00006103515625" />
           <TableColumn fx:id="examIDCol" prefWidth="61.99993896484375" text="examID" />

@@ -1,10 +1,14 @@
 package gui;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.image.ImageView;
+import logic.Exam;
+import logic.ExamInExecution;
 
 public class ExamInExecutionRow 
 {
+	ExamInExecution exam;
 	String examID;
 	String courseName;
 	String courseID;
@@ -13,8 +17,31 @@ public class ExamInExecutionRow
 	String executeTeacherName;
 	String authorTeacherName;
 	int duration;
+	RadioButton selectExamRB;
 	private ImageView preview;
 	
+	
+	
+	public ExamInExecutionRow(ExamInExecution exam,ImageView iv) {
+		super();
+		this.exam=exam;
+		this.examID = exam.getExamDet().getExamID();
+		this.courseName=exam.getCourseName();
+	//	this.courseID=exam.getCourseID();
+	//	this.subjectID=exam.getSubjectID();
+		this.executionID=exam.getExecutionID();
+//		this.executeTeacherName=exam.getExecTeacher().getuName();
+//		this.authorTeacherName=exam.getExamDet().getTeacherName();
+//		this.duration=exam.getExamDet().getDuration();
+//		this.selectExamRB=rb;
+		this.preview=iv;
+		
+	}
+	
+	public ExamInExecutionRow() {
+
+		
+	}
 	public String getExamID() {
 		return examID;
 	}
@@ -69,6 +96,16 @@ public class ExamInExecutionRow
 	}
 	public String getSubjectID() {
 		return subjectID;
+	}
+	public RadioButton getSelectExamRB() {
+		return selectExamRB;
+	}
+	public void setSelectExamRB(RadioButton selectExamRB) {
+		this.selectExamRB = selectExamRB;
+	}
+
+	public ExamInExecution getExam() {
+		return exam;
 	}
 	
 	
