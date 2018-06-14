@@ -37,8 +37,7 @@ public class StudentMenuGUI implements Initializable
 		PerformanceExamsGUI PG=new PerformanceExamsGUI(); //CREATE THE NEXT WINDOW GUI
 		Stage primaryStage=new Stage();
 		PG.start(primaryStage); //RUN THE NEW WINDOW GUI
-		//Stage stage = (Stage) PerformanceTestsButton.getScene().getWindow(); //close studentmenu window
-		//stage.close();
+		
 	}
 	
 	public void ShowExamsScoresAction() throws Exception 

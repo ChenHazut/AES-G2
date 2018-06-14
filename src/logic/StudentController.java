@@ -10,8 +10,6 @@ public class StudentController {
 	User student; //the user is student type
 	LoginController lc; //save all the login parameters
 	ClientConsole client;
-	ArrayList<Course> courses; /////////
-	ArrayList<Subject> subjects; ////////////
 	
 	public StudentController() //constructor
 	{
@@ -42,5 +40,25 @@ public class StudentController {
 		System.out.println("***************");
 		return arrOfGrades;
 		
+	}
+	
+	
+	public ArrayList<Exam> getAllPerExams() {
+		Message msg=new Message();
+		msg.setSentObj(student);
+		msg.setqueryToDo("getAllPerformExamsRelevantToStudent");
+		msg.setClassType("Student");
+		
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg=client.getMessage();
+		ArrayList<Exam> arrOfExams=new ArrayList<Exam>();
+		arrOfExams=(ArrayList<Exam>)msg.getReturnObj();
+		return arrOfExams;
 	}
 }

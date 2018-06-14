@@ -78,7 +78,7 @@ public class ShowExamsScoresGUI implements Initializable {
 		examID.setCellValueFactory(new PropertyValueFactory<>("examID"));
 		grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
 		dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
-		courseName.setCellValueFactory(new PropertyValueFactory<>("course_name"));
+		courseName.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		
 		arr=st.getAllgrades(); //save all the student grades in arr
 		

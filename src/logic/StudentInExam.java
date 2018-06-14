@@ -8,23 +8,23 @@ public class StudentInExam implements Serializable{
 	private int grade;
 	private String examID;
 	private Timestamp date; //the date of the exam
-	private String course_name; //the name of the course
+	private String courseName; //the name of the course
 	
 	public StudentInExam(String examID ,int grade ,Timestamp date,String course_name )
 	{
 		this.grade=grade;
 		this.examID=examID;
 		this.date=date;
-		this.course_name= course_name;
+		this.courseName= course_name;
 	}
 	
 	public String getCourse_name() {
-		return course_name;
+		return courseName;
 	}
 
 
 	public void setCourse_name(String course_name) {
-		this.course_name = course_name;
+		this.courseName = course_name;
 	}
 
 
@@ -58,37 +58,7 @@ public class StudentInExam implements Serializable{
 		this.examID = examID;
 	}
 	
-	/*public void Set_actualdoration(int actualdoration)
-	{
-		this.actualdoration=actualdoration;
-	}
 	
-	public int Get_actualdoration()
-	{
-		return this.actualdoration;
-	}*/
-	
-
-	
-	/*public void Set_studentID(String studentID)
-	{
-		this.studentID=studentID;
-	}
-	
-	public String Get_studentID()
-	{
-		return this.studentID;
-	}*/
-	
-	/*public void Set_date(String date)
-	{
-		this.date=date;
-	}
-	
-	public String Get_date()
-	{
-		return this.date;
-	}*/
 	
 	
 }

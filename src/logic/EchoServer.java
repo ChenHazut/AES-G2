@@ -140,6 +140,12 @@ public class EchoServer extends AbstractServer {
 					GetGradeByStudentDB(msg, client, conn);
 				}
 			
+			if (msg.getqueryToDo().equals("getAllPerformExamsRelevantToStudent") ) //send to client the details 												// e.g to logIn
+			{
+				System.out.println("looking for performing exam");
+				getExamsByStudent(msg, client, conn);
+			}
+			
 		}
 
 		private void GetGradeByStudentDB(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
@@ -164,6 +170,67 @@ public class EchoServer extends AbstractServer {
 			msg.setReturnObj(tempArr);
 			client.sendToClient(msg);
 		}
+		
+		////////////////////////////////////////////////////////////////////////////////
+		/////////this func return all the performance exam on the relevent student
+		///////////////////////////////////////////////////////////////////////////////
+		private void getExamsByStudent(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
+			
+			Statement stmt = (Statement) conn.createStatement();
+			User StudentToSearch=(User) msg.getSentObj();
+			String s="SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , c.courseName , TC.teacherID , S.subjectName , U.userName"
+					+ "FROM exam AS E, examnieegroup AS EG,courseInSubject AS C , teacherincourse AS TC , subject AS S , user AS U"
+					+ "WHERE EG.examID=e.examID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND TC.subjectID=E.subjectID AND TC.courseID=E.courseID AND TC.teacherID=U.userID AND E.subjectID=S.subjectID "
+					+ "AND EG.studentID="+StudentToSearch.getuID(); 
+			ResultSet rs = stmt.executeQuery(s);  //sent the sql as stinrg
+			ArrayList<Exam> tempArr=new ArrayList<Exam>();	
+			
+			while(rs.next())
+			{
+				Exam e=new Exam();
+				e.setExamID(rs.getString(1));
+				e.setCourse(new Course(rs.getString(8),rs.getString(9),rs.getString(10),(new Subject(rs.getString(7),rs.getString(11)))));
+				e.setWasUsed(rs.getInt(3)==1);  //CHANGE THE STATUS OF THE EXAM
+				e.setInstructionForTeacher(rs.getString(4));
+				e.setInstructionForStudent(rs.getString(5));
+				e.setDuration(rs.getInt(6));
+				e.setTeacherID(rs.getString(2));
+				e.setTeacherName(rs.getString(12));
+				tempArr.add(e); //add all the exam to the arr
+			}
+			
+			for(int i=0;i<tempArr.size();i++)
+			{
+				rs = stmt.executeQuery("SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="+tempArr.get(i).getExamID());
+				HashMap<Question,Integer> map=new HashMap<Question,Integer>();
+				while(rs.next())
+				{
+					Question q=new Question();
+					q.setQuestionID(rs.getString(2));
+					q.setQuestionTxt(rs.getString(5));
+					String[] ans=new String[4];
+					Statement stmt2 = (Statement) conn.createStatement();
+					ResultSet rs2 = stmt2.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID="+q.getQuestionID());
+					for(int j=0;rs2.next();j++)
+					{
+						ans[j]=rs2.getString(3);
+					}
+					rs2.close();
+					stmt2.close();
+					q.setAnswers(ans);
+					q.setTeacherID(rs.getString(6));
+					q.setTeacherName(rs.getString(11));
+					q.setCorrectAnswer(rs.getInt(8));
+					q.setInstruction(rs.getString(7));
+					map.put(q, rs.getInt(3));
+				}
+			}
+			rs.close();
+			stmt.close();
+			msg.setReturnObj(tempArr);
+			client.sendToClient(msg);
+		}
+		
 	//********************************************************************************************
 	//get data or change data in DB methods
 	//********************************************************************************************

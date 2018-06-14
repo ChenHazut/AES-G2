@@ -2,9 +2,11 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,8 +18,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import logic.Exam;
 import logic.LoginController;
 import logic.Question;
+import logic.StudentController;
 import logic.User;
 
 public class PerformanceExamsGUI implements Initializable{
@@ -26,16 +30,19 @@ public class PerformanceExamsGUI implements Initializable{
 	Button ManuallyButton; //THE BUTTON TO DO TEST ManuallyButton
 	@FXML
 	Button ComputerizedButton;//THE BUTTON TO DO TEST ComputerizedButton
-	//@FXML
-	//Button MainMenuButton; //THE BUTTON that go back to the main menu
 	@FXML
 	private TableView table;// THE TABLE THAT SHOW THE EXAMS THAT THE STUDENT CAN DO
 	@FXML
-	private TableColumn <Question,String> ExamNumber;
+	private TableColumn <Exam,String> examIDCol;
 	@FXML
-	private TableColumn <Question,String> CourseName;
+	private TableColumn <Exam,String> cNameCol;
 	@FXML
-	private TableColumn <Question,String> TeacherName;
+	private TableColumn <Exam,String> teacherNameCol;
+	@FXML
+	private TableColumn <Exam,String> durationCol;
+	private ArrayList<Exam> arr;
+	ObservableList<Exam> examList ;
+	StudentController st;
 	
 	private User student; // to save the student that loged in info
 	
@@ -52,26 +59,18 @@ public class PerformanceExamsGUI implements Initializable{
 		//nqg.start(stage);
 	}
 	
-	/*public void MainMenuButtonAction() throws Exception //open back the main menu
-	{
-		Stage primaryStage=new Stage();
-		StudentMenuGUI tmg= new StudentMenuGUI(); //to open the student menu
-		tmg.start(primaryStage);
-		Stage stage = (Stage) MainMenuButton.getScene().getWindow(); //close studentmenu window
-		stage.close();
-	}*/
-	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
-		
-		ExamNumber.setCellValueFactory(new PropertyValueFactory<>("ExamNumber"));
-		CourseName.setCellValueFactory(new PropertyValueFactory<>("CourseName"));
-		TeacherName.setCellValueFactory(new PropertyValueFactory<>("TeacherName"));
-	//	arr=tc.getAllQuestions();
-	//	questionList = FXCollections.observableArrayList();
-	//	questionList.addAll(arr);
-	//	table.setItems(questionList);
+		examIDCol.setCellValueFactory(new PropertyValueFactory<>("ExamID"));
+		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
+		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+		arr=st.getAllPerExams();
+		System.out.println("size of exam array: "+arr.size());
+		examList = FXCollections.observableArrayList();
+		examList.addAll(arr);
+		table.setItems(examList);
 	}
 
 	public void start(Stage primaryStage) throws IOException
