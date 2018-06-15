@@ -54,6 +54,11 @@ public class Course implements Serializable
 	public void setTeacherID(String teacherID) {
 		this.teacherID = teacherID;
 	}
+
+	@Override
+	public String toString() {
+		return cName;
+	}
 	
 	
 }

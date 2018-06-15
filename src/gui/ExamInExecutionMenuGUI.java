@@ -42,6 +42,21 @@ public class ExamInExecutionMenuGUI implements Initializable {
 
     @FXML
     private TableColumn<ExamInExecutionRow, String> courseNameCol;
+    
+    @FXML
+    private TableView<ExamInExecutionRow> examsTableLocked;
+    
+    @FXML
+    private TableColumn<ExamInExecutionRow, ImageView> imageColLocked;
+    
+    @FXML
+    private TableColumn<ExamInExecutionRow, String> examIDColLocked;
+
+    @FXML
+    private TableColumn<ExamInExecutionRow, String> executionIDColLocked;
+
+    @FXML
+    private TableColumn<ExamInExecutionRow, String> courseNameColLocked;
 
     @FXML
     private Button executeNewExamBtn;
@@ -112,6 +127,21 @@ public class ExamInExecutionMenuGUI implements Initializable {
 		for(i=0;i<arr.size();i++)
     	{
     		ImageView im=new ImageView(new Image("/images/preview.png"));
+    		im.setVisible(true);
+			im.setFitHeight(30);
+			im.setFitWidth(30);
+    		ExamInExecutionRow e=new ExamInExecutionRow(arr.get(i),im);
+    		examArr.add(e);
+    	}
+		examsTableLocked.setItems(examArr);
+		examIDColLocked.setCellValueFactory(new PropertyValueFactory<>("examID"));
+		executionIDColLocked.setCellValueFactory(new PropertyValueFactory<>("executionID") );
+		courseNameColLocked.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+		imageColLocked.setCellValueFactory(new PropertyValueFactory<>("preview"));
+
+		for(i=0;i<arr.size();i++)
+    	{
+    		ImageView im=new ImageView(new Image("/images/padlock.png"));
     		im.setVisible(true);
 			im.setFitHeight(30);
 			im.setFitWidth(30);

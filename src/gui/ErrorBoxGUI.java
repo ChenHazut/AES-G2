@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ErrorBoxGUI implements Initializable
@@ -20,41 +21,44 @@ public class ErrorBoxGUI implements Initializable
 	@FXML
 	Button cancleButton;
 	@FXML
-	Label errorMsgL;
+	Text text;
 	
-	Boolean isOK;
+	private Boolean result;
 	String errorMsg;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) 
 	{
-		errorMsgL.setText(errorMsg);
-	}
-	
-	public void start (String msg,Stage primaryStage) throws Exception
-	{
-		errorMsg=msg;
-		Parent root = FXMLLoader.load(getClass().getResource("errorBox.fxml"));
-		Scene Scene = new Scene(root);
-		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		primaryStage.setScene(Scene);
-		
-		primaryStage.show(); 
 		
 	}
 	
 	public void okButtonAction(ActionEvent ae)
 	{
-		isOK=true;
-		Stage stage = (Stage) okButton.getScene().getWindow();
-		stage.close();
+		result=true;
+		Stage s=(Stage) okButton.getScene().getWindow();
+		System.out.println("ok is pressed");
+		s.close();
 	}
 	
 	public void cancleButtonAction(ActionEvent ae)
 	{
-		isOK=false;
-		Stage stage = (Stage) cancleButton.getScene().getWindow();
-		stage.close();
+		result=false;
+		Stage s=(Stage) cancleButton.getScene().getWindow();
+		System.out.println("cancle is pressed");
+		s.close();
 	}
+
+
+
+	public void initData(String stringMsg) {
+		text.setText(stringMsg);
+		
+	}
+
+	public Boolean getResult() {
+		return result;
+	}
+	
+	
 
 }

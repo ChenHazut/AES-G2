@@ -87,9 +87,20 @@ public class ExamInExecutionPreviewGUI implements Initializable{
     }
 
     @FXML
-    void lockExamBtnAction(ActionEvent event) 
+    void lockExamBtnAction(ActionEvent event) throws IOException 
     {
-
+    	FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("errorBox.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        ErrorBoxGUI errorBox=loader.getController();
+        errorBox.initData("Are you sure you want to lock the exam?\nin case the Exam is locked all student that didn't submit Won't be able to submit.\nTo continue press OK");
+        Boolean result= errorBox.getResult();
+//        if(result)
+//        	tc.lockExam();
+        Stage window = new Stage();
+        window.setScene(scene);
+        window.show();
     }
 
     @FXML
@@ -106,7 +117,7 @@ public class ExamInExecutionPreviewGUI implements Initializable{
 		this.exam=selectedItem;
 		examIDLabel.setText(exam.getExamID());
 		courseNameLabel.setText(exam.getCourseName());
-		isGroupLabel.setText(exam.getExam().isGroup()?"All":"Group");
+		isGroupLabel.setText(exam.getExam().isGroup()?"Group":"All");
 		sIDCol.setCellValueFactory(new PropertyValueFactory<>("studentID"));
     	sNameCol.setCellValueFactory(new PropertyValueFactory<>("studentName"));
     	isSubmittedCol.setCellValueFactory(new PropertyValueFactory<>("studentStatus"));

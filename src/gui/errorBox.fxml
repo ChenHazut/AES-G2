@@ -2,12 +2,41 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="400.0" style="-fx-background-color: #fff5ee;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ErrorBoxGUI">
+
+<AnchorPane prefHeight="200.0" prefWidth="400.0" style="-fx-background-color: #ADD8E6;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ErrorBoxGUI">
    <children>
-      <Label fx:id="errorMsgL" layoutX="16.0" layoutY="24.0" prefHeight="54.0" prefWidth="369.0" text="Label" />
-      <Button fx:id="cancleButton" layoutX="107.0" layoutY="100.0" mnemonicParsing="false" onAction="#cancleButtonAction" text="Cancle" />
-      <Button fx:id="okButton" layoutX="212.0" layoutY="100.0" mnemonicParsing="false" onAction="#okButtonAction" prefHeight="25.0" prefWidth="51.0" text="OK" />
+      <Text fx:id="text" layoutX="21.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="358.1367645263672">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="57.0" fitWidth="73.0" layoutX="231.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/confirm.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="57.0" fitWidth="73.0" layoutX="86.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/cancle.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="88.0" layoutY="165.0" prefHeight="27.0" prefWidth="64.0" text="cancle">
+         <font>
+            <Font name="System Bold Italic" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="246.0" layoutY="168.0" prefHeight="27.0" prefWidth="37.0" text="ok">
+         <font>
+            <Font name="System Bold Italic" size="16.0" />
+         </font>
+      </Label>
+      <Button fx:id="okButton" layoutX="221.0" layoutY="114.0" mnemonicParsing="false" onAction="#okButtonAction" opacity="0.0" prefHeight="79.0" prefWidth="77.0" text="OK" />
+      <Button fx:id="cancleButton" layoutX="76.0" layoutY="109.0" mnemonicParsing="false" onAction="#cancleButtonAction" opacity="0.0" prefHeight="79.0" prefWidth="77.0" text="Cancle" />
    </children>
-</Pane>
+</AnchorPane>

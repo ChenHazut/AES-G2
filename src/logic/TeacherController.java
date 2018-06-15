@@ -243,4 +243,20 @@ public class TeacherController
 		return sList;
 	}
 
+	public void lockExam(ExamInExecution exam) 
+	{
+		Message msg= new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("lockExam");
+		msg.setSentObj(exam);
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 }

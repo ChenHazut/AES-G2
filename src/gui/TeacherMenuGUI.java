@@ -71,7 +71,7 @@ public class TeacherMenuGUI implements Initializable
 	{
 		lc=new LoginController();
 		lc.logoutUser();
-		Stage stage=new Stage();
+		Stage stage=(Stage) logoutButton.getScene().getWindow();
 		LoginGUI lg = new LoginGUI();   //run login window
 		lg.start(stage);
 	}

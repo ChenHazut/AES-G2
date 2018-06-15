@@ -129,9 +129,9 @@ public class EchoServer extends AbstractServer {
 			executeNewExam(msg,client,conn);
 		else if(msg.getqueryToDo().equals("getExamnieesOfExam"))
 			getExamnieesOfExam(msg,client,conn);
+		else if(msg.getqueryToDo().equals("lockExam"))
+			lockExam(msg,client,conn);
 	}
-	
-
 	
 
 	//********************************************************************************************
@@ -660,7 +660,7 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 		rs.updateString(1, exam.getExamDet().getExamID());
 		rs.updateString(3, exam.getExamCode());
 		rs.updateString(4, exam.getExecTeacher().getuID());
-		rs.updateInt(5, 0);
+		rs.updateInt(5, exam.isGroup()?1:0);
 		rs.insertRow();
 		rs = stmt.executeQuery("SELECT * FROM examInExecution AS E WHERE E.examID="+exam.getExamDet().getExamID());
 		rs.last();
@@ -707,7 +707,16 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 		rs.close();
 		msg.setReturnObj(sList);
 		client.sendToClient(msg);
-		
+	}
+	
+
+	private void lockExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException 
+	{
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+		ExamInExecution exam=(ExamInExecution) msg.getSentObj();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM examInExecution as EE WHERE EE.examID="+exam.getExamDet().getExamID());
+		rs.updateInt(5, 1);
+		rs.close();
 	}
 
 	
