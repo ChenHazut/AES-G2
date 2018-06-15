@@ -18,14 +18,21 @@ public class StudentInExam implements Serializable{
 		this.courseName= course_name;
 	}
 	
-	public String getCourse_name() {
+
+
+
+	public String getCourseName() {
 		return courseName;
 	}
 
 
-	public void setCourse_name(String course_name) {
-		this.courseName = course_name;
+
+
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
 	}
+
+
 
 
 	public Timestamp getDate() {

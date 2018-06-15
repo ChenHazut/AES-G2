@@ -62,6 +62,7 @@ public class PerformanceExamsGUI implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
+		st = new StudentController();
 		examIDCol.setCellValueFactory(new PropertyValueFactory<>("ExamID"));
 		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
@@ -75,7 +76,7 @@ public class PerformanceExamsGUI implements Initializable{
 
 	public void start(Stage primaryStage) throws IOException
 	{
-		Parent root = FXMLLoader.load(getClass().getResource("PerformanceExamsStudent.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("StudentExamToPerform.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);

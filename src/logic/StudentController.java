@@ -51,7 +51,7 @@ public class StudentController {
 		
 		client.accept(msg);
 		try {
-			Thread.sleep(2000L);
+			Thread.sleep(3000L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

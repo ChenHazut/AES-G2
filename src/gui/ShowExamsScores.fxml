@@ -19,11 +19,6 @@
             <Image url="@../../../../../Desktop/פרויקט%20חן/AES-G2/images/backgraond.png" />
          </image>
       </ImageView>
-      <Button fx:id="ShowExamButton" defaultButton="true" layoutX="434.0" layoutY="115.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" opacity="0.0" prefHeight="64.0" prefWidth="127.0" text="Show Exam" textFill="#3e2d2d">
-         <font>
-            <Font name="FrankRuehl" size="15.0" />
-         </font>
-      </Button>
       <Label layoutX="190.0" layoutY="6.0" prefHeight="46.0" prefWidth="252.0" text="Student's Grades" textFill="#1348bd">
          <font>
             <Font name="System Bold Italic" size="28.0" />
@@ -58,6 +53,11 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
+      <Button fx:id="ShowExamButton" defaultButton="true" layoutX="434.0" layoutY="115.0" mnemonicParsing="false" onMouseClicked="#ShowExamButtonAction" opacity="0.0" prefHeight="64.0" prefWidth="127.0" text="Show Exam" textFill="#3e2d2d">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
    </children>
    <effect>
       <Glow />

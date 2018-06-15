@@ -156,7 +156,7 @@ public class EchoServer extends AbstractServer {
 					"SELECT sr.examID , sr.grade, sr.examDate , cs.courseName "
 					+ "FROM studentresultinexam AS sr , exam AS e , courseinsubject AS cs "
 					+ "WHERE sr.approved=1 AND sr.studentID="+StudentToSearch.getuID() 
-					+"AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID");
+					+" AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID");
 			ArrayList<StudentInExam> tempArr=new ArrayList<StudentInExam>();//to save all the relevant exams grade of rhe student	
 			HashMap<String,Integer> map=new HashMap<String,Integer>();
 			while(rs.next())
@@ -178,10 +178,17 @@ public class EchoServer extends AbstractServer {
 			
 			Statement stmt = (Statement) conn.createStatement();
 			User StudentToSearch=(User) msg.getSentObj();
-			String s="SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , c.courseName , TC.teacherID , S.subjectName , U.userName"
-					+ "FROM exam AS E, examnieegroup AS EG,courseInSubject AS C , teacherincourse AS TC , subject AS S , user AS U"
-					+ "WHERE EG.examID=e.examID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND TC.subjectID=E.subjectID AND TC.courseID=E.courseID AND TC.teacherID=U.userID AND E.subjectID=S.subjectID "
-					+ "AND EG.studentID="+StudentToSearch.getuID(); 
+			String s= " SELECT  E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName  , EE.executingTeacherID"
+					+ " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U" 
+					+ " WHERE EE.examID=E.examID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND SC.studentID="+StudentToSearch.getuID() + " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID AND E.courseID=C.courseID AND E.subjectID=S.subjectID AND EE.locked=0"
+							+ " union "
+							+ " SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName , EE.executingTeacherID "
+		                    + " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U " 
+							+ " WHERE EE.examID=E.examID AND EE.locked=0 AND EE.executingTeacherID=U.userID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND E.subjectID=C.subjectID AND E.courseID=C.courseID AND E.subjectID=S.subjectID AND SC.studentID=22222 AND EE.isGroup=1 AND EG.examID=EE.examID AND EG.executionId=EE.executionID AND EG.studentID="+StudentToSearch.getuID();   
+		                       
+		                    
+			/////////////////////////////////////////////////////////////////////////
+	
 			ResultSet rs = stmt.executeQuery(s);  //sent the sql as stinrg
 			ArrayList<Exam> tempArr=new ArrayList<Exam>();	
 			
@@ -189,17 +196,17 @@ public class EchoServer extends AbstractServer {
 			{
 				Exam e=new Exam();
 				e.setExamID(rs.getString(1));
-				e.setCourse(new Course(rs.getString(8),rs.getString(9),rs.getString(10),(new Subject(rs.getString(7),rs.getString(11)))));
+				e.setCourse(new Course(rs.getString(8),rs.getString(9),rs.getString(12),(new Subject(rs.getString(7),rs.getString(10)))));
 				e.setWasUsed(rs.getInt(3)==1);  //CHANGE THE STATUS OF THE EXAM
 				e.setInstructionForTeacher(rs.getString(4));
 				e.setInstructionForStudent(rs.getString(5));
 				e.setDuration(rs.getInt(6));
-				e.setTeacherID(rs.getString(2));
-				e.setTeacherName(rs.getString(12));
+				e.setTeacherID(rs.getString(2));    //SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
+				e.setTeacherName(rs.getString(11)); //SAVE THE TEACHER THAT WROTE THE EXAM
 				tempArr.add(e); //add all the exam to the arr
 			}
 			
-			for(int i=0;i<tempArr.size();i++)
+			/*for(int i=0;i<tempArr.size();i++)
 			{
 				rs = stmt.executeQuery("SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="+tempArr.get(i).getExamID());
 				HashMap<Question,Integer> map=new HashMap<Question,Integer>();
@@ -224,7 +231,7 @@ public class EchoServer extends AbstractServer {
 					q.setInstruction(rs.getString(7));
 					map.put(q, rs.getInt(3));
 				}
-			}
+			}*/
 			rs.close();
 			stmt.close();
 			msg.setReturnObj(tempArr);

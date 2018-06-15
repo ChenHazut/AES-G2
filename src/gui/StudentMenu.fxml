@@ -62,11 +62,6 @@
                      <center>
                         <AnchorPane prefHeight="106.0" prefWidth="400.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button fx:id="ExamScoresButton" layoutX="103.0" layoutY="99.0" mnemonicParsing="false" onMouseClicked="#ShowExamsScoresAction" opacity="0.0" prefHeight="55.0" prefWidth="221.0" text="Show Grades">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Button>
                               <ImageView fitHeight="55.0" fitWidth="64.0" layoutX="99.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/examInExecution.png" />
@@ -77,11 +72,6 @@
                                     <Font name="System Bold Italic" size="15.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="PerformanceTestsButton" layoutX="90.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#PerformanceTestsButtonAction" opacity="0.0" prefHeight="62.0" prefWidth="200.0" text="Performance Exams">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Button>
                               <ImageView fitHeight="55.0" fitWidth="55.0" layoutX="99.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/grades.png" />
@@ -92,6 +82,16 @@
                                     <Font name="System Bold Italic" size="15.0" />
                                  </font>
                               </Label>
+                              <Button fx:id="PerformanceTestsButton" layoutX="90.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#PerformanceTestsButtonAction" opacity="0.0" prefHeight="62.0" prefWidth="200.0" text="Performance Exams">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="ExamScoresButton" layoutX="103.0" layoutY="99.0" mnemonicParsing="false" onMouseClicked="#ShowExamsScoresAction" opacity="0.0" prefHeight="55.0" prefWidth="221.0" text="Show Grades">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Button>
                            </children>
                         </AnchorPane>
                      </center>
