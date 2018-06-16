@@ -146,8 +146,43 @@ public class EchoServer extends AbstractServer {
 				getExamsByStudent(msg, client, conn);
 			}
 			
+			if(msg.getqueryToDo().equals("getTheExamForStudentToShow"))
+			{
+				System.out.println("create the approve exam to show");
+				getExamsToShowByStudent(msg, client, conn);
+			}
+			
 		}
 
+		private void getExamsToShowByStudent(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
+		{
+			Statement stmt = (Statement) conn.createStatement();
+			StudentInExam StudentToSearch=(StudentInExam) msg.getSentObj();
+			ResultSet rs = stmt.executeQuery(
+					" SELECT  * "  
+					+ " FROM examinexecution as EE, exam AS E , user AS U, studentresultinexam AS SR , examnieegroup AS EG " 
+					+ " WHERE SR.approved=1 AND SR.studentID="+StudentToSearch.getStudentID() + " AND SR.grade="+StudentToSearch.getGrade() + " AND SR.examID="+StudentToSearch.getExamID() + " AND SR.executionID=EE.executionID AND EE.examID="+StudentToSearch.getExamID() + " AND E.examID="+StudentToSearch.getExamID() + " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID " 
+					+ " union "  
+					+ " SELECT  *"  
+					+ " FROM examinexecution as EE, exam AS E , user AS U, studentresultinexam AS SR , examnieegroup AS EG "  
+					+ " WHERE SR.approved=1 AND SR.studentID="+StudentToSearch.getStudentID() + " AND SR.grade="+StudentToSearch.getGrade() + " AND SR.examID="+StudentToSearch.getExamID() + " AND SR.executionID=EE.executionID AND EE.examID="+StudentToSearch.getExamID() + " AND E.examID="+StudentToSearch.getExamID() + " AND EE.isGroup=1 AND EG.examID="+StudentToSearch.getExamID() + " AND EG.executionId=SR.executionID AND EG.studentID="+StudentToSearch.getStudentID() + " AND EE.executingTeacherID=U.userID ");
+			///////////////////////////////////////////// NOT FINISHED
+			ArrayList<StudentInExam> tempArr=new ArrayList<StudentInExam>();//to save all the relevant exams grade of rhe student	
+			HashMap<String,Integer> map=new HashMap<String,Integer>();
+			while(rs.next())
+			{
+				StudentInExam sGrade = new StudentInExam(rs.getString("examID"),rs.getInt("grade"),rs.getTimestamp("examDate"),rs.getString("courseName"));
+				tempArr.add(sGrade);
+				
+			}
+			rs.close();
+			stmt.close();
+			msg.setReturnObj(tempArr);
+			client.sendToClient(msg);
+		}
+		
+		
+		
 		private void GetGradeByStudentDB(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
 		{
 			Statement stmt = (Statement) conn.createStatement();
@@ -161,7 +196,7 @@ public class EchoServer extends AbstractServer {
 			HashMap<String,Integer> map=new HashMap<String,Integer>();
 			while(rs.next())
 			{
-				StudentInExam sGrade = new StudentInExam(rs.getString("examID"),rs.getInt("grade"),rs.getTimestamp("examDate"),rs.getString("courseName"));
+				StudentInExam sGrade = new StudentInExam(rs.getString("examID"),rs.getInt("grade"),rs.getTimestamp("examDate"),rs.getString("courseName"),StudentToSearch.getuID());
 				tempArr.add(sGrade);
 				
 			}
@@ -186,9 +221,6 @@ public class EchoServer extends AbstractServer {
 		                    + " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U " 
 							+ " WHERE EE.examID=E.examID AND EE.locked=0 AND EE.executingTeacherID=U.userID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND E.subjectID=C.subjectID AND E.courseID=C.courseID AND E.subjectID=S.subjectID AND SC.studentID="+StudentToSearch.getuID() + " AND EE.isGroup=1 AND EG.examID=EE.examID AND EG.executionId=EE.executionID AND EG.studentID="+StudentToSearch.getuID();   
 		                       
-		                    
-			/////////////////////////////////////////////////////////////////////////
-	
 			ResultSet rs = stmt.executeQuery(s);  //sent the sql as stinrg
 			ArrayList<ExamInExecution> tempArr=new ArrayList<ExamInExecution>();	
 			
@@ -209,17 +241,7 @@ public class EchoServer extends AbstractServer {
 				ee.setExecutionID(rs.getInt(13));
 				ee.setLocked(rs.getBoolean(14));
 				//finish to create the exam
-				//no need
-				///to get the teacher user details
-				//////Statement stmt2 = (Statement) conn.createStatement();
-				//////ResultSet rs2 = stmt2.executeQuery( " SELECT * FROM user AS U WHERE U.userID =12345"); 
-				////finish to get the user details
-				
-				/////ee.setExecTeacher(new User(rs2.getString(1),rs2.getString(4)));
-				/////rs2.close();
-				/////stmt2.close();
-				/////no need
-				
+
 				ee.setCourseName(rs.getString(9));
 				ee.setCourseID(rs.getString(8));
 				ee.setSubjectID(rs.getString(7));

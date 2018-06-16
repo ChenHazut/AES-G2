@@ -9,13 +9,29 @@ public class StudentInExam implements Serializable{
 	private String examID;
 	private Timestamp date; //the date of the exam
 	private String courseName; //the name of the course
+	private String studentID;
 	
-	public StudentInExam(String examID ,int grade ,Timestamp date,String course_name )
+	public String getStudentID() {
+		return studentID;
+	}
+
+
+
+
+	public void setStudentID(String studentID) {
+		this.studentID = studentID;
+	}
+
+
+
+
+	public StudentInExam(String examID ,int grade ,Timestamp date,String course_name, String studentID )
 	{
 		this.grade=grade;
 		this.examID=examID;
 		this.date=date;
 		this.courseName= course_name;
+		this.studentID=studentID;
 	}
 	
 
