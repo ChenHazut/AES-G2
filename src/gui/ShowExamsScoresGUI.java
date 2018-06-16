@@ -23,6 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import logic.ExamInExecution;
 import logic.LoginController;
 import logic.Question;
 import logic.StudentController;
@@ -57,19 +58,20 @@ public class ShowExamsScoresGUI implements Initializable {
 	
 	public void ShowExamButtonAction() throws Exception
 	{
-		//need to show the student the checked exam
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("ExamFormForStudent.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		ExamFormForStudentGUI ExamForStudent = loader.getController();
+		
+		ExamInExecution exam = st.getExamForStudent(gradeTable.getSelectionModel().getSelectedItem());
+		
+		ExamForStudent.initData(exam);
+		Stage stage = (Stage) gradeTable.getScene().getWindow();
+		stage.setScene(scene);
+		stage.show();
 		
 	}
-	
-	/*public void MainMenuButtonAction() throws Exception //open back the main menu
-	{
-		Stage primaryStage=new Stage();
-		StudentMenuGUI tmg= new StudentMenuGUI(); //to open the student menu
-		tmg.start(primaryStage);
-		Stage stage = (Stage) MainMenuButton.getScene().getWindow(); //close window
-		stage.close();
-	}*/
-	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 

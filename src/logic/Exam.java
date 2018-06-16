@@ -39,6 +39,14 @@ public class Exam implements Serializable
 	public void setQuestions(HashMap<Question, Integer> questions) {
 		this.questions = questions;
 	}
+	public ArrayList<Question> getQuestionsArrayList() {
+		if (questions==null) return null;
+		ArrayList<Question> questionsArr = new ArrayList<Question>();
+		for(Map.Entry<Question, Integer> entry: questions.entrySet()) {
+			questionsArr.add(entry.getKey());
+		}
+		return questionsArr;
+	}
 	public String getTeacherID() {
 		return teacherID;
 	}
