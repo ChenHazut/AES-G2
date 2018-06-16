@@ -78,7 +78,7 @@ public class NewQuestionGUI implements Initializable
 
 	Question q;
 	ClientConsole client;
-	GUImanager m;
+	//GUImanager m;
 	User teacher;
 	TeacherController tc;
 	ObservableList<String> coursesL;
@@ -86,7 +86,7 @@ public class NewQuestionGUI implements Initializable
 	public NewQuestionGUI() 
 	{
 		client=new ClientConsole();
-		m=new GUImanager();
+		//m=new GUImanager();
 		tc= new TeacherController();
 		teacher=tc.getTeacher();
 	}
@@ -201,20 +201,38 @@ public class NewQuestionGUI implements Initializable
 		updatedQuestion.setQuestionID(s.getSubjectID());
 		q=tc.createNewQuestion(updatedQuestion);
 		
-		m.setUpdatedQuestion(q);
-		Stage stage = (Stage) saveButton.getScene().getWindow();
-		m.setSelectedQuestion(null);
-		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		qrg.start(stage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("QuestionRepository.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        QuestionRepositoryGUI qrg=loader.getController();
+        qrg.initData();
+        Stage window = (Stage) cancleButton.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
+		//m.setUpdatedQuestion(q);
+//		Stage stage = (Stage) saveButton.getScene().getWindow();
+//		//m.setSelectedQuestion(null);
+//		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+//		qrg.start(stage);
 	}
 
 	public void cancleButtonAction(ActionEvent ae) throws Exception
 	{
 		System.out.println("cancle has been pressed");
-		Stage stage = (Stage) cancleButton.getScene().getWindow();
-		m.setSelectedQuestion(null);
-		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		qrg.start(stage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("QuestionRepository.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        QuestionRepositoryGUI qrg=loader.getController();
+        qrg.initData();
+        Stage window = (Stage) cancleButton.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
+//		Stage stage = (Stage) cancleButton.getScene().getWindow();
+//		//m.setSelectedQuestion(null);
+//		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+//		qrg.start(stage);
 	}
 	
 	
@@ -234,6 +252,11 @@ public class NewQuestionGUI implements Initializable
 				coursesL.add(tc.getCourses().get(i).getcName());
 		courseCombo.getItems().addAll(coursesL);
 				
+	}
+
+	public void initData() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

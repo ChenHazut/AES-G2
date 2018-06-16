@@ -153,7 +153,6 @@ public class ExecuteNewExamGUI implements Initializable {
     public ExecuteNewExamGUI() {
 		super();
 		tc=new TeacherController();
-		client=new ClientConsole();
 		groupSearchOption=new ToggleGroup();
 		groupExamSelection=new ToggleGroup();
 		studentList=new ArrayList<User>();
@@ -164,58 +163,6 @@ public class ExecuteNewExamGUI implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1)
 	{
-		
-    	tc.getTeacherCourse();
-		for(int i=0;i<tc.getSubjects().size();i++)
-			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
-		coursesL=FXCollections.observableArrayList();
-		examOL=FXCollections.observableArrayList();
-		examsList=tc.getAllExams();
-		for(int i=0;i<examsList.size();i++)
-		{
-			ExamInExecutionRow e=new ExamInExecutionRow();
-			ImageView im=new ImageView(new Image("/images/preview.png"));
-    		im.setVisible(true);
-			im.setFitHeight(30);
-			im.setFitWidth(30);
-    		e.setPreview(im);
-    		e.setAuthorTeacherName(examsList.get(i).getTeacherName());
-    		e.setDuration(examsList.get(i).getDuration());
-    		e.setCourseName(examsList.get(i).getCourseName());
-    		e.setExamID(examsList.get(i).getExamID());
-    		e.setCourseID(examsList.get(i).getCourse().getcID());
-    		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
-    		RadioButton rb= new RadioButton();
-    		rb.setVisible(true);
-    		rb.setText(e.getExamID());
-    		e.setSelectExamRB(rb);
-    		e.getSelectExamRB().setToggleGroup(groupExamSelection);
-    		e.getSelectExamRB().setOnAction(ev-> selectExam());
-    		examOL.add(e);
-		}
-		previewCol.setCellValueFactory(new PropertyValueFactory<>("preview"));
-		selectExamCol.setCellValueFactory(new PropertyValueFactory<>("selectExamRB"));
-		examIDCol.setCellValueFactory(new PropertyValueFactory<>("examID"));
-		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("authorTeacherName"));
-		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
-		table.setItems(examOL);
-		searchByCourseRadio.setToggleGroup(groupSearchOption);
-		searchByExamIDRadio.setToggleGroup(groupSearchOption);
-		searchByExamIDRadio.setSelected(true);
-		students=FXCollections.observableArrayList();
-		studentList=new ArrayList<User>();
-		checkboxCol.setCellValueFactory(new PropertyValueFactory<>("check"));
-		sIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
-		sNameCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
-		warningImage=new ImageView("/images/warning.png");
-		warningImage.setFitHeight(20);
-		warningImage.setFitWidth(20);
-		okImage=new ImageView("/images/ok.png");
-		okImage.setFitHeight(20);
-		okImage.setFitWidth(20);
-		examCodeTF.setLeft(warningImage);
-		
 		
 	}
 
@@ -430,12 +377,59 @@ public class ExecuteNewExamGUI implements Initializable {
     	infoMessage.setVisible(false);
     }
     
-	public void start(Stage stage) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("ExecuteNewExam.fxml"));
-		Scene Scene = new Scene(root);
-		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		stage.setScene(Scene);
-		stage.show();
+
+
+	public void initData() {
+		tc.getTeacherCourse();
+		for(int i=0;i<tc.getSubjects().size();i++)
+			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
+		coursesL=FXCollections.observableArrayList();
+		examOL=FXCollections.observableArrayList();
+		examsList=tc.getAllExams();
+		for(int i=0;i<examsList.size();i++)
+		{
+			ExamInExecutionRow e=new ExamInExecutionRow();
+			ImageView im=new ImageView(new Image("/images/preview.png"));
+    		im.setVisible(true);
+			im.setFitHeight(30);
+			im.setFitWidth(30);
+    		e.setPreview(im);
+    		e.setAuthorTeacherName(examsList.get(i).getTeacherName());
+    		e.setDuration(examsList.get(i).getDuration());
+    		e.setCourseName(examsList.get(i).getCourseName());
+    		e.setExamID(examsList.get(i).getExamID());
+    		e.setCourseID(examsList.get(i).getCourse().getcID());
+    		e.setSubjectID(examsList.get(i).getCourse().getSubject().getSubjectID());
+    		RadioButton rb= new RadioButton();
+    		rb.setVisible(true);
+    		rb.setText(e.getExamID());
+    		e.setSelectExamRB(rb);
+    		e.getSelectExamRB().setToggleGroup(groupExamSelection);
+    		e.getSelectExamRB().setOnAction(ev-> selectExam());
+    		examOL.add(e);
+		}
+		previewCol.setCellValueFactory(new PropertyValueFactory<>("preview"));
+		selectExamCol.setCellValueFactory(new PropertyValueFactory<>("selectExamRB"));
+		examIDCol.setCellValueFactory(new PropertyValueFactory<>("examID"));
+		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("authorTeacherName"));
+		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
+		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+		table.setItems(examOL);
+		searchByCourseRadio.setToggleGroup(groupSearchOption);
+		searchByExamIDRadio.setToggleGroup(groupSearchOption);
+		searchByExamIDRadio.setSelected(true);
+		students=FXCollections.observableArrayList();
+		studentList=new ArrayList<User>();
+		checkboxCol.setCellValueFactory(new PropertyValueFactory<>("check"));
+		sIDCol.setCellValueFactory(new PropertyValueFactory<>("userID"));
+		sNameCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
+		warningImage=new ImageView("/images/warning.png");
+		warningImage.setFitHeight(20);
+		warningImage.setFitWidth(20);
+		okImage=new ImageView("/images/ok.png");
+		okImage.setFitHeight(20);
+		okImage.setFitWidth(20);
+		examCodeTF.setLeft(warningImage);
 		
 	}
 	

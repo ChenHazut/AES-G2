@@ -9,9 +9,13 @@ import java.util.ArrayList;
 
 import client.*;
 import common.*;
+import gui.ExamInExecutionMenuGUI;
 import gui.LoginGUI;
 import gui.QuestionRepositoryGUI;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
@@ -121,6 +125,7 @@ public class ClientConsole extends Application implements ChatIF
 	{
 		lg = new LoginGUI();   //run login window
 		lg.start(arg0);
+
 	}
 
 

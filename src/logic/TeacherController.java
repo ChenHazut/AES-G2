@@ -259,4 +259,23 @@ public class TeacherController
 		
 	}
 
+
+	public ArrayList<ExamInExecution> getLockedExamsForTeacher() {
+		Message msg= new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("getAllLockedExamsInExecutionRelevantToTeacher");
+		msg.setSentObj(teacher);
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg=client.getMessage();
+		ArrayList<ExamInExecution> arrOfExams=new ArrayList<ExamInExecution>();
+		arrOfExams=(ArrayList<ExamInExecution>)msg.getReturnObj();
+		return arrOfExams;
+	}
+
 }

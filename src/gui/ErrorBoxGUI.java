@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ErrorBoxGUI implements Initializable
@@ -50,12 +51,18 @@ public class ErrorBoxGUI implements Initializable
 
 
 
-	public void initData(String stringMsg) {
+	public Boolean initData(String stringMsg,Stage window) {
+	
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.show();
 		text.setText(stringMsg);
+		
+		return result;
 		
 	}
 
 	public Boolean getResult() {
+	
 		return result;
 	}
 	

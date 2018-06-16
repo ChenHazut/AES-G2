@@ -35,16 +35,21 @@ public class TeacherMenuGUI implements Initializable
 	
 	public void questionRepositoryButtonAction(ActionEvent ae) throws Exception
 	{
-		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("QuestionRepository.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        QuestionRepositoryGUI qrg=loader.getController();
+        qrg.initData();
+        Stage window = new Stage();
+        window.setScene(scene);
+        window.show();
+
 	}
 	
 	public void testRepositoryButtonAction(ActionEvent ae) throws Exception
 	{
-		ExamRepositoryGUI erg=new ExamRepositoryGUI();
-		Stage primaryStage=new Stage();
-		erg.start(primaryStage);
+
 	}
 	
 	public void testInExecutionButtonAction(ActionEvent ae) throws IOException
@@ -62,9 +67,15 @@ public class TeacherMenuGUI implements Initializable
 	
 	public void reportButtonAction(ActionEvent ae) throws Exception
 	{
-		ReportMenuGUI rmg=new ReportMenuGUI();
-		Stage primaryStage=new Stage();
-		rmg.start(primaryStage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("reportMenu.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        ReportMenuGUI reportMenu=loader.getController();
+        reportMenu.initData();
+        Stage window = new Stage();
+        window.setScene(scene);
+        window.show();
 	}
 	
 	public void logoutButtonAction(ActionEvent ae) throws IOException
@@ -74,30 +85,25 @@ public class TeacherMenuGUI implements Initializable
 		Stage stage=(Stage) logoutButton.getScene().getWindow();
 		LoginGUI lg = new LoginGUI();   //run login window
 		lg.start(stage);
+
 	}
 	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
-		LoginController lc=new LoginController();
-		this.teacher=lc.getUser();
-		helloMsgLabel.setText("Hello "+teacher.getuName()+",");
+		//Stage stage=(Stage) testRepositoryButton.getScene().getWindow();
+
 		
 	}
 
-	public void start(Stage primaryStage) throws IOException
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("teacherMenu.fxml"));
-		Scene Scene = new Scene(root);
-		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		primaryStage.setScene(Scene);
-		primaryStage.show();
-		lc=new LoginController();
-		primaryStage.setOnCloseRequest(event ->{
-			lc.logoutUser();
-			System.out.println("exit AES Application");
-			System.exit(0);	
-		});
+
+	public void initData() {
+
+		LoginController lc=new LoginController();
+		this.teacher=lc.getUser();
+		helloMsgLabel.setText("Hello "+teacher.getuName()+",");
+
+		
 	}
 }

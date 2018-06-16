@@ -131,6 +131,8 @@ public class EchoServer extends AbstractServer {
 			getExamnieesOfExam(msg,client,conn);
 		else if(msg.getqueryToDo().equals("lockExam"))
 			lockExam(msg,client,conn);
+		else if(msg.getqueryToDo().equals("getAllLockedExamsInExecutionRelevantToTeacher"))
+			getLockedExamsInExecutionByTeacher(msg,client,conn);
 	}
 	
 
@@ -660,7 +662,8 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 		rs.updateString(1, exam.getExamDet().getExamID());
 		rs.updateString(3, exam.getExamCode());
 		rs.updateString(4, exam.getExecTeacher().getuID());
-		rs.updateInt(5, exam.isGroup()?1:0);
+		rs.updateInt(5, exam.isLocked()?1:0);
+		rs.updateInt(11, exam.isGroup()?1:0);
 		rs.insertRow();
 		rs = stmt.executeQuery("SELECT * FROM examInExecution AS E WHERE E.examID="+exam.getExamDet().getExamID());
 		rs.last();
@@ -712,11 +715,42 @@ private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client
 
 	private void lockExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException 
 	{
+
 		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
 		ExamInExecution exam=(ExamInExecution) msg.getSentObj();
+		System.out.println("examID= "+exam.getExamDet().getExamID());
 		ResultSet rs = stmt.executeQuery("SELECT * FROM examInExecution as EE WHERE EE.examID="+exam.getExamDet().getExamID());
+		rs.last();
 		rs.updateInt(5, 1);
+		rs.updateRow();
 		rs.close();
+	}
+	
+private void getLockedExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
+		
+		Statement stmt = (Statement) conn.createStatement();
+		User teacherToSearch=(User) msg.getSentObj();
+		String s="SELECT EE.examID,EE.executionID,C.courseName, C.courseID, C.subjectID, EE.isGroup FROM examinexecution AS EE,exam AS E,courseInSubject AS C WHERE EE.locked=1 AND EE.executingTeacherID="+teacherToSearch.getuID()+" AND E.examID=EE.examID AND C.courseID=E.courseID AND C.subjectID=E.subjectID";
+		ResultSet rs = stmt.executeQuery(s);
+		ArrayList<ExamInExecution> tempArr=new ArrayList<ExamInExecution>();	
+		while(rs.next())
+		{
+			ExamInExecution ein=new ExamInExecution();
+			ein.getExamDet().setExamID(rs.getString(1));
+			System.out.println("har far i'll go");
+			ein.setExecutionID(rs.getInt(2));
+			ein.setCourseName(rs.getString(3));
+			ein.setCourseID(rs.getString(4));
+			ein.setSubjectID(rs.getString(5));
+			ein.setIsGroup(rs.getInt(6)==1?true:false);
+			tempArr.add(ein);
+		}
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+		
+		
 	}
 
 	

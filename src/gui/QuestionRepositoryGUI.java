@@ -60,24 +60,24 @@ public class QuestionRepositoryGUI implements Initializable
 	//private Main main;
 	ObservableList<QuestionGUI> questionList ;
 	ClientConsole client;
-	GUImanager m;
+	//GUImanager m;
 	TeacherController tc;
 	
-	public void start(Stage primaryStage) throws Exception
-	{
-		Parent root = FXMLLoader.load(getClass().getResource("QuestionRepository.fxml"));
-		Scene Scene = new Scene(root);
-		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		primaryStage.setScene(Scene);
-		primaryStage.show(); 
-	}
+
 	
 	public void insertButtonAction(ActionEvent ae) throws IOException
 	{
 		System.out.println("question is added");
-		Stage stage = (Stage) insert.getScene().getWindow();
-		NewQuestionGUI nqg=new NewQuestionGUI();
-		nqg.start(stage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("NewQuestion.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        NewQuestionGUI nqg=loader.getController();
+        nqg.initData();
+        Stage window = (Stage) insert.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
+
 	}
 	
 	public void deleteQuestionButtonAction(ActionEvent ae)
@@ -102,7 +102,7 @@ public class QuestionRepositoryGUI implements Initializable
 		QuestionGUI q=(QuestionGUI) table.getSelectionModel().getSelectedItem();
 		if(q==null)
 			return;
-		Stage stage = (Stage) editQuestionButton.getScene().getWindow();
+
 		Question qToEdit=new Question();
 		qToEdit.setQuestionID(q.getQuestionID());
 		for(int i=0;i<arr.size();i++)
@@ -117,9 +117,15 @@ public class QuestionRepositoryGUI implements Initializable
 				qToEdit.setTeacherName(arr.get(i).getTeacherName());
 				break;
 			}
-		m.selectedQuestion=qToEdit;
-		qdg = new QuestionDetailsGUI();
-		qdg.start(stage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("editQuestion.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        QuestionDetailsGUI qdg=loader.getController();
+        qdg.initData(qToEdit);
+        Stage window = (Stage) editQuestionButton.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
 		System.out.println("question is changed");
 		
 		
@@ -128,7 +134,7 @@ public class QuestionRepositoryGUI implements Initializable
 	public QuestionRepositoryGUI()
 	{
 		client= new ClientConsole();
-		m=new GUImanager();
+
 		tc=new TeacherController();
 				
 	}
@@ -136,6 +142,10 @@ public class QuestionRepositoryGUI implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
+	}
+
+	public void initData() {
+
 		arr=tc.getAllQuestions();
 		questionList = FXCollections.observableArrayList();
 		
@@ -153,5 +163,6 @@ public class QuestionRepositoryGUI implements Initializable
 		QuestionTxt.setCellValueFactory(new PropertyValueFactory<QuestionGUI,String>("questionTxt"));
 		labelCol.setCellValueFactory(new PropertyValueFactory<QuestionGUI,ImageView>("image"));
 		table.setItems(questionList);
+		
 	}
 }

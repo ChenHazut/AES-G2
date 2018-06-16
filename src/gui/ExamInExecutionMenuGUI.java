@@ -67,14 +67,17 @@ public class ExamInExecutionMenuGUI implements Initializable {
     private TeacherController tc;
     
     private ObservableList<ExamInExecutionRow> examArr;
-    
+    private ObservableList<ExamInExecutionRow> LockedExamArr; 
     private ArrayList<ExamInExecution>arr;
+    private ArrayList<ExamInExecution>arrLocked;
     
     public ExamInExecutionMenuGUI()
     {
     	tc=new TeacherController();
     	examArr= FXCollections.observableArrayList();
+    	LockedExamArr= FXCollections.observableArrayList();
     	arr=tc.getAllExamsInExecutionForTeacher();
+    	arrLocked=tc.getLockedExamsForTeacher();
     	
     	
     }
@@ -86,16 +89,33 @@ public class ExamInExecutionMenuGUI implements Initializable {
 	}
     
     @FXML
-    public void chooseExamInExecution(MouseEvent me) throws IOException
+    public void chooseExamInExecutionL(MouseEvent me) throws IOException
     {
-    	if(me.getClickCount()==2)
+    	if(me.getClickCount()==2&&examsTableLocked.getSelectionModel().getSelectedItem()!=null)
     	{
     		FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("examInExecutionPreview.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             ExamInExecutionPreviewGUI examInExecMenu=loader.getController();
-            examInExecMenu.initData(examsTable.getSelectionModel().getSelectedItem());
+            examInExecMenu.initData(examsTableLocked.getSelectionModel().getSelectedItem(),"locked");
+            Stage window = (Stage)examsTableLocked.getScene().getWindow();
+            window.setScene(scene);
+            window.show();
+    	}
+    }
+    
+    @FXML
+    public void chooseExamInExecution(MouseEvent me) throws IOException
+    {
+    	if(me.getClickCount()==2&&examsTable.getSelectionModel().getSelectedItem()!=null)
+    	{
+    		FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("examInExecutionPreview.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            ExamInExecutionPreviewGUI examInExecMenu=loader.getController();
+            examInExecMenu.initData(examsTable.getSelectionModel().getSelectedItem(),"open");
             Stage window = (Stage)examsTable.getScene().getWindow();
             window.setScene(scene);
             window.show();
@@ -112,9 +132,15 @@ public class ExamInExecutionMenuGUI implements Initializable {
     @FXML
     void executeNewExamBtnAction(ActionEvent event) throws IOException 
     {
-    	Stage stage = (Stage) executeNewExamBtn.getScene().getWindow();
-		ExecuteNewExamGUI eneg=new ExecuteNewExamGUI();
-		eneg.start(stage);
+    	FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("ExecuteNewExam.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        ExecuteNewExamGUI executeNewExam=loader.getController();
+        executeNewExam.initData();
+        Stage window = (Stage)examsTable.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
     }
 
 
@@ -133,22 +159,22 @@ public class ExamInExecutionMenuGUI implements Initializable {
     		ExamInExecutionRow e=new ExamInExecutionRow(arr.get(i),im);
     		examArr.add(e);
     	}
-		examsTableLocked.setItems(examArr);
+		examsTable.setItems(examArr);
 		examIDColLocked.setCellValueFactory(new PropertyValueFactory<>("examID"));
 		executionIDColLocked.setCellValueFactory(new PropertyValueFactory<>("executionID") );
 		courseNameColLocked.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		imageColLocked.setCellValueFactory(new PropertyValueFactory<>("preview"));
 
-		for(i=0;i<arr.size();i++)
+		for(i=0;i<arrLocked.size();i++)
     	{
     		ImageView im=new ImageView(new Image("/images/padlock.png"));
     		im.setVisible(true);
 			im.setFitHeight(30);
 			im.setFitWidth(30);
-    		ExamInExecutionRow e=new ExamInExecutionRow(arr.get(i),im);
-    		examArr.add(e);
+    		ExamInExecutionRow e=new ExamInExecutionRow(arrLocked.get(i),im);
+    		LockedExamArr.add(e);
     	}
-		examsTable.setItems(examArr);	
+		examsTableLocked.setItems(LockedExamArr);	
 		
 	}
 

@@ -78,7 +78,7 @@
                      <children>
                         <AnchorPane prefHeight="262.0" prefWidth="337.0">
                            <children>
-                              <TableView fx:id="examsTableLocked" layoutX="14.0" layoutY="7.0" onMouseClicked="#chooseExamInExecution" prefHeight="248.0" prefWidth="305.0">
+                              <TableView fx:id="examsTableLocked" layoutX="14.0" layoutY="7.0" onMouseClicked="#chooseExamInExecutionL" prefHeight="248.0" prefWidth="305.0">
                                  <columns>
                                     <TableColumn fx:id="imageColLocked" prefWidth="39.99993896484375" />
                                     <TableColumn fx:id="examIDColLocked" prefWidth="61.33331298828125" text="examID" />

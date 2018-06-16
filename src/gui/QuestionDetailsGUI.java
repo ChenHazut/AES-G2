@@ -73,15 +73,15 @@ public class QuestionDetailsGUI implements Initializable
 	ObservableList<String> cList;
 	Question q;
 	ClientConsole client;
-	GUImanager m;
+	//GUImanager m;
 	
 	
 	
 	public QuestionDetailsGUI() 
 	{
 		client=new ClientConsole();
-		m=new GUImanager();
-		q=m.getSelectedQuestion();
+		//m=new GUImanager();
+		//q=m.getSelectedQuestion();
 		
 	}
 	
@@ -98,25 +98,7 @@ public class QuestionDetailsGUI implements Initializable
 
 	
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		questionIDLabel.setText(q.getQuestionID());
-		questionIDLabel.setDisable(true);
-		QuestionLabel.setText(q.getQuestionTxt());
-		answer1Label.setText(q.getAnswers()[0]);
-		answer2Label.setText(q.getAnswers()[1]);
-		answer3Label.setText(q.getAnswers()[2]);
-		answer4Label.setText(q.getAnswers()[3]);
-		teacherNameLabel.setText(q.getTeacherName());
-		teacherNameLabel.setDisable(true);
-		instructionLabel.setText(q.getInstruction());
-		correctAnswerCombo.getItems().addAll("1","2","3","4");
-		correctAnswerCombo.setPromptText(Integer.toString(q.getCorrectAnswer()));
-		subjectCombo.getSelectionModel().select(q.getCourseList().get(0).getSubject().getsName());
-		subjectCombo.setDisable(true);
-		cList=FXCollections.observableArrayList();
-		for(int i=0;i<q.getCourseList().size();i++)
-			cList.add(q.getCourseList().get(i).getcName());
-		coursesList.getItems().add(cList);
-		coursesList.disabledProperty();
+
 
 	}
 
@@ -180,26 +162,69 @@ public class QuestionDetailsGUI implements Initializable
 			e.printStackTrace();
 		}
 		q=updatedQuestion;
-		m.setUpdatedQuestion(q);
-		Stage stage = (Stage) saveButton.getScene().getWindow();
-		m.setSelectedQuestion(null);
-		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		qrg.start(stage);
+		//m.setUpdatedQuestion(q);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("QuestionRepository.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        QuestionRepositoryGUI qrg=loader.getController();
+        qrg.initData();
+        Stage window = (Stage) saveButton.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
+//		Stage stage = (Stage) saveButton.getScene().getWindow();
+//		//m.setSelectedQuestion(null);
+//		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+//		qrg.start(stage);
 	}
 
 	public void cancleButtonAction(ActionEvent ae) throws Exception
 	{
 		System.out.println("cancle has been pressed");
-		Stage stage = (Stage) cancleButton.getScene().getWindow();
-		m.setSelectedQuestion(null);
-		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		qrg.start(stage);
+		FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("QuestionRepository.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        QuestionRepositoryGUI qrg=loader.getController();
+        qrg.initData();
+        Stage window = (Stage) cancleButton.getScene().getWindow();
+        window.setScene(scene);
+        window.show();
+//		Stage stage = (Stage) cancleButton.getScene().getWindow();
+//		m.setSelectedQuestion(null);
+//		QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
+//		qrg.start(stage);
 	}
 	
 	
 	public void correctAnswerTextField(ActionEvent ae)
 	{
 	
+	}
+
+	public void initData(Question qToEdit) {
+		q=qToEdit;
+		questionIDLabel.setText(q.getQuestionID());
+		questionIDLabel.setDisable(true);
+		QuestionLabel.setText(q.getQuestionTxt());
+		answer1Label.setText(q.getAnswers()[0]);
+		answer2Label.setText(q.getAnswers()[1]);
+		answer3Label.setText(q.getAnswers()[2]);
+		answer4Label.setText(q.getAnswers()[3]);
+		teacherNameLabel.setText(q.getTeacherName());
+		teacherNameLabel.setDisable(true);
+		instructionLabel.setText(q.getInstruction());
+		correctAnswerCombo.getItems().addAll("1","2","3","4");
+		correctAnswerCombo.setPromptText(Integer.toString(q.getCorrectAnswer()));
+		subjectCombo.getSelectionModel().select(q.getCourseList().get(0).getSubject().getsName());
+		subjectCombo.setDisable(true);
+		cList=FXCollections.observableArrayList();
+		for(int i=0;i<q.getCourseList().size();i++)
+			cList.add(q.getCourseList().get(i).getcName());
+		coursesList.getItems().add(cList);
+		coursesList.disabledProperty();
+
+		
 	}
 	
 }

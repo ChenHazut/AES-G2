@@ -115,6 +115,10 @@ public class ReportMenuGUI implements Initializable {
 //		examList.addAll(arr);
 //		table.setItems(examList);
 //	}
+	public void initData() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }
