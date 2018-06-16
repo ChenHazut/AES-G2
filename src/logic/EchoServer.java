@@ -226,7 +226,16 @@ public class EchoServer extends AbstractServer {
 				ee.setExamCode(rs.getString(15));
 				//finish to create the exam to execute
 				
+				String tempID=new String(rs.getString(12)); //CREATE STRING WITH THE ID OF THE THEACHER TO CREATE USER
+				Statement stmt2 = (Statement) conn.createStatement();
+				ResultSet rs2 = stmt2.executeQuery(" SELECT * FROM user AS U WHERE U.userID ="+tempID );
+				rs2.next();
+				User excteacher=new User (rs2.getString(1),rs2.getString(4));
+				excteacher.setuName(rs2.getString(2));
+				ee.setExecTeacher(excteacher);
 				tempArr.add(ee); //add all the exam in exacution to the arr
+				rs2.close();
+				stmt2.close();
 			}
 			
 			/*for(int i=0;i<tempArr.size();i++)

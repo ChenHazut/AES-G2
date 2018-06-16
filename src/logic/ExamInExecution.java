@@ -8,7 +8,7 @@ public class ExamInExecution implements Serializable
 	private Exam examDet;   // the exam
 	private int ExecutionID; 
 	private boolean isLocked;
-	private String execTeacher;
+	private User execTeacher;
 	private String courseName;
 	private String courseID;
 	private String subjectID;
@@ -40,11 +40,11 @@ public class ExamInExecution implements Serializable
 	public void setLocked(boolean isLocked) {
 		this.isLocked = isLocked;
 	}
-	public String getExecTeacher() {
+	public User getExecTeacher() {
 		return execTeacher;
 	}
-	public void setExecTeacher(String execTeacher) {
-		this.execTeacher = execTeacher;
+	public void setExecTeacher(User excteacher) {
+		this.execTeacher = excteacher;
 	}
 	public String getCourseName() {
 		return courseName;

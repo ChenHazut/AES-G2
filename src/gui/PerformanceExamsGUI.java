@@ -65,24 +65,12 @@ public class PerformanceExamsGUI implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
 		st = new StudentController();
-	
-		
-		
-		
-		
 		examIDCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getExamDet().getExamID()));
 		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-		teacherNameCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getExecTeacher()));
+		teacherNameCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getExecTeacher().getuName()));
 		
 		durationCol.setCellValueFactory(cellData->new SimpleStringProperty( Integer.toString(cellData.getValue().getExamDet().getDuration())  ));
 		arr=st.getAllExamsInExecutin();
-//		
-//		ArrayList<ExamGUI> examGUIArr = new ArrayList<ExamGUI>();
-//		for(int i=0; i<arr.size(); i++) {
-//			examGUIArr.add(new ExamGUI(arr.get(i)));
-//			
-//		}
-//		
 		
 		
 		System.out.println("size of exam array: "+arr.size());
