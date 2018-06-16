@@ -178,13 +178,13 @@ public class EchoServer extends AbstractServer {
 			
 			Statement stmt = (Statement) conn.createStatement();
 			User StudentToSearch=(User) msg.getSentObj();
-			String s= " SELECT  E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName  , EE.executingTeacherID"
+			String s= " SELECT  E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName  , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode "
 					+ " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U" 
-					+ " WHERE EE.examID=E.examID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND SC.studentID="+StudentToSearch.getuID() + " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID AND E.courseID=C.courseID AND E.subjectID=S.subjectID AND EE.locked=0"
+					+ " WHERE EE.examID=E.examID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND SC.studentID="+StudentToSearch.getuID() + " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID AND E.courseID=C.courseID AND E.subjectID=C.subjectID AND E.subjectID=S.subjectID AND EE.locked=0"
 							+ " union "
-							+ " SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName , EE.executingTeacherID "
+							+ " SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode "
 		                    + " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U " 
-							+ " WHERE EE.examID=E.examID AND EE.locked=0 AND EE.executingTeacherID=U.userID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND E.subjectID=C.subjectID AND E.courseID=C.courseID AND E.subjectID=S.subjectID AND SC.studentID=22222 AND EE.isGroup=1 AND EG.examID=EE.examID AND EG.executionId=EE.executionID AND EG.studentID="+StudentToSearch.getuID();   
+							+ " WHERE EE.examID=E.examID AND EE.locked=0 AND EE.executingTeacherID=U.userID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND E.subjectID=C.subjectID AND E.courseID=C.courseID AND E.subjectID=S.subjectID AND SC.studentID="+StudentToSearch.getuID() + " AND EE.isGroup=1 AND EG.examID=EE.examID AND EG.executionId=EE.executionID AND EG.studentID="+StudentToSearch.getuID();   
 		                       
 		                    
 			/////////////////////////////////////////////////////////////////////////
@@ -194,8 +194,9 @@ public class EchoServer extends AbstractServer {
 			
 			while(rs.next())
 			{
-				Exam e=new Exam();
-				e.setExamID(rs.getString(1));
+				//ExamInExecution ee = new ExamInExecution(); //create the new ExamInExecution
+				Exam e=new Exam();   //create the new exam that execute
+				e.setExamID(rs.getString(1)); 
 				e.setCourse(new Course(rs.getString(8),rs.getString(9),rs.getString(12),(new Subject(rs.getString(7),rs.getString(10)))));
 				e.setWasUsed(rs.getInt(3)==1);  //CHANGE THE STATUS OF THE EXAM
 				e.setInstructionForTeacher(rs.getString(4));
@@ -203,7 +204,29 @@ public class EchoServer extends AbstractServer {
 				e.setDuration(rs.getInt(6));
 				e.setTeacherID(rs.getString(2));    //SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
 				e.setTeacherName(rs.getString(11)); //SAVE THE TEACHER THAT WROTE THE EXAM
-				tempArr.add(e); //add all the exam to the arr
+				
+				/*ee.setExamDet(e);
+				ee.setExecutionID(rs.getInt(13));
+				ee.setLocked(rs.getBoolean(14));*/
+				//finish to create the exam
+				//no need
+				///to get the teacher user details
+				//////Statement stmt2 = (Statement) conn.createStatement();
+				//////ResultSet rs2 = stmt2.executeQuery( " SELECT * FROM user AS U WHERE U.userID =12345"); 
+				////finish to get the user details
+				
+				/////ee.setExecTeacher(new User(rs2.getString(1),rs2.getString(4)));
+				/////rs2.close();
+				/////stmt2.close();
+				/////no need
+				
+				/*ee.setCourseName(rs.getString(9));
+				ee.setCourseID(rs.getString(8));
+				ee.setSubjectID(rs.getString(7));
+				ee.setExamCode(rs.getString(15));*/
+				//finish to create the exam to execute
+				
+				tempArr.add(e); //add all the exam in exacution to the arr
 			}
 			
 			/*for(int i=0;i<tempArr.size();i++)

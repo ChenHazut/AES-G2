@@ -42,6 +42,9 @@
             <TableColumn fx:id="teacherNameCol" prefWidth="109.33331298828125" text="Teacher Name" />
             <TableColumn fx:id="durationCol" prefWidth="100.0" text="Duration" />
          </columns>
+         <effect>
+            <DropShadow />
+         </effect>
       </TableView>
       <ImageView fitHeight="35.0" fitWidth="177.0" layoutX="420.0" layoutY="269.0" pickOnBounds="true" preserveRatio="true">
          <image>

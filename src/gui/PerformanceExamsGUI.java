@@ -19,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import logic.Exam;
+import logic.ExamInExecution;
 import logic.LoginController;
 import logic.Question;
 import logic.StudentController;
@@ -67,7 +68,7 @@ public class PerformanceExamsGUI implements Initializable{
 		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
 		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
-		arr=st.getAllPerExams();
+		arr=st.getAllExamsInExecutin();
 		System.out.println("size of exam array: "+arr.size());
 		examList = FXCollections.observableArrayList();
 		examList.addAll(arr);

@@ -43,7 +43,7 @@ public class StudentController {
 	}
 	
 	
-	public ArrayList<Exam> getAllPerExams() {
+	public ArrayList<Exam> getAllExamsInExecutin() {
 		Message msg=new Message();
 		msg.setSentObj(student);
 		msg.setqueryToDo("getAllPerformExamsRelevantToStudent");
