@@ -8,11 +8,18 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.QuestionDetailsGUI">
    <children>
+      <ImageView fitHeight="609.0" fitWidth="550.0" layoutY="-13.0" pickOnBounds="true">
+         <image>
+            <Image url="@../images/biggerBackground.png" />
+         </image>
+      </ImageView>
       <Label fx:id="qans3" layoutX="59.0" layoutY="251.0" prefHeight="21.0" prefWidth="11.0" text="*" textFill="#1a09ff" visible="false">
          <font>
             <Font size="24.0" />
