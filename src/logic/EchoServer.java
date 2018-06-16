@@ -190,11 +190,11 @@ public class EchoServer extends AbstractServer {
 			/////////////////////////////////////////////////////////////////////////
 	
 			ResultSet rs = stmt.executeQuery(s);  //sent the sql as stinrg
-			ArrayList<Exam> tempArr=new ArrayList<Exam>();	
+			ArrayList<ExamInExecution> tempArr=new ArrayList<ExamInExecution>();	
 			
 			while(rs.next())
 			{
-				//ExamInExecution ee = new ExamInExecution(); //create the new ExamInExecution
+				ExamInExecution ee = new ExamInExecution(); //create the new ExamInExecution
 				Exam e=new Exam();   //create the new exam that execute
 				e.setExamID(rs.getString(1)); 
 				e.setCourse(new Course(rs.getString(8),rs.getString(9),rs.getString(12),(new Subject(rs.getString(7),rs.getString(10)))));
@@ -205,9 +205,9 @@ public class EchoServer extends AbstractServer {
 				e.setTeacherID(rs.getString(2));    //SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
 				e.setTeacherName(rs.getString(11)); //SAVE THE TEACHER THAT WROTE THE EXAM
 				
-				/*ee.setExamDet(e);
+				ee.setExamDet(e);
 				ee.setExecutionID(rs.getInt(13));
-				ee.setLocked(rs.getBoolean(14));*/
+				ee.setLocked(rs.getBoolean(14));
 				//finish to create the exam
 				//no need
 				///to get the teacher user details
@@ -220,13 +220,13 @@ public class EchoServer extends AbstractServer {
 				/////stmt2.close();
 				/////no need
 				
-				/*ee.setCourseName(rs.getString(9));
+				ee.setCourseName(rs.getString(9));
 				ee.setCourseID(rs.getString(8));
 				ee.setSubjectID(rs.getString(7));
-				ee.setExamCode(rs.getString(15));*/
+				ee.setExamCode(rs.getString(15));
 				//finish to create the exam to execute
 				
-				tempArr.add(e); //add all the exam in exacution to the arr
+				tempArr.add(ee); //add all the exam in exacution to the arr
 			}
 			
 			/*for(int i=0;i<tempArr.size();i++)

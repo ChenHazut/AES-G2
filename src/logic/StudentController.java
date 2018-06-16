@@ -43,7 +43,7 @@ public class StudentController {
 	}
 	
 	
-	public ArrayList<Exam> getAllExamsInExecutin() {
+	public ArrayList<ExamInExecution> getAllExamsInExecutin() {
 		Message msg=new Message();
 		msg.setSentObj(student);
 		msg.setqueryToDo("getAllPerformExamsRelevantToStudent");
@@ -57,8 +57,8 @@ public class StudentController {
 			e.printStackTrace();
 		}
 		msg=client.getMessage();
-		ArrayList<Exam> arrOfExams=new ArrayList<Exam>();
-		arrOfExams=(ArrayList<Exam>)msg.getReturnObj();
+		ArrayList<ExamInExecution> arrOfExams=new ArrayList<ExamInExecution>();
+		arrOfExams=(ArrayList<ExamInExecution>)msg.getReturnObj();
 		return arrOfExams;
 	}
 }

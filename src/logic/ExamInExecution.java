@@ -8,7 +8,7 @@ public class ExamInExecution implements Serializable
 	private Exam examDet;   // the exam
 	private int ExecutionID; 
 	private boolean isLocked;
-	private User execTeacher;
+	private String execTeacher;
 	private String courseName;
 	private String courseID;
 	private String subjectID;
@@ -16,11 +16,9 @@ public class ExamInExecution implements Serializable
 	private ArrayList<StudentInExam> students;
 	private boolean isGroup;  //status to know if the student in in group-1 ro not-0
 	
-	public ExamInExecution()
+	public ExamInExecution() 
 	{
-		examDet=new Exam();
-		execTeacher=new User();
-		students=new ArrayList<StudentInExam>();
+		
 	}
 	
 	
@@ -42,10 +40,10 @@ public class ExamInExecution implements Serializable
 	public void setLocked(boolean isLocked) {
 		this.isLocked = isLocked;
 	}
-	public User getExecTeacher() {
+	public String getExecTeacher() {
 		return execTeacher;
 	}
-	public void setExecTeacher(User execTeacher) {
+	public void setExecTeacher(String execTeacher) {
 		this.execTeacher = execTeacher;
 	}
 	public String getCourseName() {

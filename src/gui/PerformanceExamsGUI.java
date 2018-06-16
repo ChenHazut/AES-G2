@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,17 +33,17 @@ public class PerformanceExamsGUI implements Initializable{
 	@FXML
 	Button ComputerizedButton;//THE BUTTON TO DO TEST ComputerizedButton
 	@FXML
-	private TableView table;// THE TABLE THAT SHOW THE EXAMS THAT THE STUDENT CAN DO
+	private TableView<ExamInExecution> table;// THE TABLE THAT SHOW THE EXAMS THAT THE STUDENT CAN DO
 	@FXML
-	private TableColumn <Exam,String> examIDCol;
+	private TableColumn <ExamInExecution,String> examIDCol;
 	@FXML
-	private TableColumn <Exam,String> cNameCol;
+	private TableColumn <ExamInExecution,String> cNameCol;
 	@FXML
-	private TableColumn <Exam,String> teacherNameCol;
+	private TableColumn <ExamInExecution,String> teacherNameCol;
 	@FXML
-	private TableColumn <Exam,String> durationCol;
-	private ArrayList<Exam> arr;
-	ObservableList<Exam> examList ;
+	private TableColumn <ExamInExecution,String> durationCol;
+	private ArrayList<ExamInExecution> arr;
+	ObservableList<ExamInExecution> examList ;
 	StudentController st;
 	
 	private User student; // to save the student that loged in info
@@ -64,11 +65,26 @@ public class PerformanceExamsGUI implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) 
 	{
 		st = new StudentController();
-		examIDCol.setCellValueFactory(new PropertyValueFactory<>("ExamID"));
+	
+		
+		
+		
+		
+		examIDCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getExamDet().getExamID()));
 		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
-		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("teacherName"));
-		durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+		teacherNameCol.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getExecTeacher()));
+		
+		durationCol.setCellValueFactory(cellData->new SimpleStringProperty( Integer.toString(cellData.getValue().getExamDet().getDuration())  ));
 		arr=st.getAllExamsInExecutin();
+//		
+//		ArrayList<ExamGUI> examGUIArr = new ArrayList<ExamGUI>();
+//		for(int i=0; i<arr.size(); i++) {
+//			examGUIArr.add(new ExamGUI(arr.get(i)));
+//			
+//		}
+//		
+		
+		
 		System.out.println("size of exam array: "+arr.size());
 		examList = FXCollections.observableArrayList();
 		examList.addAll(arr);
