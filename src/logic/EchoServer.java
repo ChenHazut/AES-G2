@@ -161,23 +161,99 @@ public class EchoServer extends AbstractServer {
 			ResultSet rs = stmt.executeQuery(
 					" SELECT  * "  
 					+ " FROM examinexecution as EE, exam AS E , user AS U, studentresultinexam AS SR , examnieegroup AS EG " 
-					+ " WHERE SR.approved=1 AND SR.studentID="+StudentToSearch.getStudentID() + " AND SR.grade="+StudentToSearch.getGrade() + " AND SR.examID="+StudentToSearch.getExamID() + " AND SR.executionID=EE.executionID AND EE.examID="+StudentToSearch.getExamID() + " AND E.examID="+StudentToSearch.getExamID() + " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID " 
+					+ " WHERE SR.approved=1 AND SR.studentID="+StudentToSearch.getStudentID() + " AND SR.grade="+StudentToSearch.getGrade() + " AND SR.examID="+StudentToSearch.getExamID() + " AND SR.executionID=EE.executionID AND EE.examID="+StudentToSearch.getExamID() + " AND E.examID="+StudentToSearch.getExamID() + " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID AND SR.computerized=1 " 
 					+ " union "  
 					+ " SELECT  *"  
 					+ " FROM examinexecution as EE, exam AS E , user AS U, studentresultinexam AS SR , examnieegroup AS EG "  
-					+ " WHERE SR.approved=1 AND SR.studentID="+StudentToSearch.getStudentID() + " AND SR.grade="+StudentToSearch.getGrade() + " AND SR.examID="+StudentToSearch.getExamID() + " AND SR.executionID=EE.executionID AND EE.examID="+StudentToSearch.getExamID() + " AND E.examID="+StudentToSearch.getExamID() + " AND EE.isGroup=1 AND EG.examID="+StudentToSearch.getExamID() + " AND EG.executionId=SR.executionID AND EG.studentID="+StudentToSearch.getStudentID() + " AND EE.executingTeacherID=U.userID ");
+					+ " WHERE SR.approved=1 AND SR.studentID="+StudentToSearch.getStudentID() + " AND SR.grade="+StudentToSearch.getGrade() + " AND SR.examID="+StudentToSearch.getExamID() + " AND SR.executionID=EE.executionID AND EE.examID="+StudentToSearch.getExamID() + " AND E.examID="+StudentToSearch.getExamID() + " AND EE.isGroup=1 AND EG.examID="+StudentToSearch.getExamID() + " AND EG.executionId=SR.executionID AND EG.studentID="+StudentToSearch.getStudentID() + " AND EE.executingTeacherID=U.userID AND SR.computerized=1 ");
 			///////////////////////////////////////////// NOT FINISHED
-			ArrayList<StudentInExam> tempArr=new ArrayList<StudentInExam>();//to save all the relevant exams grade of rhe student	
-			HashMap<String,Integer> map=new HashMap<String,Integer>();
-			while(rs.next())
+			ExamInExecution tempExam=new ExamInExecution();//to save all the relevant exams grade of rhe student	
+			rs.next();
+			tempExam.setExecutionID(rs.getInt(2)); //save the executionID
+			tempExam.setCourseID(rs.getString(19)); //save the exam of the course
+			tempExam.setIsGroup(rs.getBoolean(11)); //save if the exam is for group-1 or not-0
+			tempExam.setExamCode(rs.getString(3));  //save the exam code
+			tempExam.setSubjectID(rs.getString(18)); //save the exam subject
+			tempExam.setLocked(rs.getBoolean(5));    //save if the exam is locked
+			///////////until here finish ExamInExecution
+			
+			////start to create the **subject**
+			Statement stmt3 = (Statement) conn.createStatement();
+			ResultSet rs3= stmt.executeQuery( " SELECT * FROM subject AS s WHERE s.subjectID="+tempExam.getSubjectID());
+			rs3.next();
+			Subject tempSubject = new Subject(rs3.getString(1),rs3.getString(2));
+			rs3.next();
+			stmt3.close();
+			///finish create the subject we need
+			
+			////start to create the **course**
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2= stmt.executeQuery( " SELECT * FROM courseinsubject AS c WHERE c.subjectID="+tempExam.getSubjectID() + " AND c.courseID="+tempExam.getCourseID());
+			rs2.next();
+			Course tempCourse = new Course(rs2.getString(2),rs2.getString(3),tempExam.getExecTeacher().getuID(),tempSubject);
+			rs2.close();
+			stmt2.close();
+			////finish create the course
+			
+			///start to create the **user**
+			User teacherExecExam = new User(rs.getString(20),rs.getString(23));
+			teacherExecExam.setuName(rs.getString(20));
+			teacherExecExam.setTitle(rs.getString(23));
+			///finish create user
+			
+			tempExam.setExecTeacher(teacherExecExam); //insert the user to the exam
+			
+			///start to create the **questions from the exam
+			Statement stmt4 = (Statement) conn.createStatement();
+			ResultSet rs4 = stmt4.executeQuery("SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="+rs.getString(1));
+			HashMap<Question,Integer> map=new HashMap<Question,Integer>();
+			while(rs4.next())
 			{
-				StudentInExam sGrade = new StudentInExam(rs.getString("examID"),rs.getInt("grade"),rs.getTimestamp("examDate"),rs.getString("courseName"));
-				tempArr.add(sGrade);
-				
+				Question q=new Question();
+				q.setQuestionID(rs.getString(2));
+				q.setQuestionTxt(rs.getString(5));
+				String[] ans=new String[4];
+				Statement stmt5 = (Statement) conn.createStatement();
+				ResultSet rs5 = stmt5.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID="+q.getQuestionID());
+				for(int j=0;rs5.next();j++)
+				{
+					ans[j]=rs5.getString(3);
+				}
+				rs5.close();
+				stmt5.close();
+				q.setAnswers(ans);
+				q.setTeacherID(rs4.getString(6));
+				q.setTeacherName(rs4.getString(11));
+				q.setCorrectAnswer(rs4.getInt(8));
+				q.setInstruction(rs4.getString(7));
+				map.put(q, rs4.getInt(3));
 			}
+			rs4.close();
+			stmt4.close();
+			///finish to get questions
+			
+			///start to create the exam
+			Exam tExam = new Exam();
+			tExam.setQuestions(map);
+			tExam.setTeacherID(rs.getString(13));
+			//to get the teacher who wrote the exam name
+			Statement stmt6 = (Statement) conn.createStatement();
+			ResultSet rs6= stmt.executeQuery( " SELECT * FROM user AS u WHERE u.userID="+tExam.getTeacherID());
+			rs6.next();
+			tExam.setTeacherName(rs6.getString(2));
+			rs6.close();
+			stmt6.close();
+			//finish to get the teacher name
+			tExam.setExamID(rs.getString(1)); //save the examID
+			tExam.setInstructionForTeacher(rs.getString(14)); 
+			tExam.setInstructionForStudent(rs.getString(15));
+			tExam.setDuration(rs.getShort(16)); //save the exam duration
+			tExam.setCourse(tempCourse);
+			tExam.setCourseName(tExam.getCourse().getcName());
+			//
 			rs.close();
 			stmt.close();
-			msg.setReturnObj(tempArr);
+			msg.setReturnObj(tempExam);
 			client.sendToClient(msg);
 		}
 		
