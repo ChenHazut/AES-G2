@@ -40,7 +40,8 @@ public class LoginGUI implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) 
 	{
-		
+		userIDTF.setText("22222");
+		passwordTF.setText("1212");
 	}
 	//listen to presses on the login button
 	public void loginButtonAction(ActionEvent ae) throws Exception

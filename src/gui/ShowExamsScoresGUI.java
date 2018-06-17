@@ -58,14 +58,13 @@ public class ShowExamsScoresGUI implements Initializable {
 	
 	public void ShowExamButtonAction() throws Exception
 	{
+		ExamInExecution exam = st.getExamForStudent(gradeTable.getSelectionModel().getSelectedItem());
+		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ExamFormForStudent.fxml"));
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
-		ExamFormForStudentGUI ExamForStudent = loader.getController();
-		
-		ExamInExecution exam = st.getExamForStudent(gradeTable.getSelectionModel().getSelectedItem());
-		
+		ExamFormForStudentGUI ExamForStudent = loader.getController();		
 		ExamForStudent.initData(exam);
 		Stage stage = (Stage) gradeTable.getScene().getWindow();
 		stage.setScene(scene);

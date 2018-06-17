@@ -156,6 +156,7 @@ public class EchoServer extends AbstractServer {
 
 		private void getExamsToShowByStudent(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException 
 		{
+			System.out.println("i'm heree");
 			Statement stmt = (Statement) conn.createStatement();
 			StudentInExam StudentToSearch=(StudentInExam) msg.getSentObj();
 			ResultSet rs = stmt.executeQuery(
@@ -175,33 +176,40 @@ public class EchoServer extends AbstractServer {
 			tempExam.setExamCode(rs.getString(3));  //save the exam code
 			tempExam.setSubjectID(rs.getString(18)); //save the exam subject
 			tempExam.setLocked(rs.getBoolean(5));    //save if the exam is locked
-			///////////until here finish ExamInExecution
+	///////////until here finish ExamInExecution
+			
+			Exam tExam = new Exam();
+			tExam.setInstructionForTeacher(rs.getString(14)); 
+			tExam.setInstructionForStudent(rs.getString(15));
+			tExam.setDuration(rs.getInt(30)); //save the actual exam duration
+			tExam.setTeacherID(rs.getString(13));
 			
 			////start to create the **subject**
 			Statement stmt3 = (Statement) conn.createStatement();
-			ResultSet rs3= stmt.executeQuery( " SELECT * FROM subject AS s WHERE s.subjectID="+tempExam.getSubjectID());
+			ResultSet rs3= stmt3.executeQuery( " SELECT * FROM subject AS s WHERE s.subjectID="+tempExam.getSubjectID());
 			rs3.next();
 			Subject tempSubject = new Subject(rs3.getString(1),rs3.getString(2));
 			rs3.next();
 			stmt3.close();
 			///finish create the subject we need
 			
+			///start to create the **user**
+			User teacherExecExam = new User(rs.getString(20),rs.getString(23));
+			teacherExecExam.setuName(rs.getString(21));
+			teacherExecExam.setTitle(rs.getString(24));
+			tempExam.setExecTeacher(teacherExecExam); //insert the user to the exam
+			///finish create user 
+			
+			
 			////start to create the **course**
 			Statement stmt2 = (Statement) conn.createStatement();
-			ResultSet rs2= stmt.executeQuery( " SELECT * FROM courseinsubject AS c WHERE c.subjectID="+tempExam.getSubjectID() + " AND c.courseID="+tempExam.getCourseID());
+			ResultSet rs2= stmt2.executeQuery( " SELECT * FROM courseinsubject AS c WHERE c.subjectID="+tempExam.getSubjectID() + " AND c.courseID="+tempExam.getCourseID());
 			rs2.next();
 			Course tempCourse = new Course(rs2.getString(2),rs2.getString(3),tempExam.getExecTeacher().getuID(),tempSubject);
 			rs2.close();
 			stmt2.close();
 			////finish create the course
-			
-			///start to create the **user**
-			User teacherExecExam = new User(rs.getString(20),rs.getString(23));
-			teacherExecExam.setuName(rs.getString(20));
-			teacherExecExam.setTitle(rs.getString(23));
-			///finish create user
-			
-			tempExam.setExecTeacher(teacherExecExam); //insert the user to the exam
+			tempExam.setCourseName(tempCourse.getcName());
 			
 			///start to create the **questions from the exam
 			Statement stmt4 = (Statement) conn.createStatement();
@@ -210,8 +218,8 @@ public class EchoServer extends AbstractServer {
 			while(rs4.next())
 			{
 				Question q=new Question();
-				q.setQuestionID(rs.getString(2));
-				q.setQuestionTxt(rs.getString(5));
+				q.setQuestionID(rs4.getString(2));
+				q.setQuestionTxt(rs4.getString(5));
 				String[] ans=new String[4];
 				Statement stmt5 = (Statement) conn.createStatement();
 				ResultSet rs5 = stmt5.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID="+q.getQuestionID());
@@ -231,11 +239,11 @@ public class EchoServer extends AbstractServer {
 			rs4.close();
 			stmt4.close();
 			///finish to get questions
+			System.out.println("num5");
 			
 			///start to create the exam
-			Exam tExam = new Exam();
 			tExam.setQuestions(map);
-			tExam.setTeacherID(rs.getString(13));
+			
 			//to get the teacher who wrote the exam name
 			Statement stmt6 = (Statement) conn.createStatement();
 			ResultSet rs6= stmt.executeQuery( " SELECT * FROM user AS u WHERE u.userID="+tExam.getTeacherID());
@@ -244,13 +252,16 @@ public class EchoServer extends AbstractServer {
 			rs6.close();
 			stmt6.close();
 			//finish to get the teacher name
-			tExam.setExamID(rs.getString(1)); //save the examID
-			tExam.setInstructionForTeacher(rs.getString(14)); 
-			tExam.setInstructionForStudent(rs.getString(15));
-			tExam.setDuration(rs.getShort(16)); //save the exam duration
+			
+			tExam.setExamID(StudentToSearch.getExamID()); //save the examID
+			///tExam.setInstructionForTeacher(rs.getString(14)); 
+			///tExam.setInstructionForStudent(rs.getString(15));
+			///tExam.setDuration(rs.getShort(16)); //save the exam duration
 			tExam.setCourse(tempCourse);
 			tExam.setCourseName(tExam.getCourse().getcName());
+			tempExam.setExamDet(tExam);
 			//
+			System.out.println("blaaaaaaaaaaaaaa");
 			rs.close();
 			stmt.close();
 			msg.setReturnObj(tempExam);

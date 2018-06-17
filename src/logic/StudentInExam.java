@@ -2,6 +2,7 @@ package logic;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashMap;
 
 public class StudentInExam implements Serializable{
 
@@ -10,6 +11,7 @@ public class StudentInExam implements Serializable{
 	private Timestamp date; //the date of the exam
 	private String courseName; //the name of the course
 	private String studentID;
+	private HashMap<Question, Integer> answersInExam;
 	
 	public String getStudentID() {
 		return studentID;
