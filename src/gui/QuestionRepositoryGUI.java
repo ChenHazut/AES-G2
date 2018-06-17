@@ -1,43 +1,35 @@
 package gui;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import client.ChatClient;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import logic.ClientConsole;
 import logic.Question;
 import logic.TeacherController;
 
 public class QuestionRepositoryGUI implements Initializable {
 	@FXML
-	private TableView table;
+	private TableView<QuestionGUI> table;
 
 	@FXML
 	private TableColumn<QuestionGUI, String> questionID;
@@ -54,12 +46,10 @@ public class QuestionRepositoryGUI implements Initializable {
 	@FXML
 	private ImageView image;
 	private ArrayList<Question> arr;
-	// private DatabaseControl dbControl;
-	private QuestionDetailsGUI qdg;
-	// private Main main;
+
 	ObservableList<QuestionGUI> questionList;
 	ClientConsole client;
-	// GUImanager m;
+
 	TeacherController tc;
 
 	public void insertButtonAction(ActionEvent ae) throws IOException {
@@ -81,14 +71,21 @@ public class QuestionRepositoryGUI implements Initializable {
 		QuestionGUI q = (QuestionGUI) table.getSelectionModel().getSelectedItem();
 		Question qToDel = new Question();
 		qToDel.setQuestionID(q.getQuestionID());
-		if (qToDel == null)
-			return;
-		tc.deleteQuestion(qToDel);
-		for (int i = 0; i < questionList.size(); i++)
-			if (questionList.get(i).getQuestionID().equals(qToDel.getQuestionID())) {
-				questionList.remove(i);
-				break;
-			}
+
+		Boolean b = tc.deleteQuestion(qToDel);
+		if (b == true) {
+			for (int i = 0; i < questionList.size(); i++)
+				if (questionList.get(i).getQuestionID().equals(qToDel.getQuestionID())) {
+					questionList.remove(i);
+					break;
+				}
+		} else {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("error");
+			alert.setHeaderText("Error: the selected question can't be deleted beacuse it assigned to exam");
+			alert.showAndWait();
+		}
+
 	}
 
 	public void editQuestion() throws IOException {
@@ -110,7 +107,7 @@ public class QuestionRepositoryGUI implements Initializable {
 				break;
 			}
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("editQuestion.fxml"));
+		loader.setLocation(getClass().getResource("QuestionDetails.fxml"));
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		QuestionDetailsGUI qdg = loader.getController();

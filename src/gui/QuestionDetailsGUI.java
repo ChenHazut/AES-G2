@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.controlsfx.control.CheckComboBox;
-
-import client.ChatClient;
-import common.Message;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,7 +17,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.Question;
@@ -97,8 +92,6 @@ public class QuestionDetailsGUI implements Initializable {
 	}
 
 	protected Question getFilledDetails() {
-		int flag = 0;
-		int flagAns = 0;
 		Question updatedQuestion = new Question();
 
 		updatedQuestion.setQuestionID(questionIDLabel.getText());

@@ -3,15 +3,14 @@ package logic;
 import java.util.ArrayList;
 
 import common.Message;
-import gui.ExamInExecutionRow;
-import gui.QuestionGUI;
 
 public class TeacherController {
-	public User teacher;
+	User teacher;
 	LoginController lc;
 	ClientConsole client;
 	ArrayList<Course> courses;
 	ArrayList<Subject> subjects;
+	ArrayList<Question> selectedQuestions;
 
 	public TeacherController() {
 		lc = new LoginController();
@@ -40,7 +39,7 @@ public class TeacherController {
 
 	}
 
-	public void deleteQuestion(Question qToDel) {
+	public Boolean deleteQuestion(Question qToDel) {
 		Message msg = new Message();
 		msg.setClassType("teacher");
 		msg.setqueryToDo("deleteQuestion");
@@ -52,6 +51,9 @@ public class TeacherController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		msg = client.getMessage();
+		Boolean b = (Boolean) msg.getReturnObj();
+		return b;
 
 	}
 
@@ -276,4 +278,37 @@ public class TeacherController {
 		return arrOfExams;
 	}
 
+	public ArrayList<ExamInExecution> getWrittenExamsForTeacher() {
+		Message msg = new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("getAllWrittenExamsInExecutionRelevantToTeacher");
+		msg.setSentObj(teacher);
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		ArrayList<ExamInExecution> arrOfExams = new ArrayList<ExamInExecution>();
+		arrOfExams = (ArrayList<ExamInExecution>) msg.getReturnObj();
+		return arrOfExams;
+	}
+
+	public ArrayList<Question> getSelectedQuestions() {
+		return selectedQuestions;
+	}
+
+	public void setSelectedQuestions(ArrayList<Question> array) {
+		this.selectedQuestions = array;
+	}
+
+	public void saveExam(Exam exam) {
+		Message msg = new Message();
+		msg.setSentObj(exam);
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("saveExamToDB");
+		client.accept(msg);
+	}
 }

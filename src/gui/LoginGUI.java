@@ -1,11 +1,9 @@
 package gui;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import common.Message;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -85,7 +83,7 @@ public class LoginGUI implements Initializable {
 				if (lc.getTitle().equalsIgnoreCase("teacher"))// if user is teacher
 				{
 					FXMLLoader loader = new FXMLLoader();
-					loader.setLocation(getClass().getResource("teacherMenu.fxml"));
+					loader.setLocation(getClass().getResource("TeacherMenu.fxml"));
 					Parent root = loader.load();
 					Scene scene = new Scene(root);
 					TeacherMenuGUI teacherMenu = loader.getController();
@@ -98,17 +96,29 @@ public class LoginGUI implements Initializable {
 						System.out.println("exit AES Application");
 						System.exit(0);
 					});
-
+				}
+				if (lc.getTitle().equalsIgnoreCase("Student")) // if user is student
+				{
+					// Stage primaryStage=new Stage();
+					// StudentMenuGUI tmg= new StudentMenuGUI();
+					// tmg.start(primaryStage);
+				}
+				if (lc.getTitle().equalsIgnoreCase("Principle")) // if user is principle
+				{
+					Stage primaryStage = new Stage();
+					PrincipleMenuGUI2 tmg = new PrincipleMenuGUI2();
+					tmg.start(primaryStage);
 				}
 				Stage stage = (Stage) loginButton.getScene().getWindow(); // close login window
 				stage.close();
+
 			}
 
 		}
 	}
 
 	public void start(Stage primaryStage) throws IOException {
-		Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);

@@ -3,38 +3,41 @@ package gui;
 import java.io.Serializable;
 
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
-public class QuestionGUI implements Serializable{
+public class QuestionGUI implements Serializable {
 	private String questionID;
 	private String teacherName;
 	private String questionTxt;
-    private ImageView image;
-    private CheckBox checkButton;
+	private ImageView image;
+	private CheckBox checkButton;
+	private TextField points;
 
-    public QuestionGUI(String questionID, String teacherName, String questionTxt, ImageView image) {
+	public QuestionGUI(String questionID, String teacherName, String questionTxt, ImageView image) {
 		super();
 		this.questionID = questionID;
 		this.teacherName = teacherName;
 		this.questionTxt = questionTxt;
 		this.image = image;
 	}
-    
-    public QuestionGUI(String questionID, String teacherName, String questionTxt, CheckBox cb) {
+
+	public QuestionGUI(String questionID, String teacherName, String questionTxt, CheckBox cb, TextField tf) {
 		super();
 		this.questionID = questionID;
 		this.teacherName = teacherName;
 		this.questionTxt = questionTxt;
 		this.checkButton = cb;
+		points = tf;
 	}
 
 	public void setImage(ImageView value) {
-        image = value;
-    }
+		image = value;
+	}
 
-    public ImageView getImage() {
-        return image;
-    }
+	public ImageView getImage() {
+		return image;
+	}
 
 	public String getQuestionID() {
 		return questionID;
@@ -64,10 +67,11 @@ public class QuestionGUI implements Serializable{
 		return checkButton;
 	}
 
-	public void setCheckButton(CheckBox checkButton) {
-		this.checkButton = checkButton;
+	public TextField getPoints() {
+		return points;
 	}
-	
-	
-	
+
+	public void setPoints(TextField points) {
+		this.points = points;
+	}
 }
