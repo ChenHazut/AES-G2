@@ -43,10 +43,6 @@ public class ExamRepositoryGUI implements Initializable {
 
 	TeacherController tc;
 
-	public void start(Stage primaryStage) throws Exception {
-
-	}
-
 	public void insertButtonAction(ActionEvent ae) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("CreateExam.fxml"));

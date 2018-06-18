@@ -1,5 +1,7 @@
 package logic;
 
+import java.io.File;
+import java.io.FileOutputStream;
 // This file contains material supporting section 3.7 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
@@ -17,6 +19,7 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 
 import common.Message;
+import common.MyFile;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -76,6 +79,11 @@ public class EchoServer extends AbstractServer {
 		Connection conn = null;
 		conn = connectToDB();
 		System.out.println("SQL connection succeed");
+		if (msg instanceof MyFile) {
+			System.out.println("bohamian rafsody");
+			uploadExamToServer(msg, client);
+			return;
+		}
 		Message m = (Message) msg;
 		if (m.getClassType().equalsIgnoreCase("User"))
 			userHandler(m, client, conn);
@@ -179,7 +187,8 @@ public class EchoServer extends AbstractServer {
 			System.out.println("create the approve exam to show");
 			getExamsToShowByStudent(msg, client, conn);
 		}
-
+		if (msg.getqueryToDo().equals("getExamByExamID"))
+			getExamByExamID(msg, client, conn);
 	}
 
 	// ********************************************************************************************
@@ -960,6 +969,62 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	private void getExamByExamID(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		System.out.println("here :) fun liii");
+		Statement stmt = (Statement) conn.createStatement();
+		Exam exam = (Exam) msg.getSentObj();
+		String s = "SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U WHERE E.examID="
+				+ exam.getExamID()
+				+ " AND E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID=TC.teacherID AND U.userID=E.teacherID";
+		ResultSet rs = stmt.executeQuery(s);
+		// HashMap<Question,Integer> map=new HashMap<Question,Integer>();
+		Exam e = new Exam();
+		while (rs.next()) {
+
+			e.setExamID(rs.getString(1));
+			e.setCourse(new Course(rs.getString(8), rs.getString(14), rs.getString(2),
+					(new Subject(rs.getString(7), rs.getString(16)))));
+			e.setWasUsed(rs.getInt(3) == 1);
+			e.setInstructionForTeacher(rs.getString(4));
+			e.setInstructionForStudent(rs.getString(5));
+			e.setDuration(rs.getInt(6));
+			e.setTeacherID(rs.getString(2));
+			e.setTeacherName(rs.getString(19));
+		}
+
+		rs = stmt.executeQuery(
+				"SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="
+						+ e.getExamID());
+		HashMap<Question, Integer> map = new HashMap<Question, Integer>();
+		while (rs.next()) {
+			Question q = new Question();
+			q.setQuestionID(rs.getString(2));
+			q.setQuestionTxt(rs.getString(5));
+			String[] ans = new String[4];
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2
+					.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID=" + q.getQuestionID());
+			for (int j = 0; rs2.next(); j++) {
+				ans[j] = rs2.getString(3);
+			}
+			rs2.close();
+			stmt2.close();
+			q.setAnswers(ans);
+			q.setTeacherID(rs.getString(6));
+			q.setTeacherName(rs.getString(11));
+			q.setCorrectAnswer(rs.getInt(8));
+			q.setInstruction(rs.getString(7));
+			map.put(q, rs.getInt(3));
+		}
+		e.setQuestions(map);
+		// System.out.println("send the exam to client");
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(e);
+		client.sendToClient(msg);
+	}
+
 	// This method return all the courses in the data base.
 	private void getAllCoursesInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
@@ -1198,6 +1263,19 @@ public class EchoServer extends AbstractServer {
 		stmt.close();
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
+	}
+
+	private void uploadExamToServer(Object msg, ConnectionToClient client) {
+		int fileSize = ((MyFile) msg).getSize();
+		MyFile myF = (MyFile) msg;
+		try {
+			File newFile = new File("SERVER" + myF.getFileName() + ".docx");
+			FileOutputStream out = new FileOutputStream(newFile);
+			out.write(myF.getMybytearray());
+			out.close();
+		} catch (Exception e) {
+
+		}
 	}
 
 	/**

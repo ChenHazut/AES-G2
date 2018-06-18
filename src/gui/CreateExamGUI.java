@@ -108,10 +108,15 @@ public class CreateExamGUI implements Initializable {
 
 	public void cancleButtonAction() throws Exception {
 		System.out.println("cancle has been pressed");
-		Stage stage = (Stage) cancleButton.getScene().getWindow();
-
-		ExamRepositoryGUI exam = new ExamRepositoryGUI();
-		exam.start(stage);
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("ExamRepository.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		ExamRepositoryGUI examRep = loader.getController();
+		examRep.initData();
+		Stage window = (Stage) cancleButton.getScene().getWindow();
+		window.setScene(scene);
+		window.show();
 	}
 
 	public void saveButtonAction() throws Exception {

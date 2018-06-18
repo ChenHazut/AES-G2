@@ -24,6 +24,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -146,6 +147,21 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 
 	@FXML
 	void requestOvertimeBtnAction(ActionEvent event) {
+		TextInputDialog dialog = new TextInputDialog("0");
+		dialog.setTitle("");
+		dialog.setHeaderText("Request for overtime");
+		dialog.setContentText("Please enter amount of requested overtime:");
+
+		// Traditional way to get the response value.
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			int i;
+			for (i = 0; i < result.get().length(); i++)
+				if (!Character.isDigit(result.get().charAt(i)))
+					break;
+			if (i == result.get().length())
+				System.out.println("time requested is: " + result.get());
+		}
 
 	}
 

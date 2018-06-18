@@ -80,4 +80,39 @@ public class StudentController {
 		exam = (ExamInExecution) msg.getReturnObj();
 		return exam;
 	}
+
+	public Exam getExamByExamID(ExamInExecution exam) {
+		Message msg = new Message();
+		msg.setSentObj(exam.getExamDet());
+		msg.setqueryToDo("getExamByExamID");
+		msg.setClassType("Student");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(4000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		Exam e = new Exam();
+		e = (Exam) msg.getReturnObj();
+		return e;
+	}
+
+	public void uploadManualExam(String fileExamPath) {
+		Message msg = new Message();
+		msg.setSentObj(fileExamPath);
+		msg.setqueryToDo("uploadWordFileExam");
+		msg.setClassType("Student");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(4000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("finished uploading");
+	}
 }
