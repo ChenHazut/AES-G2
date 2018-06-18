@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 public class ExamInExecution implements Serializable
 {
-	private Exam examDet;   // the exam
-	private int ExecutionID; 
+	private Exam examDet;
+	private int ExecutionID;
 	private boolean isLocked;
 	private User execTeacher;
 	private String courseName;
@@ -14,13 +14,14 @@ public class ExamInExecution implements Serializable
 	private String subjectID;
 	private String examCode;
 	private ArrayList<StudentInExam> students;
-	private boolean isGroup;  //status to know if the student in in group-1 ro not-0
+	private boolean isGroup;
 	
-	public ExamInExecution() 
+	public ExamInExecution()
 	{
-		
+		examDet=new Exam();
+		execTeacher=new User();
+		students=new ArrayList<StudentInExam>();
 	}
-	
 	
 	public Exam getExamDet() {
 		return examDet;
@@ -43,8 +44,8 @@ public class ExamInExecution implements Serializable
 	public User getExecTeacher() {
 		return execTeacher;
 	}
-	public void setExecTeacher(User excteacher) {
-		this.execTeacher = excteacher;
+	public void setExecTeacher(User execTeacher) {
+		this.execTeacher = execTeacher;
 	}
 	public String getCourseName() {
 		return courseName;

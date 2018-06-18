@@ -32,56 +32,63 @@ public class SystemDetailsMenuGUI implements Initializable
 	@FXML
 	Button SubjectsListButton;
 	@FXML
-	Button BeckButton;
+	Button BackButton;
 	private User principle;
 	
-	public void BeckButtonAction(ActionEvent ae) throws Exception
+	public void BackButtonAction(ActionEvent ae) throws Exception
 	{
 		PrincipleMenuGUI2 qrg=new PrincipleMenuGUI2();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)BackButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	public void ExamsListButtonAction() throws Exception
 	{
 		ExamsListForPrincipleGUI qrg=new ExamsListForPrincipleGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)ExamsListButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	public void QuestionsListButtonAction() throws Exception
 	{
 		QuestionsListForPrincipleGUI qrg=new QuestionsListForPrincipleGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)QuestionsListButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	public void StudentsListButtonAction() throws Exception
 	{
 		StudentsListForPrincipleGUI qrg=new StudentsListForPrincipleGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)StudentsListButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	public void TeachersListButtonAction() throws Exception
 	{
 		TeachersListForPrincipleGUI qrg=new TeachersListForPrincipleGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)TeachersListButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	public void CoursesListButtonAction() throws Exception
 	{
 		CoursesListForPrincipleGUI qrg=new CoursesListForPrincipleGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)CoursesListButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	public void SubjectsListButtonAction() throws Exception
 	{
 		SubjectsListForPrincipleGUI qrg=new SubjectsListForPrincipleGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)SubjectsListButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	@Override

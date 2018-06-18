@@ -33,7 +33,7 @@ import logic.User;
 public class InsertTeacherForStatisticsPageGUI implements Initializable
 {
 	@FXML
-	Button BeckButton;
+	Button BackButton;
 	@FXML
 	Button OkButton;
 	
@@ -48,11 +48,12 @@ public class InsertTeacherForStatisticsPageGUI implements Initializable
 		primaryStage.show(); 
 	}
 	
-	public void BeckButtonAction(ActionEvent ae) throws Exception
+	public void BackButtonAction(ActionEvent ae) throws Exception
 	{
 		StatisticsMenuGUI qrg=new StatisticsMenuGUI();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
+		// this 2 rows: The new window will open instead of the current window.
+				Stage st = (Stage)BackButton.getScene().getWindow();
+				qrg.start(st);
 	}
 	
 	public void OkButtonAction(ActionEvent ae) throws Exception

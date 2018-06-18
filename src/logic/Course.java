@@ -15,7 +15,12 @@ public class Course implements Serializable
 		this.cName = cName;
 		this.teacherID=teacherID;
 		subject=s;
-		
+	}
+	
+	public Course(String cID,String sID)
+	{
+		this.cID=cID;
+		subject=new Subject(sID,null);
 	}
 
 	public String getcID() {
@@ -48,6 +53,11 @@ public class Course implements Serializable
 
 	public void setTeacherID(String teacherID) {
 		this.teacherID = teacherID;
+	}
+
+	@Override
+	public String toString() {
+		return cName;
 	}
 	
 	

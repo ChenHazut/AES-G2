@@ -16,7 +16,7 @@
    <children>
       <ImageView fitHeight="341.0" fitWidth="590.0" layoutX="-4.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/פרויקט%20חן/AES-G2/images/backgraond.png" />
+            <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
       <Label layoutX="190.0" layoutY="6.0" prefHeight="46.0" prefWidth="252.0" text="Student's Grades" textFill="#1348bd">
@@ -45,7 +45,7 @@
       </TableView>
       <ImageView fitHeight="57.0" fitWidth="57.0" layoutX="427.0" layoutY="119.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/פרויקט%20חן/AES-G2/images/search.png" />
+            <Image url="@../images/search.png" />
          </image>
       </ImageView>
       <Label layoutX="480.0" layoutY="137.0" text="Show Exam">

@@ -26,29 +26,36 @@ public class StatisticsMenuGUI implements Initializable
 	@FXML
 	Button CourseStatisticsButton;
 	@FXML
-	Button BeckButton;
+	Button BackButton;
 	private User principle;
 	
-	public void BeckButtonAction(ActionEvent ae) throws Exception
-	{
-		PrincipleMenuGUI2 qrg=new PrincipleMenuGUI2();
-		Stage primaryStage=new Stage();
-		qrg.start(primaryStage);
-	}
-	
-	public void TeacherStatisticsButtonAction()
+	public void BackButtonAction(ActionEvent ae) throws Exception
 	{
 		
 	}
 	
-	public void StudentStatisticsButtonAction()
+	public void TeacherStatisticsButtonAction() throws Exception
 	{
-		
+		InsertTeacherForStatisticsPageGUI qrg=new InsertTeacherForStatisticsPageGUI();
+		// this 2 rows: The new window will open instead of the current window.
+		Stage st = (Stage)TeacherStatisticsButton.getScene().getWindow();
+		qrg.start(st);
 	}
 	
-	public void CourseStatisticsButtonAction()
+	public void StudentStatisticsButtonAction() throws Exception
 	{
-		
+		InsertStudentForStatisticsPageGUI qrg=new InsertStudentForStatisticsPageGUI();
+		// this 2 rows: The new window will open instead of the current window.
+		Stage st = (Stage)StudentStatisticsButton.getScene().getWindow();
+		qrg.start(st);
+	}
+	
+	public void CourseStatisticsButtonAction() throws Exception
+	{
+		InsertCourseForStatisticsPageGUI qrg=new InsertCourseForStatisticsPageGUI();
+		// this 2 rows: The new window will open instead of the current window.
+		Stage st = (Stage)CourseStatisticsButton.getScene().getWindow();
+		qrg.start(st);
 	}
 	
 	@Override

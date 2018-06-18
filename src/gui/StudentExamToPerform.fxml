@@ -16,14 +16,9 @@
    <children>
       <ImageView fitHeight="400.0" fitWidth="600.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/backgraond.png" />
+            <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
-      <Button fx:id="ComputerizedButton" layoutX="446.0" layoutY="182.0" mnemonicParsing="false" onMouseClicked="#ComputerizedButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="144.0" text="Computerized">
-         <font>
-            <Font name="FrankRuehl" size="15.0" />
-         </font>
-      </Button>
       <Label layoutX="150.0" prefHeight="66.0" prefWidth="315.0" text="Exams To Perform" textFill="#154abd">
          <font>
             <Font name="System Bold Italic" size="28.0" />
@@ -48,12 +43,12 @@
       </TableView>
       <ImageView fitHeight="35.0" fitWidth="177.0" layoutX="420.0" layoutY="269.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/good%20luck.png" />
+            <Image url="@../images/good%20luck.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="42.0" fitWidth="43.0" layoutX="454.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/outExam.png" />
+            <Image url="@../images/outExam.png" />
          </image>
       </ImageView>
       <Label layoutX="496.0" layoutY="110.0" text="Manually">
@@ -61,14 +56,9 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="ManuallyButton" layoutX="444.0" layoutY="95.0" mnemonicParsing="false" onMouseClicked="#ManuallyButtonButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="124.0" text="Manually" textFill="#3e2d2d">
-         <font>
-            <Font name="FrankRuehl" size="15.0" />
-         </font>
-      </Button>
       <ImageView fitHeight="50.0" fitWidth="42.0" layoutX="444.0" layoutY="179.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/xomputeraized%20exam.png" />
+            <Image url="@../images/xomputeraized%20exam.png" />
          </image>
       </ImageView>
       <Label layoutX="486.0" layoutY="190.0" text="Computerized">
@@ -76,6 +66,16 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
+      <Button fx:id="ComputerizedButton" layoutX="446.0" layoutY="182.0" mnemonicParsing="false" onAction="#ComputerizedButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="144.0" text="Computerized">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="ManuallyButton" layoutX="444.0" layoutY="95.0" mnemonicParsing="false" onMouseClicked="#ManuallyButtonButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="124.0" text="Manually" textFill="#3e2d2d">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
    </children>
    <effect>
       <Glow />

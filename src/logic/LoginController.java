@@ -28,7 +28,7 @@ public class LoginController
 		client.accept(userMsg);
 		
 		try {
-			Thread.sleep(2500L);
+			Thread.sleep(1500L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -49,7 +49,7 @@ public class LoginController
 		msg.setSentObj(user);
 		client.accept(msg);
 		try {
-			Thread.sleep(2500L);
+			Thread.sleep(1500L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

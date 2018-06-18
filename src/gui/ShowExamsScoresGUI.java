@@ -62,10 +62,11 @@ public class ShowExamsScoresGUI implements Initializable {
 		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ExamFormForStudent.fxml"));
+		
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		ExamFormForStudentGUI ExamForStudent = loader.getController();		
-		ExamForStudent.initData(exam);
+		ExamForStudent.initData(exam, false);
 		Stage stage = (Stage) gradeTable.getScene().getWindow();
 		stage.setScene(scene);
 		stage.show();

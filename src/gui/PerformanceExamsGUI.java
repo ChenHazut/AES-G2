@@ -51,14 +51,22 @@ public class PerformanceExamsGUI implements Initializable{
 	
 	public void ManuallyButtonButtonAction() throws Exception
 	{
-		//NewQuestionGUI nqg=new NewQuestionGUI();
-		//nqg.start(stage);
+		
 	}
 	
 	public void ComputerizedButtonAction() throws Exception
 	{
-		//NewQuestionGUI nqg=new NewQuestionGUI();
-		//nqg.start(stage);
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("ComputerizadExam.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		ComputerizedExamGUI ceg = loader.getController();
+		if(table.getSelectionModel().getSelectedItem()==null)
+			return;
+		ceg.initData(table.getSelectionModel().getSelectedItem());
+		Stage window = new Stage();
+		window.setScene(scene);
+		window.show();
 	}
 	
 	@Override
