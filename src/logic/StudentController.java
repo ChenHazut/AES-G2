@@ -42,4 +42,42 @@ public class StudentController {
 		return arrOfGrades;
 	}
 
+	public ArrayList<ExamInExecution> getAllExamsInExecutin() {
+		Message msg = new Message();
+		msg.setSentObj(student);
+		msg.setqueryToDo("getAllPerformExamsRelevantToStudent");
+		msg.setClassType("Student");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(3000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		ArrayList<ExamInExecution> arrOfExams = new ArrayList<ExamInExecution>();
+		arrOfExams = (ArrayList<ExamInExecution>) msg.getReturnObj();
+		return arrOfExams;
+	}
+
+	///// method to show the student the approved exam he choose
+	public ExamInExecution getExamForStudent(StudentInExam selectedItem) {
+		Message msg = new Message();
+		msg.setSentObj(selectedItem);
+		msg.setqueryToDo("getTheExamForStudentToShow");
+		msg.setClassType("Student");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(4000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		ExamInExecution exam = new ExamInExecution();
+		exam = (ExamInExecution) msg.getReturnObj();
+		return exam;
+	}
 }

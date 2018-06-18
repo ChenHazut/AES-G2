@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StudentMenuGUI">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StudentMenuGUI">
    <children>
       <AnchorPane>
          <children>
-            <ImageView fitHeight="377.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="341.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/backgraond.png" />
+                  <Image url="@../images/backgraond.png" />
                </image>
             </ImageView>
             <GridPane layoutX="0.1171875" layoutY="6.0" prefHeight="338.0" prefWidth="600.0">
@@ -64,7 +64,7 @@
                            <children>
                               <ImageView fitHeight="55.0" fitWidth="64.0" layoutX="99.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/examInExecution.png" />
+                                    <Image url="@../images/examInExecution.png" />
                                  </image>
                               </ImageView>
                               <Label layoutX="154.0" layoutY="36.0" text="Exams To Perform">
@@ -74,7 +74,7 @@
                               </Label>
                               <ImageView fitHeight="55.0" fitWidth="55.0" layoutX="99.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/grades.png" />
+                                    <Image url="@../images/grades.png" />
                                  </image>
                               </ImageView>
                               <Label layoutX="154.0" layoutY="116.0" text="Show Approved Grades">

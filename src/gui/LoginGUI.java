@@ -99,9 +99,9 @@ public class LoginGUI implements Initializable {
 				}
 				if (lc.getTitle().equalsIgnoreCase("Student")) // if user is student
 				{
-					// Stage primaryStage=new Stage();
-					// StudentMenuGUI tmg= new StudentMenuGUI();
-					// tmg.start(primaryStage);
+					Stage primaryStage = new Stage();
+					StudentMenuGUI tmg = new StudentMenuGUI();
+					tmg.start(primaryStage);
 				}
 				if (lc.getTitle().equalsIgnoreCase("Principle")) // if user is principle
 				{
