@@ -149,6 +149,10 @@ public class EchoServer extends AbstractServer {
 			getWrittenExamsInExecutionByTeacher(msg, client, conn);
 		else if (msg.getqueryToDo().equals("saveExamToDB"))
 			createExam(msg, client, conn);
+		else if (msg.getqueryToDo().equals("QuestionForTeacherInCourse"))
+			getQuestionsForTeacherInCourse(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getNextExamID"))
+			getNextExamID(msg, client, conn);
 	}
 
 	private void principalHandler(Message msg, ConnectionToClient client, Connection conn)
@@ -544,8 +548,10 @@ public class EchoServer extends AbstractServer {
 
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch = (User) msg.getSentObj();
-		String s = "SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U WHERE E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID=TC.teacherID AND TC.teacherID="
-				+ teacherToSearch.getuID();
+		String s = "SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U "
+				+ "WHERE E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID "
+				+ "AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID=TC.teacherID "
+				+ "AND TC.teacherID=" + teacherToSearch.getuID();
 		ResultSet rs = stmt.executeQuery(s);
 		ArrayList<Exam> tempArr = new ArrayList<Exam>();
 		// HashMap<Question,Integer> map=new HashMap<Question,Integer>();
@@ -591,6 +597,67 @@ public class EchoServer extends AbstractServer {
 		rs.close();
 		stmt.close();
 		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+	}
+
+	private void getQuestionsForTeacherInCourse(Message msg, ConnectionToClient client, Connection conn)
+			throws IOException {
+		Statement stmt;
+		ResultSet rs = null, rs2 = null;
+		ArrayList<Question> questionArr = new ArrayList<Question>();
+		try {
+			stmt = (Statement) conn.createStatement();
+			Course course = (Course) msg.getSentObj();
+			String s = "SELECT * From question AS q WHERE q.questionID in "
+					+ "(SELECT qic.questionID FROM questionincourse AS qic " + "WHERE qic.course=" + course.getcID()
+					+ "AND qic.subjectID=" + course.getSubject().getsName() + ")";
+			rs = stmt.executeQuery(s);
+			while (rs.next()) {
+				String[] answers = new String[4];
+				rs2 = stmt
+						.executeQuery("SELECT * FROM answersinquestion AS ans WHERE AS.questionID=" + rs.getString(1));
+				int i = 0;
+				while (rs2.next()) {
+					answers[++i] = rs2.getString(3);
+				}
+				questionArr.add(new Question(rs.getString(2), rs.getString(3), rs.getString(1), answers[0], answers[1],
+						answers[2], answers[3], rs.getString(4), rs.getInt(5)));
+			}
+			rs.close();
+			rs2.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		msg.setReturnObj(questionArr);
+		client.sendToClient(msg);
+	}
+
+	private void getNextExamID(Message msg, ConnectionToClient client, Connection conn) throws IOException {
+		Statement stmt;
+		ResultSet rs = null;
+
+		try {
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Course course = (Course) msg.getSentObj();
+			String s = "SELECT * From courseinsubject AS cis WHERE cis.subjectID=" + course.getcID()
+					+ " AND cis.courseID=" + course.getSubject().getSubjectID();
+			rs = stmt.executeQuery(s);
+			rs.last();
+			int temp = rs.getInt(1);
+			temp++;
+			rs.updateInt(4, temp);
+			rs.updateRow();
+			rs.close();
+			stmt.close();
+			String str = "" + course.getSubject().getSubjectID() + course.getcID() + (temp / 10 == 0 ? "0" : "");
+			str += temp;
+			msg.setReturnObj(str);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		client.sendToClient(msg);
 	}
 
@@ -644,15 +711,25 @@ public class EchoServer extends AbstractServer {
 	}
 
 	private void deleteExam(Message msg, ConnectionToClient client, Connection conn) {
-		Statement stmt;
-		ResultSet rs = null;
+		Statement stmt, stmt2;
+		ResultSet rs = null, rs2 = null;
 		try {
-			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			Exam e = (Exam) msg.getSentObj();
-			String s = "SELECT * FROM exam WHERE examIDID=" + e.getExamID();
+			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			rs2 = stmt2.executeQuery("SELECT * FROM questionInExam AS QE WHERE QE.examID=" + e.getExamID());
+			while (rs2.next()) {
+				rs2.deleteRow();
+			}
+			rs2.close();
+			stmt2.close();
+
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String s = "SELECT * FROM exam WHERE examID=" + e.getExamID();
+
 			rs = stmt.executeQuery(s);
 			rs.last();
 			rs.deleteRow();
+			stmt.close();
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -708,17 +785,15 @@ public class EchoServer extends AbstractServer {
 			stmt = (Statement) conn.createStatement();
 			Exam e = (Exam) msg.getSentObj();
 			stmt.executeUpdate("INSERT INTO exam (examID, teacherID, used, teacherInstruction, studentInstruction, "
-					+ "duration, subjectID, courseID) values (" + "\'010105\', " + "\'" + e.getTeacherID() + "\', "
+					+ "duration, subjectID, courseID) values (\'" + e.getExamID() + "\', \'" + e.getTeacherID() + "\', "
 					+ e.getWasUsed() + ", \'" + e.getInstructionForTeacher() + "\', \'" + e.getInstructionForStudent()
-					+ "\', " + e.getDuration() + ", \'01\', \'02\')");
-			// e.getCourse().getSubject()e.getCourse().getcName()
+					+ "\', " + e.getDuration() + ", \'" + e.getCourse().getSubject().getSubjectID() + "\', \'"
+					+ e.getCourse().getcID() + "\')");
 
 			HashMap<Question, Integer> questions = e.getQuestions();
 			for (Map.Entry<Question, Integer> entry : questions.entrySet()) {
 				String s = "INSERT INTO questioninexam (examID, questionID, pointsPerQuestion) values (";
-				s += "\'010105\', \'" + entry.getKey().getQuestionID() + "\', " + entry.getValue() + ")";
-				// s+="\'"+e.getExamID()+"\', \'"+entry.getKey().getQuestionID()+"\',
-				// "+entry.getValue()+")";
+				s += "\'" + e.getExamID() + "\', \'" + entry.getKey().getQuestionID() + "\', " + entry.getValue() + ")";
 				stmt.executeUpdate(s);
 			}
 			stmt.close();

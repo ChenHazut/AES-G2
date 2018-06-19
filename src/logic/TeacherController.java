@@ -39,6 +39,23 @@ public class TeacherController {
 
 	}
 
+	public String getExamID(Course course) {
+		Message msg = new Message();
+		msg.setSentObj(course);
+		msg.setqueryToDo("getNextExamID");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+
+		String str = (String) msg.getReturnObj();
+		return str;
+	}
+
 	public Boolean deleteQuestion(Question qToDel) {
 		Message msg = new Message();
 		msg.setClassType("teacher");
@@ -54,7 +71,6 @@ public class TeacherController {
 		msg = client.getMessage();
 		Boolean b = (Boolean) msg.getReturnObj();
 		return b;
-
 	}
 
 	public Question createNewQuestion(Question qToAdd) {
@@ -119,6 +135,32 @@ public class TeacherController {
 
 	public ArrayList<Course> getCourses() {
 		return courses;
+	}
+
+	public Course getCourseFromName(String courseName) {
+		for (int i = 0; i < courses.size(); i++) {
+			String s = courses.get(i).getcName();
+			if (s.equals(courseName))
+				return new Course(courses.get(i));
+		}
+		return null;
+	}
+
+	public ArrayList<Question> getQuestionsForTeacherInCourse(Course course) {
+		Message msg = new Message();
+		msg.setqueryToDo("QuestionForTeacherInCourse");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		msg.setSentObj(course);
+		msg = client.getMessage();
+		ArrayList<Question> questionsInCourse = (ArrayList<Question>) msg.getReturnObj();
+		return questionsInCourse;
+
 	}
 
 	public User teacherDet(String uID) {

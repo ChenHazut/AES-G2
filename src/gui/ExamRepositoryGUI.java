@@ -2,6 +2,7 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -12,9 +13,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import logic.ClientConsole;
@@ -43,10 +47,6 @@ public class ExamRepositoryGUI implements Initializable {
 
 	TeacherController tc;
 
-	public void start(Stage primaryStage) throws Exception {
-
-	}
-
 	public void insertButtonAction(ActionEvent ae) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("CreateExam.fxml"));
@@ -73,21 +73,37 @@ public class ExamRepositoryGUI implements Initializable {
 	}
 
 	public void editButtonAction(ActionEvent ae) throws Exception {
-
+		Exam t = (Exam) table.getSelectionModel().getSelectedItem();
+		if (t == null) {
+			setAlertBox("Choose Exam First");
+			return;
+		}
+		else if(t.getWasUsed()) {
+			setAlertBox("The exam has been used before! you cannot edit the Exam");
+			return;
+		}
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("CreateExam.fxml"));
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		CreateExamGUI newExam = loader.getController();
-		Exam t = (Exam) table.getSelectionModel().getSelectedItem();
-		if (t == null)
-			return;
+
 		newExam.initData(table.getSelectionModel().getSelectedItem());
 		Stage stage = (Stage) table.getScene().getWindow();
 		stage.setScene(scene);
 		stage.show();
 	}
 
+	private void setAlertBox(String s) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Error!!");
+		alert.setHeaderText(null);
+		alert.setContentText(s);
+		alert.setWidth(500);
+		alert.setHeight(320);
+		alert.showAndWait();
+	}
+	
 	public ExamRepositoryGUI() {
 		client = new ClientConsole();
 		// m=new GUImanager();
