@@ -23,7 +23,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.Question;
 import logic.TeacherController;
 
@@ -48,7 +47,6 @@ public class QuestionRepositoryGUI implements Initializable {
 	private ArrayList<Question> arr;
 
 	ObservableList<QuestionGUI> questionList;
-	ClientConsole client;
 
 	TeacherController tc;
 
@@ -129,7 +127,6 @@ public class QuestionRepositoryGUI implements Initializable {
 	}
 
 	public QuestionRepositoryGUI() {
-		client = new ClientConsole();
 
 		tc = new TeacherController();
 

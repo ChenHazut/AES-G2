@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 
 import common.Message;
+import gui.LoginGUI;
 
 public class TeacherController {
 	User teacher;
@@ -15,7 +16,7 @@ public class TeacherController {
 	public TeacherController() {
 		lc = new LoginController();
 		teacher = lc.getUser();
-		client = new ClientConsole();
+		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 	}
 
 	public ArrayList<Question> getAllQuestions()// send request to db to get all question which belong to subject this

@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import client.ChatClient;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,6 +18,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import logic.ClientConsole;
 import logic.LoginController;
 import logic.User;
 
@@ -38,14 +41,22 @@ public class LoginGUI implements Initializable {
 	private TextField txtServerIP;
 	@FXML
 	private TextField txtPORT;
+
+	public static int port;
+	public static String IP;
+
 	String uid;
 	String upass;
+
+	private ClientConsole client;
+	public ChatClient chat;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 		userIDTF.setText("11111");
 		passwordTF.setText("1111");
+
 	}
 
 	@FXML
@@ -56,7 +67,22 @@ public class LoginGUI implements Initializable {
 
 	// listen to presses on the login button
 	public void loginButtonAction(ActionEvent ae) throws Exception {
+		// Port
+		if (txtPORT.getText().compareTo("") == 0)// empty text field
+		{
+			port = 5555;
+		} else {
+			port = Integer.parseInt(txtPORT.getText());
+		}
 
+		// IP
+		if (txtServerIP.getText().compareTo("") == 0)// empty text field
+		{
+			IP = "localhost";
+		} else {
+			IP = txtServerIP.getText();
+		}
+		client = new ClientConsole(this.IP, this.port);
 		uid = userIDTF.getText();
 		upass = passwordTF.getText();
 		if (uid.equals("") || upass.equals("")) // if one or more of fields are empty
@@ -79,7 +105,7 @@ public class LoginGUI implements Initializable {
 				errorL.setText("user already logged in");
 			} else {
 				lc.loginUser();
-
+				((Node) ae.getSource()).getScene().getWindow().hide();
 				if (lc.getTitle().equalsIgnoreCase("teacher"))// if user is teacher
 				{
 					FXMLLoader loader = new FXMLLoader();
@@ -97,6 +123,7 @@ public class LoginGUI implements Initializable {
 						System.exit(0);
 					});
 				}
+
 				if (lc.getTitle().equalsIgnoreCase("Student")) // if user is student
 				{
 					Stage primaryStage = new Stage();
@@ -109,8 +136,9 @@ public class LoginGUI implements Initializable {
 					PrincipleMenuGUI2 tmg = new PrincipleMenuGUI2();
 					tmg.start(primaryStage);
 				}
-				Stage stage = (Stage) loginButton.getScene().getWindow(); // close login window
-				stage.close();
+				// Stage stage = (Stage) loginButton.getScene().getWindow(); // close login
+				// window
+				// stage.close();
 
 			}
 

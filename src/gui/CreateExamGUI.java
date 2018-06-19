@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-import org.controlsfx.control.CheckComboBox;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,7 +23,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.Course;
 import logic.Exam;
 import logic.Question;
@@ -65,12 +62,11 @@ public class CreateExamGUI implements Initializable {
 	private ArrayList<Question> questionArr;
 	private ObservableList<String> coursesL;
 	ObservableList<QuestionGUI> questionsList;
-	ClientConsole client;
 
 	TeacherController tc;
 
 	public CreateExamGUI() {
-		client = new ClientConsole();
+
 		tc = new TeacherController();
 
 	}
@@ -83,7 +79,7 @@ public class CreateExamGUI implements Initializable {
 		author.setCellValueFactory(new PropertyValueFactory<QuestionGUI, String>("teacherName"));
 		selected.setCellValueFactory(new PropertyValueFactory<QuestionGUI, CheckBox>("checkButton"));
 		pointsColumn.setCellValueFactory(new PropertyValueFactory<QuestionGUI, TextField>("points"));
-		
+
 		tc.getTeacherCourse();
 		for (int i = 0; i < tc.getSubjects().size(); i++)
 			subjectCombo.getItems().add(tc.getSubjects().get(i).getsName());
@@ -111,7 +107,8 @@ public class CreateExamGUI implements Initializable {
 				Question tempQuestion = questionArr.get(i);
 				for (int j = 0; j < questionsInExam.size(); j++) {
 					if (tempQuestion.equals(questionsInExam.get(j)))
-					questionsList.get(i).getPoints().setText(Integer.toString(exam.getQuestions().get(tempQuestion)));
+						questionsList.get(i).getPoints()
+								.setText(Integer.toString(exam.getQuestions().get(tempQuestion)));
 					questionsList.get(i).getCheckButton().setSelected(true);
 				}
 			}
@@ -128,20 +125,22 @@ public class CreateExamGUI implements Initializable {
 		Stage window = (Stage) cancleButton.getScene().getWindow();
 		window.setScene(scene);
 		window.show();
-		
+
 	}
 
 	public void saveButtonAction() throws Exception {
 		Exam exam = new Exam();
+		exam.setTeacherName(tc.getTeacher().getuName());
+		exam.setTeacherID(tc.getTeacher().getuID());
 		HashMap<Question, Integer> temp = new HashMap<Question, Integer>();
 		ArrayList<QuestionInExam> selectedQuestion = new ArrayList<QuestionInExam>();
 		int j = 0;
 
 		exam.setInstructionForStudent(studentInsructions.getText());
 		exam.setInstructionForTeacher(teacherInstructions.getText());
-		try{
+		try {
 			exam.setDuration(Integer.parseInt(duration.getText()));
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -152,9 +151,9 @@ public class CreateExamGUI implements Initializable {
 				temp.put(questionArr.get(i), pointsPerQuestion);
 			}
 		}
-		
+
 		exam.setQuestions(temp);
-		String g =(String) courseCombo.getValue();
+		String g = (String) courseCombo.getValue();
 		Course c = tc.getCourseFromName(g);
 		exam.setCourse(c);
 
@@ -170,7 +169,7 @@ public class CreateExamGUI implements Initializable {
 	}
 
 	public void subjectComboBoxAction(ActionEvent ae) {
-		if(subjectCombo.getValue()!=null)
+		if (subjectCombo.getValue() != null)
 			courseCombo.setDisable(false);
 		int i;
 		courseCombo.getItems().removeAll(coursesL);
@@ -181,18 +180,17 @@ public class CreateExamGUI implements Initializable {
 				coursesL.add(tc.getCourses().get(i).getcName());
 		courseCombo.getItems().addAll(coursesL);
 	}
-   
+
 	@FXML
-    public void courseComboBoxAction(ActionEvent event) {
-		if(courseCombo.getValue()==null || subjectCombo.getValue()==null)
+	public void courseComboBoxAction(ActionEvent event) {
+		if (courseCombo.getValue() == null || subjectCombo.getValue() == null)
 			return;
 		String course = courseCombo.getValue();
 		ArrayList<Question> arr = new ArrayList<>();
-		for (int i=0; i<questionArr.size(); i++)
-		{
+		for (int i = 0; i < questionArr.size(); i++) {
 			ArrayList<Course> cl = questionArr.get(i).getCourseList();
-			for (int j=0; j<cl.size(); j++)
-				if(cl.get(j).getcName().equals(course)) {
+			for (int j = 0; j < cl.size(); j++)
+				if (cl.get(j).getcName().equals(course)) {
 					arr.add(questionArr.get(i));
 					break;
 				}

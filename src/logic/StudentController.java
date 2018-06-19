@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 
 import common.Message;
+import gui.LoginGUI;
 
 public class StudentController {
 
@@ -16,7 +17,7 @@ public class StudentController {
 	{
 		lc = new LoginController();
 		student = lc.getUser();
-		client = new ClientConsole();
+		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 		// save all the student info
 	}
 

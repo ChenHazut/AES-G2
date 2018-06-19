@@ -2,7 +2,6 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -14,14 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.Exam;
 import logic.TeacherController;
 
@@ -43,7 +40,6 @@ public class ExamRepositoryGUI implements Initializable {
 
 	private ArrayList<Exam> arr;
 	ObservableList<Exam> examList;
-	ClientConsole client;
 
 	TeacherController tc;
 
@@ -77,8 +73,7 @@ public class ExamRepositoryGUI implements Initializable {
 		if (t == null) {
 			setAlertBox("Choose Exam First");
 			return;
-		}
-		else if(t.getWasUsed()) {
+		} else if (t.getWasUsed()) {
 			setAlertBox("The exam has been used before! you cannot edit the Exam");
 			return;
 		}
@@ -103,9 +98,9 @@ public class ExamRepositoryGUI implements Initializable {
 		alert.setHeight(320);
 		alert.showAndWait();
 	}
-	
+
 	public ExamRepositoryGUI() {
-		client = new ClientConsole();
+
 		// m=new GUImanager();
 		tc = new TeacherController();
 

@@ -20,7 +20,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.Course;
 import logic.Question;
 import logic.Subject;
@@ -70,14 +69,14 @@ public class NewQuestionGUI implements Initializable {
 	CheckComboBox<String> courseCombo;
 
 	Question q;
-	ClientConsole client;
+
 	// GUImanager m;
 	User teacher;
 	TeacherController tc;
 	ObservableList<String> coursesL;
 
 	public NewQuestionGUI() {
-		client = new ClientConsole();
+
 		// m=new GUImanager();
 		tc = new TeacherController();
 		teacher = tc.getTeacher();

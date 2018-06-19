@@ -18,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.Question;
 import logic.TeacherController;
 
@@ -67,11 +66,9 @@ public class QuestionDetailsGUI implements Initializable {
 
 	ObservableList<String> cList;
 	Question q;
-	ClientConsole client;
 	// GUImanager m;
 
 	public QuestionDetailsGUI() {
-		client = new ClientConsole();
 		// m=new GUImanager();
 		// q=m.getSelectedQuestion();
 

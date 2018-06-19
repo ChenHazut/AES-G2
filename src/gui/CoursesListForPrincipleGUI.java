@@ -55,7 +55,7 @@ public class CoursesListForPrincipleGUI implements Initializable {
 	}
 
 	public CoursesListForPrincipleGUI() {
-		client = new ClientConsole();
+		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 		pc = new PrincipalController();
 	}
 

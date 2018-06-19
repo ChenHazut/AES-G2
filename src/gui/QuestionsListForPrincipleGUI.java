@@ -17,7 +17,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.PrincipalController;
 import logic.Question;
 
@@ -37,7 +36,6 @@ public class QuestionsListForPrincipleGUI implements Initializable {
 	private QuestionDetailsGUI qdg;
 	// private Main main;
 	ObservableList<Question> questionList;
-	ClientConsole client;
 
 	PrincipalController pc;
 
@@ -57,7 +55,6 @@ public class QuestionsListForPrincipleGUI implements Initializable {
 	}
 
 	public QuestionsListForPrincipleGUI() {
-		client = new ClientConsole();
 
 		pc = new PrincipalController();
 		///////// צריך לשנות לקונטרולר של מנהל? מה המתודה הזאת עושה בכלל?

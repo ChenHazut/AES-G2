@@ -18,7 +18,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.PrincipalController;
 
 public class SubjectsListForPrincipleGUI implements Initializable {
@@ -36,7 +35,6 @@ public class SubjectsListForPrincipleGUI implements Initializable {
 	private QuestionDetailsGUI qdg;
 
 	ObservableList<Subject> subjectsList;
-	ClientConsole client;
 	PrincipalController pc;
 
 	public void start(Stage primaryStage) throws Exception {
@@ -55,7 +53,6 @@ public class SubjectsListForPrincipleGUI implements Initializable {
 	}
 
 	public SubjectsListForPrincipleGUI() {
-		client = new ClientConsole();
 		pc = new PrincipalController();
 	}
 

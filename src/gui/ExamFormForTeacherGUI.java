@@ -21,23 +21,23 @@ import logic.Exam;
 import logic.TeacherController;
 
 public class ExamFormForTeacherGUI implements Initializable {
-	
+
 	private ObservableList<QuestionInExam> observableQuestions;
 
-    @FXML
-    private TextArea insrtuctionsForStudent;
-    @FXML
-    private TextArea insrtuctionsForTeacher;
-    @FXML
-    private TextField duration;
+	@FXML
+	private TextArea insrtuctionsForStudent;
+	@FXML
+	private TextArea insrtuctionsForTeacher;
+	@FXML
+	private TextField duration;
 	@FXML
 	private Label examIDLabel;
-    @FXML
-    private Label teacherNameLabel;
-    @FXML
-    private TextField subjectName;
-    @FXML
-    private TextField courseName;
+	@FXML
+	private Label teacherNameLabel;
+	@FXML
+	private TextField subjectName;
+	@FXML
+	private TextField courseName;
 	@FXML
 	private ListView<QuestionInExam> listView;
 	@FXML
@@ -46,32 +46,31 @@ public class ExamFormForTeacherGUI implements Initializable {
 	private Button saveButton;
 	private Exam exam;
 	private TeacherController tc;
-	
+
 	public void initData(Exam exam, ArrayList<QuestionInExam> selectedQuestions) {
-		tc=new TeacherController();
+		tc = new TeacherController();
 		this.exam = exam;
 		courseName.setText(exam.getCourse().getcName());
 		subjectName.setText(exam.getCourse().getSubject().getsName());
 		insrtuctionsForTeacher.setText(exam.getInstructionForTeacher());
 		insrtuctionsForStudent.setText(exam.getInstructionForStudent());
 		duration.setText(Integer.toString(exam.getDuration()));
-		String id= tc.getExamID(exam.getCourse());
+		String id = tc.getExamID(exam.getCourse());
 		examIDLabel.setText(id);
 		exam.setExamID(id);
 		teacherNameLabel.setText(exam.getTeacherName());
-				
-		
+
 		observableQuestions = FXCollections.observableArrayList(selectedQuestions);
 		listView.setItems(observableQuestions);
-	    listView.setCellFactory(QuestionListView -> new QuestionListViewCellForTeacher<QuestionInExam>());
-	    
+		listView.setCellFactory(QuestionListView -> new QuestionListViewCellForTeacher<QuestionInExam>());
+
 	}
-	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
-	
+
 	public void cancleButtonAction() throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ExamRepository.fxml"));
@@ -82,15 +81,14 @@ public class ExamFormForTeacherGUI implements Initializable {
 		Stage window = (Stage) cancleButton.getScene().getWindow();
 		window.setScene(scene);
 		window.show();
-		
+
 	}
-	
+
 	public void saveButtonAction() {
 		exam.setWasUsed(false);
-		exam.setTeacherID("11111");
 		tc.saveExam(exam);
 		Stage window = (Stage) cancleButton.getScene().getWindow();
 		window.close();
-		
+
 	}
 }

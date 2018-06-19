@@ -40,6 +40,11 @@ public class EchoServer extends AbstractServer {
 	 * The default port to listen on.
 	 */
 	final public static int DEFAULT_PORT = 5555;
+	final public static String HOST = "localhost";
+	private String DBName;
+	private String DBPassword;
+	private Boolean isDBLoggedIn = false;
+	private Connection conn;
 
 	// Constructors ****************************************************
 
@@ -49,8 +54,10 @@ public class EchoServer extends AbstractServer {
 	 * @param port
 	 *            The port number to connect on.
 	 */
-	public EchoServer(int port) {
+	public EchoServer(int port, String dbName, String dbPass) {
 		super(port);
+		this.DBName = dbName;
+		this.DBPassword = dbPass;
 	}
 
 	// Instance methods ************************************************
@@ -58,12 +65,31 @@ public class EchoServer extends AbstractServer {
 	protected Connection connectToDB() {
 		Connection dbh = null;
 		try {
-			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/aes", "root", "root");
+			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DBName, "root", DBPassword);
+			isDBLoggedIn = true;
 		} catch (SQLException ex) {
 			System.out.print("Sorry we had a problem, could not connect to DB server\n");
 			sendToAllClients("DBConnectFail");
+			isDBLoggedIn = false;
 		}
+		this.conn = dbh;
 		return dbh;
+	}
+
+	public Boolean checkIfDBConnects() {
+		Boolean result;
+		if (connectToDB() != null)
+			result = true;
+		else
+			result = false;
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+
 	}
 
 	/**
@@ -484,7 +510,7 @@ public class EchoServer extends AbstractServer {
 			rs.insertRow();
 			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			rs2 = stmt.executeQuery("SELECT * FROM answersInQuestion");
-			for (int i = 0; i < 4; i++) {
+			for (int i = 1; i <= 4; i++) {
 				rs2.moveToInsertRow();
 				rs2.updateString(1, q.getQuestionID());
 				rs2.updateString(2, Integer.toString(i));
@@ -644,7 +670,7 @@ public class EchoServer extends AbstractServer {
 					+ " AND cis.courseID=" + course.getSubject().getSubjectID();
 			rs = stmt.executeQuery(s);
 			rs.last();
-			int temp = rs.getInt(1);
+			int temp = rs.getInt(4);
 			temp++;
 			rs.updateInt(4, temp);
 			rs.updateRow();
@@ -943,8 +969,8 @@ public class EchoServer extends AbstractServer {
 			ein.setSubjectID(rs.getString(5));
 			ein.setIsGroup(rs.getInt(6) == 1 ? true : false);
 			User u = new User();
-			u.setuID(rs.getString(7));
-			u.setuName(rs.getString(8));
+			u.setuID(rs.getString(8));
+			u.setuName(rs.getString(9));
 			ein.setExecTeacher(u);
 			tempArr.add(ein);
 		}
@@ -971,7 +997,7 @@ public class EchoServer extends AbstractServer {
 			Exam e = new Exam();
 			e.setExamID(rs.getString(1));
 			e.setCourseName(rs.getString(11));
-			e.setTeacherName(rs.getString(13));
+			e.setTeacherName(rs.getString(14));
 			tempArr.add(e);
 		}
 		// מכאן מתחילים לסדר כל מבחן עם השאלות שלו
@@ -1102,13 +1128,13 @@ public class EchoServer extends AbstractServer {
 
 			e.setExamID(rs.getString(1));
 			e.setCourse(new Course(rs.getString(8), rs.getString(14), rs.getString(2),
-					(new Subject(rs.getString(7), rs.getString(16)))));
+					(new Subject(rs.getString(7), rs.getString(17)))));
 			e.setWasUsed(rs.getInt(3) == 1);
 			e.setInstructionForTeacher(rs.getString(4));
 			e.setInstructionForStudent(rs.getString(5));
 			e.setDuration(rs.getInt(6));
 			e.setTeacherID(rs.getString(2));
-			e.setTeacherName(rs.getString(19));
+			e.setTeacherName(rs.getString(20));
 		}
 
 		rs = stmt.executeQuery(
@@ -1400,30 +1426,5 @@ public class EchoServer extends AbstractServer {
 
 	// Class methods ***************************************************
 
-	/**
-	 * This method is responsible for the creation of the server instance (there is
-	 * no UI in this phase).
-	 *
-	 * @param args[0]
-	 *            The port number to listen on. Defaults to 5555 if no argument is
-	 *            entered.
-	 */
-	public static void main(String[] args) {
-		int port = 0; // Port to listen on
-
-		try {
-			port = Integer.parseInt(args[0]); // Get port from command line
-		} catch (Throwable t) {
-			port = DEFAULT_PORT; // Set port to 5555
-		}
-
-		EchoServer sv = new EchoServer(port);
-
-		try {
-			sv.listen(); // Start listening for connections
-		} catch (Exception ex) {
-			System.out.println("ERROR - Could not listen for clients!");
-		}
-	}
 }
 // End of EchoServer class
