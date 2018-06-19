@@ -115,4 +115,24 @@ public class StudentController {
 		}
 		System.out.println("finished uploading");
 	}
+
+	///// method to show the student the approved exam he choose
+	public ExamInExecution performCompExam(ExamInExecution exam) {
+		Message msg = new Message();
+		msg.setSentObj(exam);
+		msg.setqueryToDo("getTheExamToPerformComputerized");
+		msg.setClassType("Student");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(4000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		ExamInExecution examToReturn = new ExamInExecution();
+		examToReturn = (ExamInExecution) msg.getReturnObj();
+		return exam;
+	}
 }

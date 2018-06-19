@@ -189,12 +189,55 @@ public class EchoServer extends AbstractServer {
 		}
 		if (msg.getqueryToDo().equals("getExamByExamID"))
 			getExamByExamID(msg, client, conn);
+		if (msg.getqueryToDo().equals("getTheExamToPerformComputerized")) {
+			System.out.println("get the exam to do the exam computerized");
+			getExamsToPerformComp(msg, client, conn);
+		}
 	}
 
 	// ********************************************************************************************
 	// get data or change data in DB methods
 	// ********************************************************************************************
 	// search in db for user with same userID as sentObj in msg
+
+	public void getExamsToPerformComp(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		ExamInExecution examTemp = (ExamInExecution) msg.getSentObj();
+		/// start to create the **questions from the exam
+		Statement stmt4 = (Statement) conn.createStatement();
+		ResultSet rs4 = stmt4.executeQuery(
+				"SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="
+						+ examTemp.getExamDet().getExamID());
+		HashMap<Question, Integer> map = new HashMap<Question, Integer>();
+		while (rs4.next()) {
+			Question q = new Question();
+			q.setQuestionID(rs4.getString(2));
+			q.setQuestionTxt(rs4.getString(5));
+			String[] ans = new String[4];
+			Statement stmt5 = (Statement) conn.createStatement();
+			ResultSet rs5 = stmt5
+					.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID=" + q.getQuestionID());
+			for (int j = 0; rs5.next(); j++) {
+				ans[j] = rs5.getString(3);
+			}
+			rs5.close();
+			stmt5.close();
+			q.setAnswers(ans);
+			q.setTeacherID(rs4.getString(6));
+			q.setTeacherName(rs4.getString(11));
+			q.setCorrectAnswer(rs4.getInt(8));
+			q.setInstruction(rs4.getString(7));
+			map.put(q, rs4.getInt(3));
+		}
+		examTemp.getExamDet().setQuestions(map);
+		examTemp.getExamDet().getQuestionsArrayList();
+		examTemp.getExamDet().setQuestions(null);
+		rs4.close();
+		stmt4.close();
+		msg.setReturnObj(examTemp);
+		client.sendToClient(msg);
+	}
+
 	private void searchUserInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		User uToSearch = (User) msg.getSentObj();
@@ -1040,7 +1083,7 @@ public class EchoServer extends AbstractServer {
 
 	private void getExamsToShowByStudent(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
-		System.out.println("i'm heree");
+
 		Statement stmt = (Statement) conn.createStatement();
 		StudentInExam StudentToSearch = (StudentInExam) msg.getSentObj();
 		ResultSet rs = stmt.executeQuery(" SELECT  * "
@@ -1180,6 +1223,7 @@ public class EchoServer extends AbstractServer {
 		}
 		rs.close();
 		stmt.close();
+		System.out.println("hjwhdwehfewhfoewfewjfoehfroo");
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
 	}
@@ -1192,13 +1236,13 @@ public class EchoServer extends AbstractServer {
 
 		Statement stmt = (Statement) conn.createStatement();
 		User StudentToSearch = (User) msg.getSentObj();
-		String s = " SELECT  E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName  , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode "
+		String s = " SELECT  E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName  , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode ,EE.isGroup"
 				+ " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U"
 				+ " WHERE EE.examID=E.examID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND SC.studentID="
 				+ StudentToSearch.getuID()
 				+ " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID AND E.courseID=C.courseID AND E.subjectID=C.subjectID AND E.subjectID=S.subjectID AND EE.locked=0"
 				+ " union "
-				+ " SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode "
+				+ " SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode ,EE.isGroup "
 				+ " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U "
 				+ " WHERE EE.examID=E.examID AND EE.locked=0 AND EE.executingTeacherID=U.userID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND E.subjectID=C.subjectID AND E.courseID=C.courseID AND E.subjectID=S.subjectID AND SC.studentID="
 				+ StudentToSearch.getuID()
@@ -1224,6 +1268,7 @@ public class EchoServer extends AbstractServer {
 			ee.setExamDet(e);
 			ee.setExecutionID(rs.getInt(13));
 			ee.setLocked(rs.getBoolean(14));
+			ee.setIsGroup(rs.getBoolean(16));
 			// finish to create the exam
 
 			ee.setCourseName(rs.getString(9));
@@ -1243,22 +1288,6 @@ public class EchoServer extends AbstractServer {
 			rs2.close();
 			stmt2.close();
 		}
-
-		/*
-		 * for(int i=0;i<tempArr.size();i++) { rs = stmt.
-		 * executeQuery("SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="
-		 * +tempArr.get(i).getExamID()); HashMap<Question,Integer> map=new
-		 * HashMap<Question,Integer>(); while(rs.next()) { Question q=new Question();
-		 * q.setQuestionID(rs.getString(2)); q.setQuestionTxt(rs.getString(5)); String[]
-		 * ans=new String[4]; Statement stmt2 = (Statement) conn.createStatement();
-		 * ResultSet rs2 =
-		 * stmt2.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID="
-		 * +q.getQuestionID()); for(int j=0;rs2.next();j++) { ans[j]=rs2.getString(3); }
-		 * rs2.close(); stmt2.close(); q.setAnswers(ans);
-		 * q.setTeacherID(rs.getString(6)); q.setTeacherName(rs.getString(11));
-		 * q.setCorrectAnswer(rs.getInt(8)); q.setInstruction(rs.getString(7));
-		 * map.put(q, rs.getInt(3)); } }
-		 */
 		rs.close();
 		stmt.close();
 		msg.setReturnObj(tempArr);

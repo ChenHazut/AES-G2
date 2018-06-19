@@ -12,28 +12,20 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="400.0" maxWidth="600.0" minHeight="345.0" minWidth="600.0" prefHeight="345.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PerformanceExamsGUI">
+<Pane maxHeight="400.0" maxWidth="600.0" minHeight="345.0" minWidth="600.0" prefHeight="345.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PerformanceExamsGUI">
    <children>
       <ImageView fitHeight="400.0" fitWidth="600.0" layoutY="4.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/backgraond.png" />
+            <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
-      <Button fx:id="ComputerizedButton" layoutX="446.0" layoutY="182.0" mnemonicParsing="false" onMouseClicked="#ComputerizedButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="144.0" text="Computerized">
-         <font>
-            <Font name="FrankRuehl" size="15.0" />
-         </font>
-      </Button>
       <Label layoutX="150.0" prefHeight="66.0" prefWidth="315.0" text="Exams To Perform" textFill="#154abd">
          <font>
-            <Font name="System Bold Italic" size="28.0" />
+            <Font name="Lemon Regular" size="28.0" />
          </font>
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
-         <effect>
-            <DropShadow blurType="TWO_PASS_BOX" height="41.755" radius="22.106250000000003" width="48.67" />
-         </effect>
       </Label>
       <TableView fx:id="table" layoutX="9.0" layoutY="89.0" prefHeight="242.0" prefWidth="410.0">
          <columns>
@@ -48,12 +40,12 @@
       </TableView>
       <ImageView fitHeight="35.0" fitWidth="177.0" layoutX="420.0" layoutY="269.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/good%20luck.png" />
+            <Image url="@../images/goodluck.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="42.0" fitWidth="43.0" layoutX="454.0" layoutY="99.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/outExam.png" />
+            <Image url="@../images/outExam.png" />
          </image>
       </ImageView>
       <Label layoutX="496.0" layoutY="110.0" text="Manually">
@@ -61,14 +53,9 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="ManuallyButton" layoutX="444.0" layoutY="95.0" mnemonicParsing="false" onMouseClicked="#ManuallyButtonButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="124.0" text="Manually" textFill="#3e2d2d">
-         <font>
-            <Font name="FrankRuehl" size="15.0" />
-         </font>
-      </Button>
       <ImageView fitHeight="50.0" fitWidth="42.0" layoutX="444.0" layoutY="179.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/project12.06-chen/AES-G2-chen.zip_expanded/AES-G2/images/xomputeraized%20exam.png" />
+            <Image url="@../images/comp.png" />
          </image>
       </ImageView>
       <Label layoutX="486.0" layoutY="190.0" text="Computerized">
@@ -76,6 +63,16 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
+      <Button fx:id="ComputerizedButton" layoutX="446.0" layoutY="182.0" mnemonicParsing="false" onAction="#ComputerizedButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="144.0" text="Computerized">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="ManuallyButton" layoutX="444.0" layoutY="95.0" mnemonicParsing="false" onMouseClicked="#ManuallyButtonButtonAction" opacity="0.0" prefHeight="50.0" prefWidth="124.0" text="Manually" textFill="#3e2d2d">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
    </children>
    <effect>
       <Glow />

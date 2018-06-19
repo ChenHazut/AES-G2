@@ -16,6 +16,7 @@ public class Exam implements Serializable {
 	private int duration;
 	private Course course;
 	private String courseName;
+	private ArrayList<Question> questionArr;
 
 	public Exam() {
 
@@ -122,6 +123,16 @@ public class Exam implements Serializable {
 		for (Map.Entry<Question, Integer> entry : questions.entrySet()) {
 			questionsArr.add(entry.getKey());
 		}
+		this.questionArr = questionsArr;
 		return questionsArr;
 	}
+
+	public ArrayList<Question> getQuestionArr() {
+		return questionArr;
+	}
+
+	public void setQuestionArr(ArrayList<Question> questionArr) {
+		this.questionArr = questionArr;
+	}
+
 }

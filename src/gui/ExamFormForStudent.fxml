@@ -8,9 +8,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ExamFormForStudentGUI">
    <children>
+      <ImageView fitHeight="600.0" fitWidth="600.0" pickOnBounds="true">
+         <image>
+            <Image url="@../images/biggerBackground.png" />
+         </image></ImageView>
       <Text fx:id="courseName" layoutX="217.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="172.13671875" />
       <Label layoutX="14.0" layoutY="33.0" text="Instruction:" />
       <Text fx:id="instructions" layoutX="79.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" />
@@ -18,14 +21,14 @@
       <Text fx:id="duration" layoutX="68.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" />
       <Label layoutX="173.0" layoutY="51.0" text="Executing teacher name:" />
       <Text fx:id="exeTeacherName" layoutX="309.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <ListView layoutX="14.0" layoutY="73.0" prefHeight="473.0" prefWidth="570.0" />
-      <ImageView fitHeight="45.0" fitWidth="183.0" layoutX="400.0" layoutY="550.0" pickOnBounds="true" preserveRatio="true">
+      <ListView fx:id="listView" layoutX="19.0" layoutY="90.0" prefHeight="456.0" prefWidth="565.0" />
+      <ImageView fitHeight="45.0" fitWidth="90.0" layoutX="400.0" layoutY="550.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@goodLuck.jpg" />
          </image>
       </ImageView>
-      <Button layoutX="64.0" layoutY="558.0" mnemonicParsing="false" text="Submit" />
-      <Button layoutX="133.0" layoutY="558.0" mnemonicParsing="false" text="Cancel" />
-      <ImageView fitHeight="600.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="submit" layoutX="64.0" layoutY="564.0" mnemonicParsing="false" text="Submit" />
+      <Button layoutX="133.0" layoutY="564.0" mnemonicParsing="false" text="Cancel" />
+      <ImageView fx:id="disableListView" fitHeight="456.0" fitWidth="565.0" layoutX="19.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

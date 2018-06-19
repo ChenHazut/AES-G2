@@ -34,9 +34,11 @@ public class CreateDocument {
 		run1.addBreak();
 		run1.setText("Course Name: " + exam.getCourseName());
 		run1.addBreak();
-		run1.setText("instructions: " + exam.getInstructionForStudent());
-		run1.addBreak();
-		run1.setText("please select the correct answer by writing V in the [ ] next to the correct answer");
+		if (exam.getInstructionForStudent() != null) {
+			run1.setText("instructions: " + exam.getInstructionForStudent());
+			run1.addBreak();
+		}
+		run1.setText("please select the correct answer by writing V in the [   ] next to the correct answer");
 		run1.addBreak();
 
 		while (it.hasNext()) {

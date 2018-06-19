@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import logic.Question;
@@ -39,6 +41,7 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam>{
     private Label points;
     @FXML
     private Label correctAnswerLabel;
+
 
 	private FXMLLoader mLLoader;
 
@@ -75,7 +78,15 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam>{
         	s+=( temp==1 ? ")" : "s)" );
         	points.setText(s);
         	questionNumber.setText(Integer.toString(((gui.QuestionInExam)qie).getSerialNumberInExam())+")");
+        	
+        	ToggleGroup group = new ToggleGroup();
+        	radioButton1.setToggleGroup(group);
+        	radioButton2.setToggleGroup(group);
+        	radioButton3.setToggleGroup(group);
+        	radioButton4.setToggleGroup(group);
+        	
 
+        	
 	        setGraphic(pane);
 	        }
 
