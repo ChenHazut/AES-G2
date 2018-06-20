@@ -59,10 +59,12 @@ public class ServerGUI {
 	void connectButtonAction(ActionEvent event) {
 		connectButton.setDisable(true);
 		connectLabel.setVisible(false);
-		connL.setDisable(true);
+		connL.setVisible(false);
+		connectImg.setVisible(false);
 		disconnectButton.setDisable(false);
 		connectLabel1.setVisible(true);
-		disconnL.setDisable(false);
+		disconnL.setVisible(true);
+		disConnectImg.setVisible(true);
 		portTF.setDisable(true);
 		DBNameTF.setDisable(true);
 		int port = 0; // Port to listen on
@@ -97,10 +99,12 @@ public class ServerGUI {
 		OutputMessage.clear();
 		connectButton.setDisable(false);
 		connectLabel.setVisible(true);
-		connL.setDisable(false);
+		connL.setVisible(true);
+		connectImg.setVisible(true);
 		disconnectButton.setDisable(true);
 		connectLabel1.setVisible(false);
-		disconnL.setDisable(true);
+		disconnL.setVisible(false);
+		disConnectImg.setVisible(false);
 		portTF.setDisable(false);
 		DBNameTF.setDisable(false);
 		try {

@@ -1356,35 +1356,59 @@ public class EchoServer extends AbstractServer {
 		while (rs.next()) {
 			ExamInExecution ee = new ExamInExecution(); // create the new ExamInExecution
 			Exam e = new Exam(); // create the new exam that execute
+
 			e.setExamID(rs.getString(1));
-			e.setCourse(new Course(rs.getString(8), rs.getString(9), rs.getString(12),
-					(new Subject(rs.getString(7), rs.getString(10)))));
+			e.setTeacherID(rs.getString(2)); // SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
 			e.setWasUsed(rs.getInt(3) == 1); // CHANGE THE STATUS OF THE EXAM
 			e.setInstructionForTeacher(rs.getString(4));
 			e.setInstructionForStudent(rs.getString(5));
 			e.setDuration(rs.getInt(6));
-			e.setTeacherID(rs.getString(2)); // SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
-			e.setTeacherName(rs.getString(11)); // SAVE THE TEACHER THAT WROTE THE EXAM
+			e.setCourse(new Course(rs.getString(8), rs.getString(9), rs.getString(2),
+					(new Subject(rs.getString(7), rs.getString(10)))));
 
-			ee.setExamDet(e);
+			String tempID = new String(rs.getString(2)); //
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2.executeQuery(" SELECT U.userName FROM user AS U WHERE U.userID =" + tempID);
+			rs2.next();
+			e.setTeacherName(rs2.getString(1));
+
+			// ee.setExamDet(e);
 			ee.setExecutionID(rs.getInt(13));
 			ee.setLocked(rs.getBoolean(14));
-			ee.setIsGroup(rs.getBoolean(16));
-			// finish to create the exam
-
-			ee.setCourseName(rs.getString(9));
-			ee.setCourseID(rs.getString(8));
-			ee.setSubjectID(rs.getString(7));
 			ee.setExamCode(rs.getString(15));
+			ee.setIsGroup(rs.getBoolean(16));
+			ee.setSubjectID(rs.getString(7));
+			ee.setCourseID(rs.getString(8));
+			ee.setCourseName(rs.getString(9));
+			// finish to create the exam
+			User u = new User();
+			u.setuID(rs.getString(12));
+			u.setuName(rs.getString(11));
+			ee.setExecTeacher(u);
 			// finish to create the exam to execute
 
-			String tempID = new String(rs.getString(12)); // CREATE STRING WITH THE ID OF THE THEACHER TO CREATE USER
-			Statement stmt2 = (Statement) conn.createStatement();
-			ResultSet rs2 = stmt2.executeQuery(" SELECT * FROM user AS U WHERE U.userID =" + tempID);
-			rs2.next();
-			User excteacher = new User(rs2.getString(1), rs2.getString(4));
-			excteacher.setuName(rs2.getString(2));
-			ee.setExecTeacher(excteacher);
+			HashMap<Question, Integer> questionsInExam = new HashMap<Question, Integer>();
+			rs2 = stmt2.executeQuery("SELECT * FROM question as q, questioninexam as qic"
+					+ " WHERE qic.questionID=q.questionID AND qic.examID=" + e.getExamID());
+
+			while (rs2.next()) {
+				String temp = rs2.getString(1);
+				Statement stmt3 = (Statement) conn.createStatement();
+				String str = "SELECT * FROM answersinquestion AS ans WHERE ans.questionID=" + temp;
+				ResultSet rs3 = stmt3.executeQuery(str);
+				String[] answers = new String[4];
+				int i = 0;
+				while (rs3.next()) {
+					answers[i++] = rs3.getString(3);
+				}
+				rs3.close();
+				Question q = new Question(rs2.getString(2), rs2.getString(1), rs2.getString(3), rs.getString(4),
+						answers[0], answers[1], answers[2], answers[3], rs2.getInt(5));
+				questionsInExam.put(q, rs2.getInt(9));
+			}
+			e.setQuestions(questionsInExam);
+
+			ee.setExamDet(e);
 			tempArr.add(ee); // add all the exam in exacution to the arr
 			rs2.close();
 			stmt2.close();

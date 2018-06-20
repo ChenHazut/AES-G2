@@ -67,16 +67,14 @@ public class ExamFormForStudentGUI {
 		observableQuestions = FXCollections.observableArrayList();
 		if (exam.getExamDet().getQuestions() != null)
 			selectedQuestion = exam.getExamDet().getQuestionsArrayList(); // took all the questions from the execution
-																			// exam
-		else
-			selectedQuestion = exam.getExamDet().getQuestionArr();
 		int j = 0;
 		for (int i = 0; i < selectedQuestion.size(); i++) {
 			int pointsPerQuestion = exam.getExamDet().getQuestions().get(selectedQuestion.get(i));
 			observableQuestions.add(new QuestionInExam(pointsPerQuestion, selectedQuestion.get(i), ++j));
 		}
 
-		if (!studentSolveExam) {
+		if (studentSolveExam) {
+			System.out.println("pleaseee start countdown");
 			timer.setVisible(true);
 			duration.setVisible(false);
 			durationLabel.setVisible(false);
@@ -91,7 +89,7 @@ public class ExamFormForStudentGUI {
 			}
 			int duration = exam.getExamDet().getDuration();
 			currSeconds = hmsToSeconds(duration / 60, duration % 60, 0);
-			setOutput();
+			startCountDown();
 		}
 
 		listView.setItems(observableQuestions);
