@@ -70,7 +70,7 @@ public class ComputerizedExamGUI implements Initializable {
 				Parent root = loader.load();
 				Scene scene = new Scene(root);
 				ExamFormForStudentGUI ExamForStudent = loader.getController();
-				ExamForStudent.initData(examToPerform, true);
+				ExamForStudent.initData(examToPerform, true, 0);
 				Stage stage = (Stage) okButton.getScene().getWindow();
 				stage.setScene(scene);
 				stage.show();

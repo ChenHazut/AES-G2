@@ -2,6 +2,7 @@ package logic;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashMap;
 
 public class StudentInExam implements Serializable {
 	private String studentID;
@@ -12,6 +13,7 @@ public class StudentInExam implements Serializable {
 	private Timestamp date; // the date of the exam
 	private String courseName; // the name of the course
 	private String studentStatus;
+	private HashMap<Question, Integer> checkedAnswers;
 
 	public StudentInExam() {
 		super();
@@ -96,23 +98,12 @@ public class StudentInExam implements Serializable {
 		this.executionID = executionID;
 	}
 
-	/*
-	 * public void Set_actualdoration(int actualdoration) {
-	 * this.actualdoration=actualdoration; }
-	 * 
-	 * public int Get_actualdoration() { return this.actualdoration; }
-	 */
+	public HashMap<Question, Integer> getCheckedAnswers() {
+		return checkedAnswers;
+	}
 
-	/*
-	 * public void Set_studentID(String studentID) { this.studentID=studentID; }
-	 * 
-	 * public String Get_studentID() { return this.studentID; }
-	 */
-
-	/*
-	 * public void Set_date(String date) { this.date=date; }
-	 * 
-	 * public String Get_date() { return this.date; }
-	 */
+	public void setCheckedAnswers(HashMap<Question, Integer> checkedAnswers) {
+		this.checkedAnswers = checkedAnswers;
+	}
 
 }

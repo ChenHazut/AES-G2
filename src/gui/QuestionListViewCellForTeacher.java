@@ -8,4 +8,9 @@ public class QuestionListViewCellForTeacher<T>
 		return true;
 	}
 
+	@Override
+	public void setCheckBoxInQuestion(String s) {
+			
+	}
+
 }

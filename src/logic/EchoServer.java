@@ -223,6 +223,9 @@ public class EchoServer extends AbstractServer {
 			System.out.println("get the exam to do the exam computerized");
 			getExamsToPerformComp(msg, client, conn);
 		}
+		if (msg.getqueryToDo().equals("getStudentAnswersInExam")) {
+			getStudentResultInExam(msg, client, conn);
+		}
 	}
 
 	// ********************************************************************************************
@@ -259,6 +262,10 @@ public class EchoServer extends AbstractServer {
 			q.setInstruction(rs4.getString(7));
 			map.put(q, rs4.getInt(3));
 		}
+		Exam e = new Exam();
+		ExamInExecution ee = new ExamInExecution();
+		e.setQuestions(map);
+		ee.setExamDet(e);
 		examTemp.getExamDet().setQuestions(map);
 		examTemp.getExamDet().getQuestionsArrayList();
 		examTemp.getExamDet().setQuestions(null);
@@ -1385,6 +1392,7 @@ public class EchoServer extends AbstractServer {
 			u.setuID(rs.getString(12));
 			u.setuName(rs.getString(11));
 			ee.setExecTeacher(u);
+
 			// finish to create the exam to execute
 
 			HashMap<Question, Integer> questionsInExam = new HashMap<Question, Integer>();
@@ -1430,6 +1438,50 @@ public class EchoServer extends AbstractServer {
 		} catch (Exception e) {
 
 		}
+	}
+
+	private void getStudentResultInExam(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+
+		StudentInExam sie = (StudentInExam) msg.getSentObj();
+		Statement stmt = (Statement) conn.createStatement();
+		ResultSet rs = stmt
+				.executeQuery("SELECT * FROM studentanswersinexam AS SAE WHERE SAE.studentID=" + sie.getStudentID()
+						+ " AND SAE.examId=" + sie.getExamID() + " AND SAE.executionID=" + sie.getExecutionID());
+		HashMap<Question, Integer> map = new HashMap<Question, Integer>();
+		while (rs.next()) {
+			int ans = rs.getInt(5);
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2
+					.executeQuery("SELECT * FROM Question AS Q WHERE " + "Q.questionID=" + rs.getString(4));
+			while (rs2.next()) {
+				String temp = rs2.getString(1);
+				Statement stmt3 = (Statement) conn.createStatement();
+				String str = "SELECT * FROM answersinquestion AS ans WHERE ans.questionID=" + temp;
+				ResultSet rs3 = stmt3.executeQuery(str);
+				String[] answers = new String[4];
+				int i = 0;
+				while (rs3.next()) {
+					answers[i++] = rs3.getString(3);
+				}
+
+				Question q = new Question(rs2.getString(2), rs2.getString(1), rs2.getString(3), rs2.getString(4),
+						answers[0], answers[1], answers[2], answers[3], rs2.getInt(5));
+				map.put(q, ans);
+
+				// rs3.close();
+				stmt3.close();
+			}
+			// rs2.close();
+			stmt2.close();
+		}
+		sie.setCheckedAnswers(map);
+
+		msg.setReturnObj(sie);
+		// rs.close();
+		stmt.close();
+		client.sendToClient(msg);
+
 	}
 
 	/**

@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import logic.ExamInExecution;
@@ -49,18 +51,28 @@ public class ShowExamsScoresGUI implements Initializable {
 	ObservableList<StudentInExam> GradesList;
 
 	public void ShowExamButtonAction() throws Exception {
-		ExamInExecution exam = st.getExamForStudent(gradeTable.getSelectionModel().getSelectedItem());
+		StudentInExam sie = gradeTable.getSelectionModel().getSelectedItem();
+		if(sie==null) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Error");
+			alert.setContentText("Please chose an exam!");
+			alert.showAndWait();
+			
+		}else {
+			ExamInExecution exam = st.getExamForStudent(sie);
 
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("ExamFormForStudent.fxml"));
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("ExamFormForStudent.fxml"));
 
-		Parent root = loader.load();
-		Scene scene = new Scene(root);
-		ExamFormForStudentGUI ExamForStudent = loader.getController();
-		ExamForStudent.initData(exam, false);
-		Stage stage = (Stage) gradeTable.getScene().getWindow();
-		stage.setScene(scene);
-		stage.show();
+			Parent root = loader.load();
+			Scene scene = new Scene(root);
+			ExamFormForStudentGUI ExamForStudent = loader.getController();
+			ExamForStudent.initData(exam, false, sie.getGrade() );
+			Stage stage = (Stage) gradeTable.getScene().getWindow();
+			stage.setScene(scene);
+			stage.show();
+		}
+		
 
 	}
 

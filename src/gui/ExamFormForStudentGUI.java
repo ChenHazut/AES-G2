@@ -3,7 +3,6 @@ package gui;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import logic.ExamInExecution;
 import logic.Question;
+import logic.StudentController;
 
 public class ExamFormForStudentGUI {
 
@@ -53,12 +53,15 @@ public class ExamFormForStudentGUI {
 	private Text secondTimer;
 	@FXML
 	private GridPane timer;
+	@FXML
+	private Label gradeLabel;
+	ExamInExecution exam;
 
 	Integer currSeconds;
 	Thread thrd;
 
-	public void initData(ExamInExecution exam, Boolean studentSolveExam) {
-
+	public void initData(ExamInExecution exam, Boolean studentSolveExam, int grade) {
+		this.exam = exam;
 		exeTeacherName.setText(exam.getExecTeacher().getuName());
 		duration.setText(Integer.toString(exam.getExamDet().getDuration()));// לשנות לזמן בפועל
 		instructions.setText(exam.getExamDet().getInstructionForStudent());
@@ -72,28 +75,36 @@ public class ExamFormForStudentGUI {
 			int pointsPerQuestion = exam.getExamDet().getQuestions().get(selectedQuestion.get(i));
 			observableQuestions.add(new QuestionInExam(pointsPerQuestion, selectedQuestion.get(i), ++j));
 		}
-
+		listView.setItems(observableQuestions);
 		if (studentSolveExam) {
-			System.out.println("pleaseee start countdown");
-			timer.setVisible(true);
-			duration.setVisible(false);
-			durationLabel.setVisible(false);
+			listView.setCellFactory(QuestionListView -> new QuestionListViewCellForStudent<QuestionInExam>());
+			disableListView.toBack();
+			gradeLabel.setVisible(false);
+			// timer.setVisible(true);
+			// duration.setVisible(false);
+			// durationLabel.setVisible(false);
+			// listView.setEditable(false);
+			// submit.setDisable(true);
+			// numberMap = new TreeMap<Integer, String>();
+			// for (Integer i = 0; i <= 60; i++) {
+			// if (0 <= i && i <= 9)
+			// numberMap.put(i, "0" + i.toString());
+			// else
+			// numberMap.put(i, i.toString());
+			// }
+			// int duration = exam.getExamDet().getDuration();
+			// currSeconds = hmsToSeconds(duration / 60, duration % 60, 0);
+			// startCountDown();
+		} else {
+			StudentController st = new StudentController();
+			st.getStudentResultInExam(st.getStudent().getuID(), exam);
 			listView.setEditable(false);
 			submit.setDisable(true);
-			numberMap = new TreeMap<Integer, String>();
-			for (Integer i = 0; i <= 60; i++) {
-				if (0 <= i && i <= 9)
-					numberMap.put(i, "0" + i.toString());
-				else
-					numberMap.put(i, i.toString());
-			}
-			int duration = exam.getExamDet().getDuration();
-			currSeconds = hmsToSeconds(duration / 60, duration % 60, 0);
-			startCountDown();
+			listView.setCellFactory(QuestionListView -> new QuestionListViewCellForStudetResults<QuestionInExam>());
+			disableListView.toFront();
+			gradeLabel.setText(gradeLabel.getText() + grade);
+			gradeLabel.setVisible(true);
 		}
-
-		listView.setItems(observableQuestions);
-		listView.setCellFactory(QuestionListView -> new QuestionListViewCellForStudent<QuestionInExam>());
 
 	}
 

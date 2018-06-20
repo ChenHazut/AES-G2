@@ -109,5 +109,10 @@
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Label>
+      <Label fx:id="gradeLabel" layoutX="231.0" layoutY="561.0" prefHeight="21.0" prefWidth="125.0" text="Final Grade: " textFill="#1d17df">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
