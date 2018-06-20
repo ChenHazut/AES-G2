@@ -81,7 +81,7 @@ public class TeacherController {
 		questionToSend.setSentObj(qToAdd);
 		client.accept(questionToSend);
 		try {
-			Thread.sleep(2500L);
+			Thread.sleep(3500L);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

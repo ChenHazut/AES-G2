@@ -2,6 +2,7 @@ package logic;
 
 import common.Message;
 import gui.LoginGUI;
+import ocsf.server.ConnectionToClient;
 
 public class LoginController {
 	User userToSend;
@@ -15,6 +16,23 @@ public class LoginController {
 
 	public LoginController() {
 		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+	}
+
+	public ConnectionToClient getClientConnection() {
+		Message msg = new Message();
+		msg.setSentObj(null);
+		msg.setqueryToDo("getConnection");
+		msg.setClassType("User");
+		client.accept(msg);
+
+		try {
+			Thread.sleep(4000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		return (ConnectionToClient) msg.getReturnObj();
 	}
 
 	public boolean checkIfUserIDExist() // sent message to db to get user details and check if user id exist
@@ -51,6 +69,7 @@ public class LoginController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		client.printAllConnectedUsers();
 
 	}
 
@@ -60,6 +79,7 @@ public class LoginController {
 		msg.setqueryToDo("logout");
 		user.setIsLoggedIn("NO");
 		msg.setSentObj(user);
+
 		client.accept(msg);
 		try {
 			Thread.sleep(1500L);

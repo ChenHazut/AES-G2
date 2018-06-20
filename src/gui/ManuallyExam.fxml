@@ -28,7 +28,7 @@
             <Image url="@../images/outExam.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="66.0" fitWidth="56.0" layoutX="74.0" layoutY="277.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="downloadImage" fitHeight="66.0" fitWidth="56.0" layoutX="74.0" layoutY="277.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/download.png" />
          </image>

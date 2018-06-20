@@ -13,13 +13,16 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 import logic.Exam;
 import logic.Question;
+import logic.User;
 
 public class CreateDocument {
 
 	Exam exam;
+	private User student;
 
-	public CreateDocument(Exam exam) {
+	public CreateDocument(Exam exam, User student) {
 		this.exam = exam;
+		this.student = student;
 	}
 
 	public void createWordExam() throws IOException {
@@ -64,7 +67,8 @@ public class CreateDocument {
 		XWPFRun run2 = paragraph2.createRun();
 		run2.setText("Good Luck!");
 		// Write the Document in file system
-		FileOutputStream out = new FileOutputStream(new File("./exams/exam_" + exam.getExamID() + ".docx"));
+		FileOutputStream out = new FileOutputStream(
+				new File("./exams/exam_" + exam.getExamID() + "_" + student.getuID() + ".docx"));
 		document.write(out);
 		out.close();
 	}

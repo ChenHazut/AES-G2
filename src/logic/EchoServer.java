@@ -45,6 +45,10 @@ public class EchoServer extends AbstractServer {
 	private String DBPassword;
 	private Boolean isDBLoggedIn = false;
 	private Connection conn;
+	private HashMap<User, ConnectionToClient> connectedClients;
+	private ArrayList<User> connected;
+
+	private HashMap<ExecutionDetails, ArrayList<StudentInExam>> exemanieeList;
 
 	// Constructors ****************************************************
 
@@ -58,6 +62,10 @@ public class EchoServer extends AbstractServer {
 		super(port);
 		this.DBName = dbName;
 		this.DBPassword = dbPass;
+		connectedClients = new HashMap<User, ConnectionToClient>();
+		connected = new ArrayList<User>();
+		exemanieeList = new HashMap<ExecutionDetails, ArrayList<StudentInExam>>();
+
 	}
 
 	// Instance methods ************************************************
@@ -135,6 +143,8 @@ public class EchoServer extends AbstractServer {
 			loginUser(msg, client, conn);
 		else if (msg.getqueryToDo().equals("logout"))
 			logoutUser(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getConnection"))
+			getConnection(msg, client, conn);
 
 	}
 
@@ -226,12 +236,20 @@ public class EchoServer extends AbstractServer {
 		if (msg.getqueryToDo().equals("getStudentAnswersInExam")) {
 			getStudentResultInExam(msg, client, conn);
 		}
+		if (msg.getqueryToDo().equals("changeStudentInExamStatus")) {
+			changeStudentInExamStatus(msg, client, conn);
+		}
 	}
 
 	// ********************************************************************************************
 	// get data or change data in DB methods
 	// ********************************************************************************************
 	// search in db for user with same userID as sentObj in msg
+	private void getConnection(Message msg, ConnectionToClient client, Connection conn2) throws IOException {
+		msg.setReturnObj(client);
+		client.sendToClient(msg);
+
+	}
 
 	public void getExamsToPerformComp(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
@@ -420,6 +438,10 @@ public class EchoServer extends AbstractServer {
 			rs.updateRow();
 			rs.close();
 			msg.setReturnObj(user);
+			connected.add(user);
+			sendToAllClients(connected);
+			connectedClients.put(user, client);
+			// sendToAllClients(connected);
 			client.sendToClient(msg);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -440,6 +462,11 @@ public class EchoServer extends AbstractServer {
 			rs.updateRow();
 			rs.close();
 			msg.setReturnObj(user);
+			connectedClients.remove(user);
+			connected.remove(user);
+			sendToAllClients(connected);
+			// sendToAllClients(connected);
+			System.out.println("logged out");
 			client.sendToClient(msg);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -521,7 +548,7 @@ public class EchoServer extends AbstractServer {
 				rs2.moveToInsertRow();
 				rs2.updateString(1, q.getQuestionID());
 				rs2.updateString(2, Integer.toString(i));
-				rs2.updateString(3, q.getAnswers()[i]);
+				rs2.updateString(3, q.getAnswers()[i - 1]);
 				rs2.insertRow();
 			}
 			addToQuestionCourseTable(q, conn);
@@ -976,8 +1003,8 @@ public class EchoServer extends AbstractServer {
 			ein.setSubjectID(rs.getString(5));
 			ein.setIsGroup(rs.getInt(6) == 1 ? true : false);
 			User u = new User();
-			u.setuID(rs.getString(8));
-			u.setuName(rs.getString(9));
+			u.setuID(rs.getString(7));
+			u.setuName(rs.getString(8));
 			ein.setExecTeacher(u);
 			tempArr.add(ein);
 		}
@@ -1431,7 +1458,7 @@ public class EchoServer extends AbstractServer {
 		int fileSize = ((MyFile) msg).getSize();
 		MyFile myF = (MyFile) msg;
 		try {
-			File newFile = new File("SERVER" + myF.getFileName() + ".docx");
+			File newFile = new File("./submittedExams/SERVER_" + myF.getFileName() + ".docx");
 			FileOutputStream out = new FileOutputStream(newFile);
 			out.write(myF.getMybytearray());
 			out.close();
@@ -1481,6 +1508,67 @@ public class EchoServer extends AbstractServer {
 		// rs.close();
 		stmt.close();
 		client.sendToClient(msg);
+
+	}
+
+	private void changeStudentInExamStatus(Message msg, ConnectionToClient client, Connection conn2)
+			throws SQLException {
+		StudentInExam student = (StudentInExam) msg.getSentObj();
+		ExecutionDetails ed = new ExecutionDetails(student.getExamID(), student.getExecutionID());
+		if (student.getStudentStatus().equalsIgnoreCase("started")) {
+			if (exemanieeList.containsKey(ed))
+				exemanieeList.get(ed).add(student);
+			else {
+				ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+				arr.add(student);
+				exemanieeList.put(ed, arr);
+			}
+			sendToAllClients(exemanieeList);
+		} else if (student.getStudentStatus().equalsIgnoreCase("Finished")) {
+			System.out.println("tring to submit");
+			ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+			arr.add(student);
+			StudentInExam temp = student;
+			temp.setStudentStatus("started");
+
+			Iterator it = exemanieeList.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry) it.next();
+				if (((ExecutionDetails) pair.getKey()).getExecutionID() == ed.getExecutionID()
+						&& ((ExecutionDetails) pair.getKey()).getExamID().equals(ed.getExamID())) {
+					System.out.println("yessssssss");
+					((ArrayList) pair.getValue()).remove(temp);
+				}
+
+			}
+			exemanieeList.get(ed).remove(temp);
+			System.out.println("tring to submit5");
+			Statement stmt = (Statement) conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam");
+			rs.moveToInsertRow();
+			rs.updateString(1, student.getExamID());
+			rs.updateInt(2, student.getExecutionID());
+			rs.updateString(3, student.getStudentID());
+			rs.updateInt(4, student.getIsComp() ? 1 : 0);
+			rs.insertRow();
+			sendToAllClients(exemanieeList);
+		} else if (student.getStudentStatus().equalsIgnoreCase("notFinished")) {
+			ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+			arr.add(student);
+			StudentInExam temp = student;
+			temp.setStudentStatus("started");
+			exemanieeList.get(ed).remove(temp);
+			Statement stmt = (Statement) conn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam");
+			rs.moveToInsertRow();
+			rs.updateString(1, student.getExamID());
+			rs.updateInt(2, student.getExecutionID());
+			rs.updateString(3, student.getStudentID());
+			rs.updateInt(4, student.getIsComp() ? 1 : 0);
+			rs.updateInt(5, 0);
+			rs.insertRow();
+			sendToAllClients(exemanieeList);
+		}
 
 	}
 

@@ -13,6 +13,10 @@ public class StudentInExam implements Serializable {
 	private Timestamp date; // the date of the exam
 	private String courseName; // the name of the course
 	private String studentStatus;
+	private int numberOfCorrectAnswers;
+	private int numberOfWrongAnswers;
+	private int actualDuration;
+	private Boolean isComp;
 	private HashMap<Question, Integer> checkedAnswers;
 
 	public StudentInExam() {
@@ -104,6 +108,38 @@ public class StudentInExam implements Serializable {
 
 	public void setCheckedAnswers(HashMap<Question, Integer> checkedAnswers) {
 		this.checkedAnswers = checkedAnswers;
+	}
+
+	public int getNumberOfCorrectAnswers() {
+		return numberOfCorrectAnswers;
+	}
+
+	public void setNumberOfCorrectAnswers(int numberOfCorrectAnswers) {
+		this.numberOfCorrectAnswers = numberOfCorrectAnswers;
+	}
+
+	public int getNumberOfWrongAnswers() {
+		return numberOfWrongAnswers;
+	}
+
+	public void setNumberOfWrongAnswers(int numberOfWrongAnswers) {
+		this.numberOfWrongAnswers = numberOfWrongAnswers;
+	}
+
+	public int getActualDuration() {
+		return actualDuration;
+	}
+
+	public void setActualDuration(int actualDuration) {
+		this.actualDuration = actualDuration;
+	}
+
+	public Boolean getIsComp() {
+		return isComp;
+	}
+
+	public void setIsComp(Boolean isComp) {
+		this.isComp = isComp;
 	}
 
 }

@@ -63,6 +63,18 @@ public class ClientConsole implements ChatIF {
 		}
 	}
 
+	public void addConnectedUser(User u) {
+		client.addCilentToConnectedList(u);
+	}
+
+	public void removeConnectedUser(User u) {
+		client.addCilentToConnectedList(u);
+	}
+
+	public void printAllConnectedUsers() {
+		System.out.println("connected:");
+		client.printAllConnectedUsers();
+	}
 	// Instance methods ************************************************
 
 	/**

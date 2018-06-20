@@ -137,9 +137,9 @@ public class StudentController {
 		return e;
 	}
 
-	public void uploadManualExam(String fileExamPath) {
+	public void uploadManualExam(String fileExamName) {
 		Message msg = new Message();
-		msg.setSentObj(fileExamPath);
+		msg.setSentObj(fileExamName);
 		msg.setqueryToDo("uploadWordFileExam");
 		msg.setClassType("Student");
 
@@ -171,5 +171,21 @@ public class StudentController {
 		ExamInExecution examToReturn = new ExamInExecution();
 		examToReturn = (ExamInExecution) msg.getReturnObj();
 		return exam;
+	}
+
+	public void changeStudentInExamStatus(StudentInExam s) {
+		Message msg = new Message();
+		msg.setSentObj(s);
+		msg.setqueryToDo("changeStudentInExamStatus");
+		msg.setClassType("Student");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(4000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -208,6 +208,7 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 			executeTeacherLable.setText(selectedItem.getExecuteTeacherName());
 
 		} else {
+			executeByLable.setVisible(false);
 			int startedCount = 0;
 			int notStartedCount = 0;
 			int finishedCount = 0;

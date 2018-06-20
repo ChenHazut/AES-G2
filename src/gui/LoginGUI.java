@@ -136,9 +136,6 @@ public class LoginGUI implements Initializable {
 					PrincipleMenuGUI2 tmg = new PrincipleMenuGUI2();
 					tmg.start(primaryStage);
 				}
-				// Stage stage = (Stage) loginButton.getScene().getWindow(); // close login
-				// window
-				// stage.close();
 
 			}
 

@@ -11,9 +11,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import logic.Exam;
 import logic.ExamInExecution;
 import logic.StudentController;
+import logic.StudentInExam;
 
 public class ManuallyExamGUI {
 
@@ -37,6 +39,8 @@ public class ManuallyExamGUI {
 
 	@FXML
 	private ImageView uploadImage;
+	@FXML
+	private ImageView downloadImage;
 
 	@FXML
 	private Text secondTimer;
@@ -44,6 +48,8 @@ public class ManuallyExamGUI {
 	Integer currSeconds;
 	Thread thrd;
 	StudentController st;
+	Integer countPassedTime;
+	StudentInExam s;
 
 	public Integer hmsToSeconds(Integer h, Integer m, Integer s) {
 		Integer hToSeconds = h * 3600;
@@ -65,6 +71,9 @@ public class ManuallyExamGUI {
 						if (currSeconds == 0) {
 							uploadExam.setDisable(true);
 							uploadImage.setVisible(false);
+							s.setStudentStatus("NotFinished");
+							st.changeStudentInExamStatus(s);
+							countPassedTime++;
 							thrd.stop();
 
 						}
@@ -100,10 +109,12 @@ public class ManuallyExamGUI {
 	}
 
 	public void downloadExamAction(ActionEvent ae) throws IOException {
-
+		s.setStudentStatus("Started");
+		st.changeStudentInExamStatus(s);
 		Exam e = st.getExamByExamID(exam);
-		CreateDocument createWord = new CreateDocument(e);
+		CreateDocument createWord = new CreateDocument(e, st.getStudent());
 		createWord.createWordExam();
+		countPassedTime = 0;
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
@@ -111,19 +122,33 @@ public class ManuallyExamGUI {
 			e1.printStackTrace();
 		}
 		startCountDown();
+		downloadImage.setVisible(false);
+		downloadExam.setDisable(true);
+
 	}
 
 	public void uploadExamAction(ActionEvent ae) {
 		thrd.stop();
-		st.uploadManualExam("exam_" + exam.getExamDet().getExamID());
+		st.uploadManualExam("exam_" + exam.getExamDet().getExamID() + "_" + st.getStudent().getuID() + ".docx");
 		uploadExam.setDisable(true);
 		uploadImage.setVisible(false);
+		int actualTime = countPassedTime / 60;
+
+		s.setStudentStatus("finished");
+		st.changeStudentInExamStatus(s);
 
 	}
 
 	public void initData(ExamInExecution examInExecution) {
 		st = new StudentController();
 		exam = examInExecution;
+		s = new StudentInExam();
+		s.setIsComp(false);
+		s.setStudentID(st.getStudent().getuID());
+		s.setStudentName(st.getStudent().getuName());
+		s.setExamID(exam.getExamDet().getExamID());
+		s.setExecutionID(exam.getExecutionID());
+		s.setStudentStatus("notStarted");
 		examID.setText(examInExecution.getExamDet().getExamID());
 		courseNameTF.setText(examInExecution.getCourseName());
 		numberMap = new TreeMap<Integer, String>();
@@ -136,6 +161,11 @@ public class ManuallyExamGUI {
 		int duration = examInExecution.getExamDet().getDuration();
 		currSeconds = hmsToSeconds(duration / 60, duration % 60, 0);
 		setOutput();
+		Stage window = (Stage) downloadExam.getScene().getWindow();
+		// window.setOnCloseRequest(event -> {
+		// if (uploadImage.isVisible())
+		// event.consume();
+		// });
 
 	}
 

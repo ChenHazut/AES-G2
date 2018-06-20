@@ -9,10 +9,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import common.ChatIF;
 import common.Message;
 import common.MyFile;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
+import logic.ExecutionDetails;
+import logic.StudentInExam;
+import logic.User;
 import ocsf.client.AbstractClient;
 
 /**
@@ -32,6 +42,8 @@ public class ChatClient extends AbstractClient {
 	 * method in the client.
 	 */
 	ChatIF clientUI;
+	public ObservableSet<User> connected;
+	public ObservableMap<ExecutionDetails, ArrayList<StudentInExam>> examnieeList;
 
 	// Constructors ****************************************************
 
@@ -50,6 +62,9 @@ public class ChatClient extends AbstractClient {
 		super(host, port); // Call the superclass constructor
 		this.clientUI = clientUI;
 		openConnection();
+		connected = FXCollections.observableSet();
+		examnieeList = FXCollections.observableHashMap();
+
 	}
 
 	// Instance methods ************************************************
@@ -61,7 +76,20 @@ public class ChatClient extends AbstractClient {
 	 *            The message from the server.
 	 */
 	public void handleMessageFromServer(Object msg) {
-		clientUI.display(msg);
+		if (msg instanceof ArrayList) {
+
+			connected.clear();
+			connected.addAll((ArrayList) msg);
+		} else if (msg instanceof HashMap) {
+			examnieeList.clear();
+			HashMap<ExecutionDetails, ArrayList<StudentInExam>> temp = (HashMap<ExecutionDetails, ArrayList<StudentInExam>>) msg;
+			Iterator it = temp.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry) it.next();
+				examnieeList.put((ExecutionDetails) pair.getKey(), (ArrayList<StudentInExam>) pair.getValue());
+			}
+		} else
+			clientUI.display(msg);
 
 	}
 
@@ -76,7 +104,8 @@ public class ChatClient extends AbstractClient {
 		if (msg.getqueryToDo().equals("uploadWordFileExam")) {
 
 			MyFile file = new MyFile(((String) msg.getSentObj()));
-			String LocalfilePath = ("./exams/" + (String) msg.getSentObj() + ".docx");
+			String LocalfilePath = ("./exams/" + (String) msg.getSentObj());
+			System.out.println((String) msg.getSentObj());
 			File newFile = new File(LocalfilePath);
 			byte[] mybytearray = new byte[(int) newFile.length()];
 			FileInputStream fis = null;
@@ -124,6 +153,21 @@ public class ChatClient extends AbstractClient {
 		} catch (IOException e) {
 		}
 		System.exit(0);
+	}
+
+	public void addCilentToConnectedList(User u) {
+		connected.add(u);
+
+	}
+
+	public void removeCilentFromConnectedList(User u) {
+		connected.add(u);
+	}
+
+	public void printAllConnectedUsers() {
+		for (User u : connected) {
+			System.out.println(u);
+		}
 	}
 }
 // End of ChatClient class

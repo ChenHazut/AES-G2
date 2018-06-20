@@ -33,6 +33,7 @@ public class ServerMain extends Application {
 		Stage window = new Stage();
 		window.setScene(scene);
 		window.show();
+
 	}
 
 	public static void main(String[] args) throws SQLException {
