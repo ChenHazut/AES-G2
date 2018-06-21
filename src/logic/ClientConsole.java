@@ -39,7 +39,7 @@ public class ClientConsole implements ChatIF {
 	public String host;
 	public LoginGUI lg;
 	ChatClient client;
-	private Message msg;
+	private static Message msg;
 	int port;
 
 	// Constructors ****************************************************
@@ -94,6 +94,9 @@ public class ClientConsole implements ChatIF {
 	 */
 	public void display(Object message) {
 		this.msg = (Message) message;
+		if (((Message) msg).getReturnObj() instanceof String)
+			if (((String) ((Message) msg).getReturnObj()).equals("examIsLocked"))
+				System.out.println("locked recived");
 
 	}
 

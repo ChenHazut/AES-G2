@@ -3,9 +3,11 @@ package gui;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,9 +15,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import logic.ClientConsole;
 import logic.ExamInExecution;
 import logic.Question;
 import logic.StudentController;
+import logic.StudentInExam;
 
 public class ExamFormForStudentGUI {
 
@@ -36,7 +41,8 @@ public class ExamFormForStudentGUI {
 	private Text exeTeacherName;
 	@FXML
 	private Button submit;
-
+	@FXML
+	private Button cancleButton;
 	@FXML
 	private ImageView disableListView;
 	@FXML
@@ -56,11 +62,18 @@ public class ExamFormForStudentGUI {
 	@FXML
 	private Label gradeLabel;
 	ExamInExecution exam;
-
+	Integer countPassedTime;
 	Integer currSeconds;
 	Thread thrd;
+	Thread lockThread;
+	StudentInExam s;
+	private StudentController st;
+	private ClientConsole client;
 
 	public void initData(ExamInExecution exam, Boolean studentSolveExam, int grade) {
+		st = new StudentController();
+		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		countPassedTime = 0;
 		this.exam = exam;
 		exeTeacherName.setText(exam.getExecTeacher().getuName());
 		duration.setText(Integer.toString(exam.getExamDet().getDuration()));// לשנות לזמן בפועל
@@ -80,23 +93,32 @@ public class ExamFormForStudentGUI {
 			listView.setCellFactory(QuestionListView -> new QuestionListViewCellForStudent<QuestionInExam>());
 			disableListView.toBack();
 			gradeLabel.setVisible(false);
-			// timer.setVisible(true);
-			// duration.setVisible(false);
-			// durationLabel.setVisible(false);
-			// listView.setEditable(false);
-			// submit.setDisable(true);
-			// numberMap = new TreeMap<Integer, String>();
-			// for (Integer i = 0; i <= 60; i++) {
-			// if (0 <= i && i <= 9)
-			// numberMap.put(i, "0" + i.toString());
-			// else
-			// numberMap.put(i, i.toString());
-			// }
-			// int duration = exam.getExamDet().getDuration();
-			// currSeconds = hmsToSeconds(duration / 60, duration % 60, 0);
-			// startCountDown();
+			timer.setVisible(true);
+			duration.setVisible(false);
+			durationLabel.setVisible(false);
+			listView.setEditable(false);
+			numberMap = new TreeMap<Integer, String>();
+			for (Integer i = 0; i <= 60; i++) {
+				if (0 <= i && i <= 9)
+					numberMap.put(i, "0" + i.toString());
+				else
+					numberMap.put(i, i.toString());
+			}
+			int duration = exam.getExamDet().getDuration();
+			currSeconds = hmsToSeconds(duration / 60, duration % 60, 0);
+			startCountDown();
+			System.out.println("starting tocountdown");
+			s = new StudentInExam();
+			s.setIsComp(true);
+			s.setStudentID(st.getStudent().getuID());
+			s.setStudentName(st.getStudent().getuName());
+			s.setExamID(exam.getExamDet().getExamID());
+			s.setExecutionID(exam.getExecutionID());
+			s.setStudentStatus("Started");
+			st.changeStudentInExamStatus(s);
+
 		} else {
-			StudentController st = new StudentController();
+
 			st.getStudentResultInExam(st.getStudent().getuID(), exam);
 			listView.setEditable(false);
 			submit.setDisable(true);
@@ -105,6 +127,30 @@ public class ExamFormForStudentGUI {
 			gradeLabel.setText(gradeLabel.getText() + grade);
 			gradeLabel.setVisible(true);
 		}
+	}
+
+	public void cancleAction(ActionEvent ae) {
+		s.setStudentStatus("NotFinished");
+		int actualDuration = (countPassedTime / 60) + 1;
+		s.setActualDuration(actualDuration);
+		st.changeStudentInExamStatus(s);
+
+		Stage st = (Stage) submit.getScene().getWindow();
+		st.close();
+	}
+
+	public void submitExamAction(ActionEvent ae) {
+
+		thrd.stop();
+		st.uploadManualExam("exam_" + exam.getExamDet().getExamID() + "_" + st.getStudent().getuID() + ".docx");
+		submit.setDisable(true);
+		submit.setVisible(false);
+		disableListView.toFront();
+		cancleButton.setVisible(false);
+		int actualTime = (countPassedTime / 60) + 1;
+		s.setActualDuration(actualTime);
+		s.setStudentStatus("finished");
+		st.changeStudentInExamStatus(s);
 
 	}
 
@@ -125,9 +171,16 @@ public class ExamFormForStudentGUI {
 					while (true) {
 						setOutput();
 						Thread.sleep(1000);
+						countPassedTime++;
 						if (currSeconds == 0) {
-
+							s.setStudentStatus("NotFinished");
+							int actualDuration = (countPassedTime / 60) + 1;
+							s.setActualDuration(actualDuration);
+							st.changeStudentInExamStatus(s);
+							Stage st = (Stage) submit.getScene().getWindow();
+							st.close();
 							thrd.stop();
+
 						}
 						currSeconds -= 1;
 					}
@@ -137,6 +190,35 @@ public class ExamFormForStudentGUI {
 			}
 		});
 		thrd.start();
+		lockThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (client.getMessage().getReturnObj() instanceof String) {
+						if (((String) client.getMessage().getReturnObj()).equals("examIsLocked")) {
+							System.out.println("locked :)");
+							thrd.stop();
+							s.setStudentStatus("notFinished");
+							int actualDuration = (countPassedTime / 60) + 1;
+							s.setActualDuration(actualDuration);
+							st.changeStudentInExamStatus(s);
+							submit.setVisible(false);
+							lockThread.stop();
+						}
+					}
+				}
+
+			}
+
+		});
+		lockThread.start();
 	}
 
 	void setOutput() {

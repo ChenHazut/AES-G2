@@ -943,10 +943,40 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	private void lockExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException {
-
-		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+	private void lockExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
 		ExamInExecution exam = (ExamInExecution) msg.getSentObj();
+		ExecutionDetails ed = new ExecutionDetails(exam.getExamDet().getExamID(), exam.getExecutionID());
+		Iterator it = this.exemanieeList.entrySet().iterator();
+		ArrayList<StudentInExam> students = new ArrayList<StudentInExam>();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			if (ed.equals(pair.getKey())) {
+				students = ((ArrayList) pair.getValue());
+				break;
+			}
+		}
+		for (StudentInExam s : students) {
+			System.out.println("size of students array: " + students.size());
+			Iterator it2 = this.connectedClients.entrySet().iterator();
+			while (it2.hasNext()) {
+				Map.Entry pair = (Map.Entry) it2.next();
+				System.out.println("in map: " + (User) pair.getKey());
+				User u = new User();
+				u.setuID(s.getStudentID());
+				u.setuName(s.getStudentName());
+				System.out.println("user: " + u);
+				if (u.equals(pair.getKey())) {
+					System.out.println("found it");
+					Message m = new Message();
+					m.setReturnObj("examIsLocked");
+					((ConnectionToClient) pair.getValue()).sendToClient(m);
+					System.out.println("locked sent to students");
+					break;
+				}
+			}
+		}
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
 		System.out.println("examID= " + exam.getExamDet().getExamID());
 		ResultSet rs = stmt
 				.executeQuery("SELECT * FROM examInExecution as EE WHERE EE.examID=" + exam.getExamDet().getExamID());
@@ -954,6 +984,7 @@ public class EchoServer extends AbstractServer {
 		rs.updateInt(5, 1);
 		rs.updateRow();
 		rs.close();
+
 	}
 
 	private void getLockedExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn)
@@ -1530,26 +1561,24 @@ public class EchoServer extends AbstractServer {
 			arr.add(student);
 			StudentInExam temp = student;
 			temp.setStudentStatus("started");
-
 			Iterator it = exemanieeList.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pair = (Map.Entry) it.next();
-				if (((ExecutionDetails) pair.getKey()).getExecutionID() == ed.getExecutionID()
-						&& ((ExecutionDetails) pair.getKey()).getExamID().equals(ed.getExamID())) {
-					System.out.println("yessssssss");
+				if (ed.equals(pair.getKey())) {
 					((ArrayList) pair.getValue()).remove(temp);
-				}
 
+				}
 			}
-			exemanieeList.get(ed).remove(temp);
-			System.out.println("tring to submit5");
-			Statement stmt = (Statement) conn.createStatement();
+			// exemanieeList.get(ed).remove(temp);
+			Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam");
 			rs.moveToInsertRow();
 			rs.updateString(1, student.getExamID());
 			rs.updateInt(2, student.getExecutionID());
 			rs.updateString(3, student.getStudentID());
 			rs.updateInt(4, student.getIsComp() ? 1 : 0);
+			rs.updateInt(6, student.getActualDuration());
 			rs.insertRow();
 			sendToAllClients(exemanieeList);
 		} else if (student.getStudentStatus().equalsIgnoreCase("notFinished")) {
@@ -1557,8 +1586,15 @@ public class EchoServer extends AbstractServer {
 			arr.add(student);
 			StudentInExam temp = student;
 			temp.setStudentStatus("started");
-			exemanieeList.get(ed).remove(temp);
-			Statement stmt = (Statement) conn.createStatement();
+			Iterator it = exemanieeList.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry) it.next();
+				if (ed.equals(pair.getKey())) {
+					((ArrayList) pair.getValue()).remove(temp);
+				}
+			}
+			Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam");
 			rs.moveToInsertRow();
 			rs.updateString(1, student.getExamID());
@@ -1566,6 +1602,7 @@ public class EchoServer extends AbstractServer {
 			rs.updateString(3, student.getStudentID());
 			rs.updateInt(4, student.getIsComp() ? 1 : 0);
 			rs.updateInt(5, 0);
+			rs.updateInt(6, student.getActualDuration());
 			rs.insertRow();
 			sendToAllClients(exemanieeList);
 		}

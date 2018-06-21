@@ -72,6 +72,8 @@ public class ManuallyExamGUI {
 							uploadExam.setDisable(true);
 							uploadImage.setVisible(false);
 							s.setStudentStatus("NotFinished");
+							int actualDuration = (countPassedTime / 60) + 1;
+							s.setActualDuration(actualDuration);
 							st.changeStudentInExamStatus(s);
 							countPassedTime++;
 							thrd.stop();
@@ -132,11 +134,10 @@ public class ManuallyExamGUI {
 		st.uploadManualExam("exam_" + exam.getExamDet().getExamID() + "_" + st.getStudent().getuID() + ".docx");
 		uploadExam.setDisable(true);
 		uploadImage.setVisible(false);
-		int actualTime = countPassedTime / 60;
-
+		int actualTime = (countPassedTime / 60) + 1;
+		s.setActualDuration(actualTime);
 		s.setStudentStatus("finished");
 		st.changeStudentInExamStatus(s);
-
 	}
 
 	public void initData(ExamInExecution examInExecution) {

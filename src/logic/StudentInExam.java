@@ -142,4 +142,15 @@ public class StudentInExam implements Serializable {
 		this.isComp = isComp;
 	}
 
+	public boolean equals(Object arg0) {
+		StudentInExam s = (StudentInExam) arg0;
+		if (!s.getStudentID().equals(this.studentID))
+			return false;
+		if (!s.getExamID().equals(this.examID))
+			return false;
+		if (s.getExecutionID() != this.executionID)
+			return false;
+		return true;
+	}
+
 }

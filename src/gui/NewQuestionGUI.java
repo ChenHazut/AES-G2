@@ -188,11 +188,7 @@ public class NewQuestionGUI implements Initializable {
 		Stage window = (Stage) cancleButton.getScene().getWindow();
 		window.setScene(scene);
 		window.show();
-		// m.setUpdatedQuestion(q);
-		// Stage stage = (Stage) saveButton.getScene().getWindow();
-		// //m.setSelectedQuestion(null);
-		// QuestionRepositoryGUI qrg=new QuestionRepositoryGUI();
-		// qrg.start(stage);
+
 	}
 
 	public void cancleButtonAction(ActionEvent ae) throws Exception {

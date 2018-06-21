@@ -33,4 +33,13 @@ public class ExecutionDetails implements Serializable {
 		return "ExecutionDetails [ExamID=" + ExamID + ", ExecutionID=" + ExecutionID + "]";
 	}
 
+	public boolean equals(Object arg0) {
+		ExecutionDetails e = (ExecutionDetails) arg0;
+		if (e.getExecutionID() != this.ExecutionID)
+			return false;
+		if (!e.getExamID().equals(this.ExamID))
+			return false;
+		return true;
+	}
+
 }

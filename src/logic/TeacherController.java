@@ -289,6 +289,7 @@ public class TeacherController {
 	}
 
 	public void lockExam(ExamInExecution exam) {
+
 		Message msg = new Message();
 		msg.setClassType("Teacher");
 		msg.setqueryToDo("lockExam");

@@ -64,4 +64,9 @@ public class User implements Serializable {
 				+ isLoggedIn + "]";
 	}
 
+	public boolean equals(Object arg0) {
+		User u = (User) arg0;
+		return uID.equals(u.getuID());
+	}
+
 }

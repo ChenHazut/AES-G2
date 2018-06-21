@@ -38,8 +38,8 @@
             <Image url="@../images/goodluck.png" />
          </image>
       </ImageView>
-      <Button fx:id="submit" layoutX="64.0" layoutY="564.0" mnemonicParsing="false" text="Submit" />
-      <Button layoutX="133.0" layoutY="564.0" mnemonicParsing="false" text="Cancel" />
+      <Button fx:id="submit" layoutX="64.0" layoutY="564.0" mnemonicParsing="false" onAction="#submitExamAction" text="Submit" />
+      <Button fx:id="cancleButton" layoutX="133.0" layoutY="564.0" mnemonicParsing="false" onAction="#cancleAction" text="Cancel" />
       <ImageView fx:id="disableListView" fitHeight="456.0" fitWidth="565.0" layoutX="19.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true" />
       <GridPane fx:id="timer" layoutX="362.0" layoutY="17.0" prefHeight="57.0" prefWidth="218.0" style="-fx-background-color: #ADD8E6;" visible="false">
          <columnConstraints>
