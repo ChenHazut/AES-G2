@@ -355,4 +355,13 @@ public class TeacherController {
 		msg.setqueryToDo("saveExamToDB");
 		client.accept(msg);
 	}
+
+	public void sendRequestToOverTime(OvertimeDetails overTimeDet) {
+		Message msg = new Message();
+		msg.setSentObj(overTimeDet);
+		msg.setqueryToDo("sendOverTimeRequest");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+
+	}
 }

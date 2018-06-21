@@ -5,12 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
+import javafx.scene.control.TextInputDialog;
 import logic.Exam;
 import logic.Question;
 import logic.User;
@@ -25,7 +27,7 @@ public class CreateDocument {
 		this.student = student;
 	}
 
-	public void createWordExam() throws IOException {
+	public Boolean createWordExam() throws IOException {
 		// Blank Document
 		XWPFDocument document = new XWPFDocument();
 		Iterator it = exam.getQuestions().entrySet().iterator();
@@ -67,13 +69,20 @@ public class CreateDocument {
 		XWPFRun run2 = paragraph2.createRun();
 		run2.setText("Good Luck!");
 		// Write the Document in file system
-		FileOutputStream out = new FileOutputStream(
-				new File("./exams/exam_" + exam.getExamID() + "_" + student.getuID() + ".docx"));
-		document.write(out);
-		out.close();
-	}
+		TextInputDialog dialog = new TextInputDialog("C:\\exams");
+		dialog.setTitle("insert location");
+		dialog.setHeaderText("please enter requested folder location");
 
-	public static void main(String[] args) {
+		// Traditional way to get the response value.
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			FileOutputStream out = new FileOutputStream(
+					new File(result.get() + "\\exam_" + exam.getExamID() + "_" + student.getuID() + ".docx"));
+			document.write(out);
+			out.close();
+			return true;
+		}
+		return false;
 
 	}
 

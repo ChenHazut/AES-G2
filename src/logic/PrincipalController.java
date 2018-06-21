@@ -116,4 +116,39 @@ public class PrincipalController {
 		arrOfTeachers = (ArrayList<User>) msg.getReturnObj();
 		return arrOfTeachers; // This is the array from the function in echo server.
 	}
+
+	public ArrayList<OvertimeDetails> getAllOverTimeRequests() {
+		Message msg = new Message();
+		// Now we are going to the principal handler
+		msg.setqueryToDo("getAllOverTimeRequests");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		ArrayList<OvertimeDetails> arrOfovertime = new ArrayList<OvertimeDetails>();
+		arrOfovertime = (ArrayList<OvertimeDetails>) msg.getReturnObj();
+		return arrOfovertime; // This is the array from the function in echo server.
+
+	}
+
+	public void approveOvertime(OvertimeDetails overtimeDetails) {
+		Message msg = new Message();
+		msg.setClassType("Principal");
+		msg.setqueryToDo("approveOvertime");
+		msg.setSentObj(overtimeDetails);
+		client.accept(msg);
+
+	}
+
+	public void denyOvertime(OvertimeDetails overtimeDetails) {
+		// TODO Auto-generated method stub
+
+	}
 }

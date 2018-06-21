@@ -104,7 +104,7 @@ public class ChatClient extends AbstractClient {
 		if (msg.getqueryToDo().equals("uploadWordFileExam")) {
 
 			MyFile file = new MyFile(((String) msg.getSentObj()));
-			String LocalfilePath = ("./exams/" + (String) msg.getSentObj());
+			String LocalfilePath = ("C:\\exams\\" + (String) msg.getSentObj());
 			System.out.println((String) msg.getSentObj());
 			File newFile = new File(LocalfilePath);
 			byte[] mybytearray = new byte[(int) newFile.length()];

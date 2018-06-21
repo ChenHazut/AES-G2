@@ -57,5 +57,11 @@
             <Image url="@../images/principal.png" />
          </image>
       </ImageView>
+      <Label fx:id="notification" layoutX="1.0" layoutY="364.0" prefHeight="36.0" prefWidth="600.0" style="-fx-background-color: F08080;" text="         new request for overtime recived                                         " textAlignment="CENTER" visible="false">
+         <font>
+            <Font name="System Bold Italic" size="19.0" />
+         </font>
+      </Label>
+      <Button fx:id="viewRequests" layoutX="497.0" layoutY="369.0" mnemonicParsing="false" onAction="#ExtraTimeRequestsButtonAction" text="view requests" visible="false" />
    </children>
 </AnchorPane>

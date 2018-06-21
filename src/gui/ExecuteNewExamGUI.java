@@ -270,7 +270,7 @@ public class ExecuteNewExamGUI implements Initializable {
 	public void cancleBtnAction(ActionEvent event) throws IOException {
 
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("examInExecutionMenu.fxml"));
+		loader.setLocation(getClass().getResource("ExamInExecutionMenu.fxml"));
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		ExamInExecutionMenuGUI examInExecMenu = loader.getController();

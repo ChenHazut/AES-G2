@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.ClientConsole;
 import logic.ExamInExecution;
+import logic.OvertimeDetails;
 import logic.Question;
 import logic.StudentController;
 import logic.StudentInExam;
@@ -69,6 +70,7 @@ public class ExamFormForStudentGUI {
 	StudentInExam s;
 	private StudentController st;
 	private ClientConsole client;
+	Boolean flag = false;
 
 	public void initData(ExamInExecution exam, Boolean studentSolveExam, int grade) {
 		st = new StudentController();
@@ -211,6 +213,15 @@ public class ExamFormForStudentGUI {
 							st.changeStudentInExamStatus(s);
 							submit.setVisible(false);
 							lockThread.stop();
+						}
+					} else if (client.getMessage().getqueryToDo() instanceof String) {
+						if (((String) client.getMessage().getqueryToDo()).equals("overtimeApproved") && flag == false) {
+							System.out.println("over time is approved yesss");
+							flag = true;
+							client.getMessage().setqueryToDo(null);
+							flag = false;
+							int ot = ((OvertimeDetails) client.getMessage().getReturnObj()).getRequestedTime();
+							currSeconds += (ot * 60);
 						}
 					}
 				}

@@ -57,6 +57,7 @@ public class ClientConsole implements ChatIF {
 		this.port = port;
 		try {
 			client = new ChatClient(host, port, this);
+
 		} catch (IOException exception) {
 			System.out.println("Error: Can't setup connection!" + " Terminating client.");
 			System.exit(1);
@@ -97,6 +98,9 @@ public class ClientConsole implements ChatIF {
 		if (((Message) msg).getReturnObj() instanceof String)
 			if (((String) ((Message) msg).getReturnObj()).equals("examIsLocked"))
 				System.out.println("locked recived");
+		if (((Message) msg).getReturnObj() instanceof String)
+			if (((String) ((Message) msg).getReturnObj()).equals("newOverTimeRequest"))
+				System.out.println("bla bla bla");
 
 	}
 
@@ -110,6 +114,8 @@ public class ClientConsole implements ChatIF {
 	 */
 
 	public Message getMessage() {
+		if (msg == null)
+			msg = new Message();
 		return msg;
 	}
 

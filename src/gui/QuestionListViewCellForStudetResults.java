@@ -22,11 +22,11 @@ public class QuestionListViewCellForStudetResults<T>
 	
 	public void setCheckBoxInQuestion(String questionID) {
 		StudentController st = new StudentController();
-		HashMap<Question,Integer> questions = st.getStudentResults().getCheckedAnswers();
-		for (Map.Entry<Question, Integer> entry : questions.entrySet()) {
-			if(entry.getKey().getQuestionID().equals(questionID)) {
+		HashMap<QuestionInExam,Integer> questions = st.getStudentResults().getCheckedAnswers();
+		for (Map.Entry<QuestionInExam, Integer> entry : questions.entrySet()) {
+			if(entry.getKey().getQuestion().getQuestionID().equals(questionID)) {
 				answer=entry.getValue();
-				if(entry.getKey().getCorrectAnswer()==entry.getValue())
+				if(entry.getKey().getQuestion().getCorrectAnswer()==entry.getValue())
 					c=Color.GREEN;
 			}
 			

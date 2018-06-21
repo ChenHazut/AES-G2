@@ -178,14 +178,7 @@ public class StudentController {
 		msg.setSentObj(s);
 		msg.setqueryToDo("changeStudentInExamStatus");
 		msg.setClassType("Student");
-
 		client.accept(msg);
-		try {
-			Thread.sleep(4000L);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 }

@@ -109,9 +109,10 @@ public class ExamInExecutionMenuGUI implements Initializable {
 			loader.setLocation(getClass().getResource("ExamInExecutionPreview.fxml"));
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
-			ExamInExecutionPreviewGUI examInExecMenu = loader.getController();
-			examInExecMenu.initData(examsTableLocked.getSelectionModel().getSelectedItem(), "locked");
 			Stage window = (Stage) examsTableLocked.getScene().getWindow();
+			ExamInExecutionPreviewGUI examInExecMenu = loader.getController();
+			examInExecMenu.initData(examsTableLocked.getSelectionModel().getSelectedItem(), "locked", window);
+
 			window.setScene(scene);
 			window.show();
 		}
@@ -124,9 +125,9 @@ public class ExamInExecutionMenuGUI implements Initializable {
 			loader.setLocation(getClass().getResource("ExamInExecutionPreview.fxml"));
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
-			ExamInExecutionPreviewGUI examInExecMenu = loader.getController();
-			examInExecMenu.initData(examsTableWritten.getSelectionModel().getSelectedItem(), "written");
 			Stage window = (Stage) examsTableWritten.getScene().getWindow();
+			ExamInExecutionPreviewGUI examInExecMenu = loader.getController();
+			examInExecMenu.initData(examsTableWritten.getSelectionModel().getSelectedItem(), "written", window);
 			window.setScene(scene);
 			window.show();
 		}
@@ -139,9 +140,10 @@ public class ExamInExecutionMenuGUI implements Initializable {
 			loader.setLocation(getClass().getResource("ExamInExecutionPreview.fxml"));
 			Parent root = loader.load();
 			Scene scene = new Scene(root);
-			ExamInExecutionPreviewGUI examInExecMenu = loader.getController();
-			examInExecMenu.initData(examsTable.getSelectionModel().getSelectedItem(), "open");
 			Stage window = (Stage) examsTable.getScene().getWindow();
+			ExamInExecutionPreviewGUI examInExecMenu = loader.getController();
+			examInExecMenu.initData(examsTable.getSelectionModel().getSelectedItem(), "open", window);
+
 			window.setScene(scene);
 			window.show();
 		}

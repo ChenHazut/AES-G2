@@ -20,6 +20,7 @@ import com.mysql.jdbc.Statement;
 
 import common.Message;
 import common.MyFile;
+import gui.QuestionInExam;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -189,6 +190,8 @@ public class EchoServer extends AbstractServer {
 			getQuestionsForTeacherInCourse(msg, client, conn);
 		else if (msg.getqueryToDo().equals("getNextExamID"))
 			getNextExamID(msg, client, conn);
+		else if (msg.getqueryToDo().equals("sendOverTimeRequest"))
+			sendOverTimeRequest(msg, client, conn);
 	}
 
 	private void principalHandler(Message msg, ConnectionToClient client, Connection conn)
@@ -205,6 +208,12 @@ public class EchoServer extends AbstractServer {
 			getAllCoursesInDB(msg, client, conn);
 		else if (msg.getqueryToDo().equals("getAllSubjectsInDB")) // send to client all the subjectss. // e.g to logIn
 			getAllSubjectsInDB(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllOverTimeRequests")) // send to client all the subjectss. // e.g to
+			getAllOverTimeRequests(msg, client, conn);
+		else if (msg.getqueryToDo().equals("approveOvertime")) // send to client all the subjectss. // e.g to
+			approveOvertime(msg, client, conn);
+		else if (msg.getqueryToDo().equals("denyOvertime")) // send to client all the subjectss. // e.g to
+			denyOvertime(msg, client, conn);
 	}
 
 	private void StudentrHandler(Message msg, ConnectionToClient client, Connection conn)
@@ -740,27 +749,7 @@ public class EchoServer extends AbstractServer {
 			ein.setCourseID(rs.getString(4));
 			ein.setSubjectID(rs.getString(5));
 			ein.setIsGroup(rs.getInt(6) == 1 ? true : false);
-			// Statement stmt2 = (Statement) conn.createStatement();
-			// ResultSet rs2 = stmt.executeQuery("SELECT * FROM exam AS E WHERE
-			// examID="+ein.getExamDet().getExamID());
-			// ein.getExamDet().setDuration(rs2.getInt(6));
-			// ein.getExamDet().setInstructionForStudent(rs2.getString(5));
-			// ein.getExamDet().setInstructionForTeacher(rs2.getString(4));
-			// ein.getExamDet().setTeacherID(rs2.getString(2));
-			// ein.getExamDet().getCourse().setcID(rs2.getString(8));
-			// ein.getExamDet().getCourse().getSubject().setSubjectID(rs2.getString(7));
-			// ein.getExamDet().setWasUsed(rs.getInt(3)==1?true:false);
-			// stmt2 = (Statement) conn.createStatement();
-			// rs2 = stmt.executeQuery("SELECT * FROM questioninexam AS QE WHERE
-			// examID="+ein.getExamDet().getExamID());
-			// while(rs2.next())
-			// {
-			// Question q=new Question();
-			// q.setQuestionID(rs2.getString(1));
-			// q.setQuestionTxt(rs2.getString(2));
-			// q.setTeacherID(teacherId);
-			// ein.getExamDet().getQuestions().put(arg0, arg1)
-			// }
+
 			tempArr.add(ein);
 		}
 		rs.close();
@@ -978,8 +967,8 @@ public class EchoServer extends AbstractServer {
 		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 		System.out.println("examID= " + exam.getExamDet().getExamID());
-		ResultSet rs = stmt
-				.executeQuery("SELECT * FROM examInExecution as EE WHERE EE.examID=" + exam.getExamDet().getExamID());
+		ResultSet rs = stmt.executeQuery("SELECT * FROM examInExecution as EE WHERE EE.examID="
+				+ exam.getExamDet().getExamID() + " AND EE.executionID=" + exam.getExecutionID());
 		rs.last();
 		rs.updateInt(5, 1);
 		rs.updateRow();
@@ -1489,7 +1478,8 @@ public class EchoServer extends AbstractServer {
 		int fileSize = ((MyFile) msg).getSize();
 		MyFile myF = (MyFile) msg;
 		try {
-			File newFile = new File("./submittedExams/SERVER_" + myF.getFileName() + ".docx");
+
+			File newFile = new File("C:\\exams\\submittedExams\\SERVER_" + myF.getFileName() + ".docx");
 			FileOutputStream out = new FileOutputStream(newFile);
 			out.write(myF.getMybytearray());
 			out.close();
@@ -1506,12 +1496,13 @@ public class EchoServer extends AbstractServer {
 		ResultSet rs = stmt
 				.executeQuery("SELECT * FROM studentanswersinexam AS SAE WHERE SAE.studentID=" + sie.getStudentID()
 						+ " AND SAE.examId=" + sie.getExamID() + " AND SAE.executionID=" + sie.getExecutionID());
-		HashMap<Question, Integer> map = new HashMap<Question, Integer>();
+		HashMap<QuestionInExam, Integer> map = new HashMap<QuestionInExam, Integer>();
 		while (rs.next()) {
 			int ans = rs.getInt(5);
 			Statement stmt2 = (Statement) conn.createStatement();
 			ResultSet rs2 = stmt2
 					.executeQuery("SELECT * FROM Question AS Q WHERE " + "Q.questionID=" + rs.getString(4));
+			int j = 0;
 			while (rs2.next()) {
 				String temp = rs2.getString(1);
 				Statement stmt3 = (Statement) conn.createStatement();
@@ -1522,10 +1513,15 @@ public class EchoServer extends AbstractServer {
 				while (rs3.next()) {
 					answers[i++] = rs3.getString(3);
 				}
-
+				stmt3 = (Statement) conn.createStatement();
+				str = "SELECT * FROM questioninexam AS qie WHERE qie.questionID=" + temp + " AND examID="
+						+ sie.getExamID();
+				rs3 = stmt3.executeQuery(str);
+				rs3.next();
 				Question q = new Question(rs2.getString(2), rs2.getString(1), rs2.getString(3), rs2.getString(4),
 						answers[0], answers[1], answers[2], answers[3], rs2.getInt(5));
-				map.put(q, ans);
+				QuestionInExam qie = new QuestionInExam(rs3.getInt(3), q, j++);
+				map.put(qie, ans);
 
 				// rs3.close();
 				stmt3.close();
@@ -1569,7 +1565,6 @@ public class EchoServer extends AbstractServer {
 
 				}
 			}
-			// exemanieeList.get(ed).remove(temp);
 			Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam");
@@ -1580,7 +1575,23 @@ public class EchoServer extends AbstractServer {
 			rs.updateInt(4, student.getIsComp() ? 1 : 0);
 			rs.updateInt(6, student.getActualDuration());
 			rs.insertRow();
-			sendToAllClients(exemanieeList);
+			if (student.getIsComp()) {
+				Statement stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+				ResultSet rs2 = stmt2.executeQuery("SELECT * FROM studentanswersinexam");
+				Iterator it2 = student.getCheckedAnswers().entrySet().iterator();
+				while (it2.hasNext()) {
+					Map.Entry pair = (Map.Entry) it2.next();
+					rs2.moveToInsertRow();
+					rs2.updateString(1, student.getExamID());
+					rs2.updateInt(2, student.getExecutionID());
+					rs2.updateString(3, student.getStudentID());
+					rs2.updateString(4, ((Question) pair.getKey()).getQuestionID());
+					rs2.updateInt(5, (int) pair.getValue());
+				}
+			}
+			// sendToAllClients(exemanieeList);
+
 		} else if (student.getStudentStatus().equalsIgnoreCase("notFinished")) {
 			ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
 			arr.add(student);
@@ -1607,6 +1618,127 @@ public class EchoServer extends AbstractServer {
 			sendToAllClients(exemanieeList);
 		}
 
+	}
+
+	private void sendOverTimeRequest(Message msg, ConnectionToClient client, Connection conn2)
+			throws IOException, SQLException {
+		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
+		Iterator it = connectedClients.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			if (((User) pair.getKey()).getTitle().equalsIgnoreCase("Principle")) {
+				System.out.println(((User) pair.getKey()));
+				Message m = new Message();
+				m.setReturnObj("newOverTimeRequest");
+				((ConnectionToClient) pair.getValue()).sendToClient(m);
+			}
+		}
+		System.out.println("trtretetret");
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests");
+		rs.moveToInsertRow();
+		rs.updateString(1, overtime.getExamID());
+		rs.updateInt(2, overtime.getExecutionID());
+		rs.updateString(3, overtime.getReason());
+		rs.updateInt(4, overtime.getRequestedTime());
+		rs.insertRow();
+		stmt.close();
+		rs.close();
+
+	}
+
+	private void getAllOverTimeRequests(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests");
+		rs.moveToInsertRow();
+		ArrayList<OvertimeDetails> arrOfovertime = new ArrayList<OvertimeDetails>();
+		while (rs.next()) {
+			OvertimeDetails otd = new OvertimeDetails(rs.getString(1), rs.getInt(2), rs.getInt(4), rs.getString(3),
+					false);
+			arrOfovertime.add(otd);
+		}
+		msg.setReturnObj(arrOfovertime);
+		client.sendToClient(msg);
+		stmt.close();
+		rs.close();
+
+	}
+
+	private void denyOvertime(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		rs.deleteRow();
+		rs = stmt.executeQuery("SELECT * FROM examInExecution WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		User u = new User();
+		u.setuID(rs.getString(4));
+		Iterator it2 = this.connectedClients.entrySet().iterator();
+		while (it2.hasNext()) {
+			Map.Entry pair = (Map.Entry) it2.next();
+			if (u.equals(pair.getKey())) {
+				Message m = new Message();
+				m.setReturnObj(overtime);
+				m.setqueryToDo("overtimeApproved");
+				((ConnectionToClient) pair.getValue()).sendToClient(m);
+			}
+		}
+	}
+
+	private void approveOvertime(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		rs.deleteRow();
+		Iterator it = this.exemanieeList.entrySet().iterator();
+		ArrayList<StudentInExam> students = new ArrayList<StudentInExam>();
+		ExecutionDetails ed = new ExecutionDetails(overtime.getExamID(), overtime.getExecutionID());
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			if (ed.equals(pair.getKey())) {
+				students = ((ArrayList) pair.getValue());
+				break;
+			}
+		}
+		for (StudentInExam s : students) {
+			Iterator it2 = this.connectedClients.entrySet().iterator();
+			while (it2.hasNext()) {
+				Map.Entry pair = (Map.Entry) it2.next();
+				User u = new User();
+				u.setuID(s.getStudentID());
+				u.setuName(s.getStudentName());
+				if (u.equals(pair.getKey())) {
+					Message m = new Message();
+					m.setReturnObj(overtime);
+					m.setqueryToDo("overtimeApproved");
+					((ConnectionToClient) pair.getValue()).sendToClient(m);
+					break;
+				}
+			}
+		}
+		rs = stmt.executeQuery("SELECT * FROM examInExecution WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		User u = new User();
+		u.setuID(rs.getString(4));
+		Iterator it2 = this.connectedClients.entrySet().iterator();
+		while (it2.hasNext()) {
+			Map.Entry pair = (Map.Entry) it2.next();
+			if (u.equals(pair.getKey())) {
+				Message m = new Message();
+				m.setReturnObj(overtime);
+				m.setqueryToDo("overtimeApproved");
+				((ConnectionToClient) pair.getValue()).sendToClient(m);
+			}
+		}
 	}
 
 	/**

@@ -24,11 +24,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import logic.ExamInExecution;
+import logic.OvertimeDetails;
 import logic.StudentInExam;
 import logic.TeacherController;
 
@@ -111,6 +112,8 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 
 	ObservableList<PieChart.Data> pieChartData;
 
+	private Stage stage;
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
@@ -146,27 +149,31 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 	}
 
 	@FXML
-	void requestOvertimeBtnAction(ActionEvent event) {
-		TextInputDialog dialog = new TextInputDialog("0");
-		dialog.setTitle("");
-		dialog.setHeaderText("Request for overtime");
-		dialog.setContentText("Please enter amount of requested overtime:");
-
-		// Traditional way to get the response value.
-		Optional<String> result = dialog.showAndWait();
-		if (result.isPresent()) {
-			int i;
-			for (i = 0; i < result.get().length(); i++)
-				if (!Character.isDigit(result.get().charAt(i)))
-					break;
-			if (i == result.get().length())
-				System.out.println("time requested is: " + result.get());
+	void requestOvertimeBtnAction(ActionEvent event) throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("RequestOverTime.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		RequestOverTimeGUI overTime = loader.getController();
+		overTime.initData();
+		Stage window = new Stage();
+		window.initModality(Modality.WINDOW_MODAL);
+		window.setScene(scene);
+		window.setOnCloseRequest(e -> {
+			e.consume();
+			overTime.cancleButton(null);
+		});
+		window.initOwner(this.stage);
+		window.showAndWait();
+		if (overTime.result) {
+			tc.sendRequestToOverTime(new OvertimeDetails(exam.getExamID(), exam.getExecutionID(), overTime.time,
+					overTime.reason, false));
 		}
-
 	}
 
-	public void initData(ExamInExecutionRow selectedItem, String status) {
+	public void initData(ExamInExecutionRow selectedItem, String status, Stage st) {
 		studentOL = FXCollections.observableArrayList();
+		this.stage = st;
 		tc = new TeacherController();
 		this.exam = selectedItem;
 		examIDLabel.setText(exam.getExamID());

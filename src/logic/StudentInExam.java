@@ -3,8 +3,12 @@ package logic;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.Map;
+
+import gui.QuestionInExam;
 
 public class StudentInExam implements Serializable {
+
 	private String studentID;
 	private String studentName;
 	private int grade;
@@ -13,11 +17,26 @@ public class StudentInExam implements Serializable {
 	private Timestamp date; // the date of the exam
 	private String courseName; // the name of the course
 	private String studentStatus;
-	private int numberOfCorrectAnswers;
-	private int numberOfWrongAnswers;
-	private int actualDuration;
+	private HashMap<QuestionInExam, Integer> checkedAnswers;
+	private int NumberOfCorrectAnswer;
+	private int NumberOfWrongAnswer;
 	private Boolean isComp;
-	private HashMap<Question, Integer> checkedAnswers;
+	private int actualDuration;
+
+	public String oString() {
+		String s = "";
+		s += "\nExam ID: " + getExamID() + "\tExam Date" + getDate() + "\tCourse name: " + getCourseName() + "\n";
+		if (studentStatus.equals("finished")) {
+			s += "Student Grade: " + getGrade() + "\n" + "Correct Answers: " + getNumberOfCorrectAnswer()
+					+ "\tWrong Answers: " + getNumberOfWrongAnswer();
+			for (Map.Entry<QuestionInExam, Integer> entry : checkedAnswers.entrySet()) {
+				s += entry.getKey().toString() + "\nAnswer selected: " + entry.getValue();
+			}
+		} else {
+			s += "The student hasn't finished the exam\n";
+		}
+		return s;
+	}
 
 	public StudentInExam() {
 		super();
@@ -102,28 +121,28 @@ public class StudentInExam implements Serializable {
 		this.executionID = executionID;
 	}
 
-	public HashMap<Question, Integer> getCheckedAnswers() {
+	public HashMap<QuestionInExam, Integer> getCheckedAnswers() {
 		return checkedAnswers;
 	}
 
-	public void setCheckedAnswers(HashMap<Question, Integer> checkedAnswers) {
+	public void setCheckedAnswers(HashMap<QuestionInExam, Integer> checkedAnswers) {
 		this.checkedAnswers = checkedAnswers;
 	}
 
-	public int getNumberOfCorrectAnswers() {
-		return numberOfCorrectAnswers;
+	public int getNumberOfWrongAnswer() {
+		return NumberOfWrongAnswer;
 	}
 
-	public void setNumberOfCorrectAnswers(int numberOfCorrectAnswers) {
-		this.numberOfCorrectAnswers = numberOfCorrectAnswers;
+	public void setNumberOfWrongAnswer(int numberOfWrongAnswer) {
+		NumberOfWrongAnswer = numberOfWrongAnswer;
 	}
 
-	public int getNumberOfWrongAnswers() {
-		return numberOfWrongAnswers;
+	public int getNumberOfCorrectAnswer() {
+		return NumberOfCorrectAnswer;
 	}
 
-	public void setNumberOfWrongAnswers(int numberOfWrongAnswers) {
-		this.numberOfWrongAnswers = numberOfWrongAnswers;
+	public void setNumberOfCorrectAnswer(int numberOfCorrectAnswer) {
+		NumberOfCorrectAnswer = numberOfCorrectAnswer;
 	}
 
 	public int getActualDuration() {

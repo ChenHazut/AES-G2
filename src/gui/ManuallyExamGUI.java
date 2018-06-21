@@ -12,8 +12,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import logic.ClientConsole;
 import logic.Exam;
 import logic.ExamInExecution;
+import logic.OvertimeDetails;
 import logic.StudentController;
 import logic.StudentInExam;
 
@@ -47,9 +49,12 @@ public class ManuallyExamGUI {
 	Map<Integer, String> numberMap;
 	Integer currSeconds;
 	Thread thrd;
+	Thread lockThread;
 	StudentController st;
 	Integer countPassedTime;
 	StudentInExam s;
+	private ClientConsole client;
+	Boolean flag = false;
 
 	public Integer hmsToSeconds(Integer h, Integer m, Integer s) {
 		Integer hToSeconds = h * 3600;
@@ -87,6 +92,45 @@ public class ManuallyExamGUI {
 			}
 		});
 		thrd.start();
+		lockThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (client.getMessage().getReturnObj() instanceof String) {
+						if (((String) client.getMessage().getReturnObj()).equals("examIsLocked")) {
+							System.out.println("locked :)");
+							thrd.stop();
+							s.setStudentStatus("notFinished");
+							int actualDuration = (countPassedTime / 60) + 1;
+							s.setActualDuration(actualDuration);
+							st.changeStudentInExamStatus(s);
+							uploadImage.setVisible(false);
+							uploadExam.setVisible(false);
+							lockThread.stop();
+						}
+					} else if (client.getMessage().getqueryToDo() instanceof String) {
+						if (((String) client.getMessage().getqueryToDo()).equals("overtimeApproved") && flag == false) {
+							System.out.println("over time is approved yesss");
+							flag = true;
+							client.getMessage().setqueryToDo(null);
+							flag = false;
+							int ot = ((OvertimeDetails) client.getMessage().getReturnObj()).getRequestedTime();
+							currSeconds += (ot * 60);
+						}
+					}
+				}
+
+			}
+
+		});
+		lockThread.start();
 	}
 
 	void setOutput() {
@@ -115,7 +159,8 @@ public class ManuallyExamGUI {
 		st.changeStudentInExamStatus(s);
 		Exam e = st.getExamByExamID(exam);
 		CreateDocument createWord = new CreateDocument(e, st.getStudent());
-		createWord.createWordExam();
+		if (!createWord.createWordExam())
+			return;
 		countPassedTime = 0;
 		try {
 			Thread.sleep(1000);
@@ -141,6 +186,7 @@ public class ManuallyExamGUI {
 	}
 
 	public void initData(ExamInExecution examInExecution) {
+		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 		st = new StudentController();
 		exam = examInExecution;
 		s = new StudentInExam();
