@@ -253,6 +253,8 @@ public class ExecuteNewExamGUI implements Initializable {
 				}
 			}
 			e.setStudents(selectedStudentsList);
+			if (e.getStudents().size() == 0)
+				return;
 		}
 		e = tc.executeNewExam(e);
 		FXMLLoader loader = new FXMLLoader();

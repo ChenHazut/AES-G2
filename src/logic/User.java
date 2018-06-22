@@ -58,10 +58,8 @@ public class User implements Serializable {
 		Title = title;
 	}
 
-	@Override
 	public String toString() {
-		return "User [uID=" + uID + ", uName=" + uName + ", password=" + password + ", Title=" + Title + ", isLoggedIn="
-				+ isLoggedIn + "]";
+		return "User name: " + getuName() + "\nUser ID: " + getuID();
 	}
 
 	public boolean equals(Object arg0) {

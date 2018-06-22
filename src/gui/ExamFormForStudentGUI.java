@@ -179,6 +179,7 @@ public class ExamFormForStudentGUI {
 							int actualDuration = (countPassedTime / 60) + 1;
 							s.setActualDuration(actualDuration);
 							st.changeStudentInExamStatus(s);
+							submit.setVisible(false);
 							Stage st = (Stage) submit.getScene().getWindow();
 							st.close();
 							thrd.stop();

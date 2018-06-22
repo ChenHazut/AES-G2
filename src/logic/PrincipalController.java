@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import common.Message;
 import gui.LoginGUI;
+import gui.QuestionInExam;
 
 public class PrincipalController {
 	User principal;
@@ -150,5 +151,151 @@ public class PrincipalController {
 	public void denyOvertime(OvertimeDetails overtimeDetails) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public ArrayList<ExamReport> getAllExamReportsTeacherWrote(User user) {
+		Message msg = new Message();
+		msg.setSentObj(user);
+		msg.setqueryToDo("getAllExamReportsTeacherWrote");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		ArrayList<ExamReport> arr = (ArrayList<ExamReport>) msg.getReturnObj();
+		return arr; // This is the array from the function in echo server.
+	}
+
+	public ArrayList<StudentInExam> getAllExamReportsStudentPerformed(User user) {
+		Message msg = new Message();
+		// Now we are going to the principal handler
+		msg.setSentObj(user);
+		msg.setqueryToDo("getAllExamReportsStudentPerformed");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		ArrayList<StudentInExam> arr = (ArrayList<StudentInExam>) msg.getReturnObj();
+		return arr; // This is the array from the function in echo server.
+	}
+
+	public ArrayList<Subject> getAllSubjectsInData() {
+		Message msg = new Message();
+		msg.setSentObj("Course");
+		msg.setqueryToDo("getAllSubjectsInDB");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		return (ArrayList<Subject>) msg.getReturnObj();
+	}
+
+	public ArrayList<Course> getAllCoursesInData() {
+		Message msg = new Message();
+		msg.setSentObj("Course");
+		msg.setqueryToDo("getAllCoursesInDB");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(3500L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		ArrayList<Course> arr = (ArrayList<Course>) msg.getReturnObj();
+		return arr;
+	}
+
+	public ArrayList<ExamInExecution> getAllExamInExecution() {
+		Message msg = new Message();
+		msg.setSentObj("Course");
+		msg.setqueryToDo("getAllExamInExecution");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(5000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		return (ArrayList<ExamInExecution>) msg.getReturnObj();
+	}
+
+	public ArrayList<StudentInExam> getAllStudentInExam() {
+		Message msg = new Message();
+		msg.setSentObj("Course");
+		msg.setqueryToDo("getAllStudentInExam");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(5000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		return (ArrayList<StudentInExam>) msg.getReturnObj();
+	}
+
+	public ArrayList<QuestionInExam> getAllQuestionInExam() {
+		Message msg = new Message();
+		msg.setSentObj("Course");
+		msg.setqueryToDo("getAllQuestionInExam");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(5000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		return (ArrayList<QuestionInExam>) msg.getReturnObj();
+	}
+
+	public ArrayList<ExamReport> getAllExamsInCourse(Course c) {
+		Message msg = new Message();
+		msg.setSentObj(c);
+		msg.setqueryToDo("getAllExamsInCourseInDB");
+		msg.setClassType("Principal");
+
+		client.accept(msg);
+		try {
+			Thread.sleep(2000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		msg = client.getMessage();
+		ArrayList<ExamReport> arr = (ArrayList<ExamReport>) msg.getReturnObj();
+		return arr;
 	}
 }

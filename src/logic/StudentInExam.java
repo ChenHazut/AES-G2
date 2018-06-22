@@ -172,4 +172,19 @@ public class StudentInExam implements Serializable {
 		return true;
 	}
 
+	public String toString() {
+		String s = "";
+		s += "\nExam ID: " + getExamID() + "\tExam Date" + getDate() + "\tCourse name: " + getCourseName() + "\n";
+		if (studentStatus.equals("finished")) {
+			s += "Student Grade: " + getGrade() + "\n" + "Correct Answers: " + getNumberOfCorrectAnswer()
+					+ "\tWrong Answers: " + getNumberOfWrongAnswer();
+			for (Map.Entry<QuestionInExam, Integer> entry : checkedAnswers.entrySet()) {
+				s += entry.getKey().toString() + "\nAnswer selected: " + entry.getValue();
+			}
+		} else {
+			s += "The student hasn't finished the exam\n";
+		}
+		return s;
+	}
+
 }

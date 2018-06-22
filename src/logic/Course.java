@@ -57,9 +57,10 @@ public class Course implements Serializable {
 		this.teacherID = teacherID;
 	}
 
-	@Override
 	public String toString() {
-		return cName;
+		String s = "";
+		s += "Course name: " + getcID() + " Course ID: \n" + getcID() + subject.toString();
+		return s;
 	}
 
 }

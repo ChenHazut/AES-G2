@@ -79,6 +79,8 @@ public class ManuallyExamGUI {
 							s.setStudentStatus("NotFinished");
 							int actualDuration = (countPassedTime / 60) + 1;
 							s.setActualDuration(actualDuration);
+							uploadExam.setVisible(false);
+							uploadImage.setVisible(false);
 							st.changeStudentInExamStatus(s);
 							countPassedTime++;
 							thrd.stop();

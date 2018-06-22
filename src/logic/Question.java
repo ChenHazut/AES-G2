@@ -102,10 +102,6 @@ public class Question implements Serializable {
 		return teacherName;
 	}
 
-	public String toString() {
-		return questionID + QuestionTxt;
-	}
-
 	public void setTeacherName(String teacherName) {
 		this.teacherName = teacherName;
 	}
@@ -116,6 +112,17 @@ public class Question implements Serializable {
 
 	public void setCourseList(ArrayList<Course> courseList) {
 		this.courseList = courseList;
+	}
+
+	public String toString() {
+		String s = "";
+		// s+="Teacher name: "+getTeacherName() +" Teacher id: "+getTeacherID();
+		s += "\nQuestion ID: " + getQuestionID() + "\nInstructions: " + getInstruction() + "\nQuestion Body: "
+				+ getQuestionTxt() + "\n";
+		for (int i = 0; i < answers.length; i++)
+			s += "\tanswer " + (i + 1) + ": " + answers[i] + "\n";
+		s += "The correct answer is: " + getCorrectAnswer();
+		return s;
 	}
 
 }

@@ -29,12 +29,11 @@ public class PrincipleMenuGUI2 implements Initializable {
 	private Label notification;
 	@FXML
 	private Button viewRequests;
-
-	private User principle;
+	private User principal;
 	private LoginController lc;
+	private boolean flag = false;
 	private Thread overtimeThread;
 	private ClientConsole client;
-	private boolean flag = false;
 
 	public void ExtraTimeRequestsButtonAction() throws Exception {
 		flag = false;
@@ -50,10 +49,15 @@ public class PrincipleMenuGUI2 implements Initializable {
 	}
 
 	public void StatisticsButtonAction() throws Exception { // When we click on the Statistics button, it will send us
-															// to the Statistics menu.
-		StatisticsMenuGUI qrg = new StatisticsMenuGUI();
-		Stage primaryStage = new Stage();
-		qrg.start(primaryStage);
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("StatisticsMenu.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		StatisticsMenuGUI sm = loader.getController();
+		sm.initData(principal);
+		Stage window = new Stage();
+		window.setScene(scene);
+		window.show();
 	}
 
 	public void SystemDetailsButtonAction() throws Exception {
@@ -68,8 +72,9 @@ public class PrincipleMenuGUI2 implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 		LoginController lc = new LoginController();
-		this.principle = lc.getUser();
-		helloMsgLabel_P.setText("Hello " + principle.getuName() + ",");
+		lc.getUser().setTitle("Principal");
+		this.principal = lc.getUser();
+		helloMsgLabel_P.setText("Hello " + principal.getuName() + ",");
 		// now, after the initialization, the title is "Hello XXX YYY,"
 		overtimeThread = new Thread(new Runnable() {
 
@@ -119,6 +124,5 @@ public class PrincipleMenuGUI2 implements Initializable {
 			lc.logoutUser();
 			System.exit(0);
 		});
-
 	}
 }

@@ -362,6 +362,20 @@ public class TeacherController {
 		msg.setqueryToDo("sendOverTimeRequest");
 		msg.setClassType("Teacher");
 		client.accept(msg);
+	}
 
+	public ArrayList<ExamReport> getAllExamReportsTeacherWrote(User user) {
+		Message msg = new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("getAllExamReportsTeacherWrote");
+		msg.setSentObj(user);
+		client.accept(msg);
+		try {
+			Thread.sleep(3000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		return (ArrayList<ExamReport>) msg.getReturnObj();
 	}
 }

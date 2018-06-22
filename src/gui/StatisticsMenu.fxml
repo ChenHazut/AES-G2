@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="339.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StatisticsMenuGUI">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StatisticsMenuGUI">
    <children>
-      <ImageView fitHeight="414.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="470.0" fitWidth="630.0" layoutX="8.0" layoutY="-11.0" pickOnBounds="true">
          <image>
             <Image url="@../images/backgraond.png" />
          </image>
@@ -19,38 +22,17 @@
             <Font name="System Bold Italic" size="28.0" />
          </font>
       </Label>
-      <ImageView fitHeight="69.0" fitWidth="67.0" layoutX="24.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/ststistics.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="69.0" fitWidth="67.0" layoutX="24.0" layoutY="158.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/ststistics.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="69.0" fitWidth="67.0" layoutX="319.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/ststistics.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="105.0" layoutY="102.0" text="Student statistics">
-         <font>
-            <Font name="System Bold Italic" size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="105.0" layoutY="181.0" text="Course statistics">
-         <font>
-            <Font name="System Bold Italic" size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="407.0" layoutY="102.0" text="Teacher statistics">
-         <font>
-            <Font name="System Bold Italic" size="15.0" />
-         </font>
-      </Label>
-      <Button fx:id="StudentStatisticsButton" layoutX="32.0" layoutY="80.0" mnemonicParsing="false" onAction="#StudentStatisticsButtonAction" opacity="0.0" prefHeight="65.0" prefWidth="237.0" text="Student Statistics" />
-      <Button fx:id="TeacherStatisticsButton" layoutX="325.0" layoutY="80.0" mnemonicParsing="false" onAction="#TeacherStatisticsButtonAction" opacity="0.0" prefHeight="65.0" prefWidth="237.0" text="Teacher Statistics" />
-      <Button fx:id="CourseStatisticsButton" layoutX="32.0" layoutY="159.0" mnemonicParsing="false" onAction="#CourseStatisticsButtonAction" opacity="0.0" prefHeight="65.0" prefWidth="237.0" text="Course Statistics" />
+      <ComboBox fx:id="reportCombo" layoutX="16.0" layoutY="90.0" onAction="#reportComboAction" prefHeight="25.0" prefWidth="166.0" promptText="Choose report option" />
+      <ComboBox fx:id="personCombo" layoutX="202.0" layoutY="90.0" onAction="#personComboAction" prefHeight="25.0" prefWidth="199.0" />
+      <ComboBox fx:id="examCombo" layoutX="419.0" layoutY="90.0" onAction="#examComboAction" prefHeight="25.0" prefWidth="199.0" promptText="Choose exam" />
+      <ComboBox fx:id="courseCombo" layoutX="202.0" layoutY="90.0" onAction="#courseComboAction" prefHeight="25.0" prefWidth="199.0" />
+      <GridPane fx:id="grid" layoutX="19.0" layoutY="125.0" prefHeight="332.0" prefWidth="603.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
    </children>
 </AnchorPane>

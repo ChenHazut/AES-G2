@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Exam implements Serializable {
 	private HashMap<Question, Integer> questions;
@@ -123,6 +124,19 @@ public class Exam implements Serializable {
 			questionsArr.add(entry.getKey());
 		}
 		return questionsArr;
+	}
+
+	public String toString() {
+		String s = "";
+		s += "Exam ID: " + getExamID() + "\tThe exam was " + (wasUsed ? "used\n" : "not used\n") + "Course name: "
+				+ getCourseName() + "\n" + "duration: " + getDuration() + "\n" + "Teacher instructions: "
+				+ getInstructionForTeacher() + "\nStudent instructions: " + getInstructionForStudent();
+		for (Entry<Question, Integer> entry : questions.entrySet()) {
+			s += "\n(" + entry.getValue() + " point";
+			s += (entry.getValue() < 10 ? ")\n" : "s)\n");
+			s += entry.getKey().toString();
+		}
+		return s;
 	}
 
 }
