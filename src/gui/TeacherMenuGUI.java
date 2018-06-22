@@ -95,7 +95,7 @@ public class TeacherMenuGUI implements Initializable {
 
 	public void initData() {
 
-		LoginController lc = new LoginController();
+		lc = new LoginController();
 		lc.getUser().setTitle("Teacher");
 		this.teacher = lc.getUser();
 		helloMsgLabel.setText("Hello " + teacher.getuName() + ",");

@@ -1,7 +1,6 @@
 package gui;
 
-public class QuestionListViewCellForStudent<T> 
- 					extends QuestionListViewCell<QuestionInExam>{
+public class QuestionListViewCellForStudent<T> extends QuestionListViewCell<QuestionInExam> {
 
 	@Override
 	public Boolean setCorrectAnswerLabel() {
@@ -10,7 +9,7 @@ public class QuestionListViewCellForStudent<T>
 
 	@Override
 	public void setCheckBoxInQuestion(String s) {
-			
+
 	}
 
 }

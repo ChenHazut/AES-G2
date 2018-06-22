@@ -179,6 +179,7 @@ public class StudentController {
 		msg.setqueryToDo("changeStudentInExamStatus");
 		msg.setClassType("Student");
 		client.accept(msg);
+		System.out.println("test1");
 
 	}
 }

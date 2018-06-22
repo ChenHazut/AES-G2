@@ -74,6 +74,7 @@ public class ExamFormForStudentGUI {
 
 	public void initData(ExamInExecution exam, Boolean studentSolveExam, int grade) {
 		st = new StudentController();
+		StudentSelection ss = StudentSelection.getInstance();
 		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 		countPassedTime = 0;
 		this.exam = exam;
@@ -117,6 +118,7 @@ public class ExamFormForStudentGUI {
 			s.setExamID(exam.getExamDet().getExamID());
 			s.setExecutionID(exam.getExecutionID());
 			s.setStudentStatus("Started");
+
 			st.changeStudentInExamStatus(s);
 
 		} else {
@@ -142,9 +144,7 @@ public class ExamFormForStudentGUI {
 	}
 
 	public void submitExamAction(ActionEvent ae) {
-
 		thrd.stop();
-		st.uploadManualExam("exam_" + exam.getExamDet().getExamID() + "_" + st.getStudent().getuID() + ".docx");
 		submit.setDisable(true);
 		submit.setVisible(false);
 		disableListView.toFront();
@@ -153,6 +153,8 @@ public class ExamFormForStudentGUI {
 		s.setActualDuration(actualTime);
 		s.setStudentStatus("finished");
 		st.changeStudentInExamStatus(s);
+		StudentSelection ss = StudentSelection.getInstance();
+		s.setCheckedAnswers(ss.studentAnswers);
 
 	}
 
