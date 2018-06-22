@@ -10,8 +10,6 @@ import client.ChatClient;
 import common.ChatIF;
 import common.Message;
 import gui.LoginGUI;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /**
  * This class constructs the UI for a chat client. It implements the chat
@@ -23,7 +21,7 @@ import javafx.stage.Stage;
  * @author Dr Robert Lagani&egrave;re
  * @version July 2000
  */
-public class ClientConsole extends Application implements ChatIF {
+public class ClientConsole implements ChatIF {
 	// Class variables *************************************************
 
 	/**
@@ -38,10 +36,11 @@ public class ClientConsole extends Application implements ChatIF {
 	 */
 	public static ArrayList<Question> questions = new ArrayList<Question>();
 
-	public static String host;
+	public String host;
 	public LoginGUI lg;
 	ChatClient client;
-	private Message msg;
+	private static Message msg;
+	int port;
 
 	// Constructors ****************************************************
 
@@ -53,15 +52,30 @@ public class ClientConsole extends Application implements ChatIF {
 	 * @param port
 	 *            The port to connect on.
 	 */
-	public ClientConsole() {
+	public ClientConsole(String host, int port) {
+		this.host = host;
+		this.port = port;
 		try {
-			client = new ChatClient(host, DEFAULT_PORT, this);
+			client = new ChatClient(host, port, this);
+
 		} catch (IOException exception) {
 			System.out.println("Error: Can't setup connection!" + " Terminating client.");
 			System.exit(1);
 		}
 	}
 
+	public void addConnectedUser(User u) {
+		client.addCilentToConnectedList(u);
+	}
+
+	public void removeConnectedUser(User u) {
+		client.addCilentToConnectedList(u);
+	}
+
+	public void printAllConnectedUsers() {
+		System.out.println("connected:");
+		client.printAllConnectedUsers();
+	}
 	// Instance methods ************************************************
 
 	/**
@@ -81,6 +95,12 @@ public class ClientConsole extends Application implements ChatIF {
 	 */
 	public void display(Object message) {
 		this.msg = (Message) message;
+		if (((Message) msg).getReturnObj() instanceof String)
+			if (((String) ((Message) msg).getReturnObj()).equals("examIsLocked"))
+				System.out.println("locked recived");
+		if (((Message) msg).getReturnObj() instanceof String)
+			if (((String) ((Message) msg).getReturnObj()).equals("newOverTimeRequest"))
+				System.out.println("bla bla bla");
 
 	}
 
@@ -92,28 +112,12 @@ public class ClientConsole extends Application implements ChatIF {
 	 * @param args[0]
 	 *            The host to connect to.
 	 */
-	public static void main(String[] args) {
-		host = "";
-		int port = 0; // The port number
-
-		try {
-			host = args[0];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			host = "localhost";
-		}
-		ClientConsole chat = new ClientConsole();
-		launch(args); // call start method
-	}
-
-	@Override
-	public void start(Stage arg0) throws Exception {
-		lg = new LoginGUI(); // run login window
-		lg.start(arg0);
-
-	}
 
 	public Message getMessage() {
+		if (msg == null)
+			msg = new Message();
 		return msg;
 	}
+
 }
 // End of ConsoleChat class

@@ -69,18 +69,17 @@ public class TeacherMenuGUI implements Initializable {
 
 	public void reportButtonAction(ActionEvent ae) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("reportMenu.fxml"));
+		loader.setLocation(getClass().getResource("StatisticsMenu.fxml"));
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
-		ReportMenuGUI reportMenu = loader.getController();
-		reportMenu.initData();
+		StatisticsMenuGUI sm = loader.getController();
+		sm.initData(teacher);
 		Stage window = new Stage();
 		window.setScene(scene);
 		window.show();
 	}
 
 	public void logoutButtonAction(ActionEvent ae) throws IOException {
-		lc = new LoginController();
 		lc.logoutUser();
 		Stage stage = (Stage) logoutButton.getScene().getWindow();
 		LoginGUI lg = new LoginGUI(); // run login window
@@ -97,6 +96,7 @@ public class TeacherMenuGUI implements Initializable {
 	public void initData() {
 
 		LoginController lc = new LoginController();
+		lc.getUser().setTitle("Teacher");
 		this.teacher = lc.getUser();
 		helloMsgLabel.setText("Hello " + teacher.getuName() + ",");
 

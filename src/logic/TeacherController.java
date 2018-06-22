@@ -3,6 +3,7 @@ package logic;
 import java.util.ArrayList;
 
 import common.Message;
+import gui.LoginGUI;
 
 public class TeacherController {
 	User teacher;
@@ -15,7 +16,7 @@ public class TeacherController {
 	public TeacherController() {
 		lc = new LoginController();
 		teacher = lc.getUser();
-		client = new ClientConsole();
+		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 	}
 
 	public ArrayList<Question> getAllQuestions()// send request to db to get all question which belong to subject this
@@ -39,6 +40,23 @@ public class TeacherController {
 
 	}
 
+	public String getExamID(Course course) {
+		Message msg = new Message();
+		msg.setSentObj(course);
+		msg.setqueryToDo("getNextExamID");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+
+		String str = (String) msg.getReturnObj();
+		return str;
+	}
+
 	public Boolean deleteQuestion(Question qToDel) {
 		Message msg = new Message();
 		msg.setClassType("teacher");
@@ -54,7 +72,6 @@ public class TeacherController {
 		msg = client.getMessage();
 		Boolean b = (Boolean) msg.getReturnObj();
 		return b;
-
 	}
 
 	public Question createNewQuestion(Question qToAdd) {
@@ -64,7 +81,7 @@ public class TeacherController {
 		questionToSend.setSentObj(qToAdd);
 		client.accept(questionToSend);
 		try {
-			Thread.sleep(2500L);
+			Thread.sleep(3500L);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -119,6 +136,32 @@ public class TeacherController {
 
 	public ArrayList<Course> getCourses() {
 		return courses;
+	}
+
+	public Course getCourseFromName(String courseName) {
+		for (int i = 0; i < courses.size(); i++) {
+			String s = courses.get(i).getcName();
+			if (s.equals(courseName))
+				return new Course(courses.get(i));
+		}
+		return null;
+	}
+
+	public ArrayList<Question> getQuestionsForTeacherInCourse(Course course) {
+		Message msg = new Message();
+		msg.setqueryToDo("QuestionForTeacherInCourse");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+		try {
+			Thread.sleep(1500L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		msg.setSentObj(course);
+		msg = client.getMessage();
+		ArrayList<Question> questionsInCourse = (ArrayList<Question>) msg.getReturnObj();
+		return questionsInCourse;
+
 	}
 
 	public User teacherDet(String uID) {
@@ -246,6 +289,7 @@ public class TeacherController {
 	}
 
 	public void lockExam(ExamInExecution exam) {
+
 		Message msg = new Message();
 		msg.setClassType("Teacher");
 		msg.setqueryToDo("lockExam");
@@ -310,5 +354,28 @@ public class TeacherController {
 		msg.setClassType("Teacher");
 		msg.setqueryToDo("saveExamToDB");
 		client.accept(msg);
+	}
+
+	public void sendRequestToOverTime(OvertimeDetails overTimeDet) {
+		Message msg = new Message();
+		msg.setSentObj(overTimeDet);
+		msg.setqueryToDo("sendOverTimeRequest");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+	}
+
+	public ArrayList<ExamReport> getAllExamReportsTeacherWrote(User user) {
+		Message msg = new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("getAllExamReportsTeacherWrote");
+		msg.setSentObj(user);
+		client.accept(msg);
+		try {
+			Thread.sleep(3000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		return (ArrayList<ExamReport>) msg.getReturnObj();
 	}
 }

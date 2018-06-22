@@ -1,5 +1,7 @@
 package logic;
 
+import java.io.File;
+import java.io.FileOutputStream;
 // This file contains material supporting section 3.7 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
@@ -17,6 +19,8 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 
 import common.Message;
+import common.MyFile;
+import gui.QuestionInExam;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -37,6 +41,15 @@ public class EchoServer extends AbstractServer {
 	 * The default port to listen on.
 	 */
 	final public static int DEFAULT_PORT = 5555;
+	final public static String HOST = "localhost";
+	private String DBName;
+	private String DBPassword;
+	private Boolean isDBLoggedIn = false;
+	private Connection conn;
+	private HashMap<User, ConnectionToClient> connectedClients;
+	private ArrayList<User> connected;
+
+	private HashMap<ExecutionDetails, ArrayList<StudentInExam>> exemanieeList;
 
 	// Constructors ****************************************************
 
@@ -46,8 +59,14 @@ public class EchoServer extends AbstractServer {
 	 * @param port
 	 *            The port number to connect on.
 	 */
-	public EchoServer(int port) {
+	public EchoServer(int port, String dbName, String dbPass) {
 		super(port);
+		this.DBName = dbName;
+		this.DBPassword = dbPass;
+		connectedClients = new HashMap<User, ConnectionToClient>();
+		connected = new ArrayList<User>();
+		exemanieeList = new HashMap<ExecutionDetails, ArrayList<StudentInExam>>();
+
 	}
 
 	// Instance methods ************************************************
@@ -55,12 +74,31 @@ public class EchoServer extends AbstractServer {
 	protected Connection connectToDB() {
 		Connection dbh = null;
 		try {
-			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/aes", "root", "root");
+			dbh = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DBName, "root", DBPassword);
+			isDBLoggedIn = true;
 		} catch (SQLException ex) {
 			System.out.print("Sorry we had a problem, could not connect to DB server\n");
 			sendToAllClients("DBConnectFail");
+			isDBLoggedIn = false;
 		}
+		this.conn = dbh;
 		return dbh;
+	}
+
+	public Boolean checkIfDBConnects() {
+		Boolean result;
+		if (connectToDB() != null)
+			result = true;
+		else
+			result = false;
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+
 	}
 
 	/**
@@ -76,6 +114,11 @@ public class EchoServer extends AbstractServer {
 		Connection conn = null;
 		conn = connectToDB();
 		System.out.println("SQL connection succeed");
+		if (msg instanceof MyFile) {
+			System.out.println("bohamian rafsody");
+			uploadExamToServer(msg, client);
+			return;
+		}
 		Message m = (Message) msg;
 		if (m.getClassType().equalsIgnoreCase("User"))
 			userHandler(m, client, conn);
@@ -101,6 +144,8 @@ public class EchoServer extends AbstractServer {
 			loginUser(msg, client, conn);
 		else if (msg.getqueryToDo().equals("logout"))
 			logoutUser(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getConnection"))
+			getConnection(msg, client, conn);
 
 	}
 
@@ -141,6 +186,17 @@ public class EchoServer extends AbstractServer {
 			getWrittenExamsInExecutionByTeacher(msg, client, conn);
 		else if (msg.getqueryToDo().equals("saveExamToDB"))
 			createExam(msg, client, conn);
+		else if (msg.getqueryToDo().equals("QuestionForTeacherInCourse"))
+			getQuestionsForTeacherInCourse(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getNextExamID"))
+			getNextExamID(msg, client, conn);
+		else if (msg.getqueryToDo().equals("sendOverTimeRequest"))
+			sendOverTimeRequest(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllExamReportsTeacherWrote")) { // send to client all the subjectss. //
+																				// e.g to logIn
+			getAllExamReportsTeacherWrote(msg, client, conn);// reut to del
+			System.out.println("inside");
+		}
 	}
 
 	private void principalHandler(Message msg, ConnectionToClient client, Connection conn)
@@ -157,6 +213,28 @@ public class EchoServer extends AbstractServer {
 			getAllCoursesInDB(msg, client, conn);
 		else if (msg.getqueryToDo().equals("getAllSubjectsInDB")) // send to client all the subjectss. // e.g to logIn
 			getAllSubjectsInDB(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllOverTimeRequests")) // send to client all the subjectss. // e.g to
+			getAllOverTimeRequests(msg, client, conn);
+		else if (msg.getqueryToDo().equals("approveOvertime")) // send to client all the subjectss. // e.g to
+			approveOvertime(msg, client, conn);
+		else if (msg.getqueryToDo().equals("denyOvertime")) // send to client all the subjectss. // e.g to
+			denyOvertime(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllExamReportsTeacherWrote")) // send to client all the subjectss. // e.g
+																				// to logIn
+			getAllExamReportsTeacherWrote(msg, client, conn);// reut to del
+		else if (msg.getqueryToDo().equals("getAllExamsInCourseInDB")) // send to client all the subjectss. // e.g to
+																		// logIn
+			statisticsforCourse(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllExamReportsStudentPerformed")) // send to client all the subjectss. //
+																					// e.g to logIn
+			GetGradeByStudentDB(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllQuestionInExam")) // send to client all the subjectss. // e.g to logIn
+			getAllQuestionInExam(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllStudentInExam")) // send to client all the subjectss. // e.g to logIn
+			getAllStudentInExam(msg, client, conn);
+		else if (msg.getqueryToDo().equals("getAllExamInExecution")) // send to client all the subjectss. // e.g to
+																		// logIn
+			getAllExamInExecution(msg, client, conn);
 	}
 
 	private void StudentrHandler(Message msg, ConnectionToClient client, Connection conn)
@@ -164,7 +242,7 @@ public class EchoServer extends AbstractServer {
 		System.out.println("***********student handler");
 		if (msg.getqueryToDo().equals("getAllGradesRelevantToStusent")) // send to client the details // e.g to logIn
 		{
-		//	System.out.println("1212122121121");
+			System.out.println("1212122121121");
 			GetGradeByStudentDB(msg, client, conn);
 		}
 
@@ -179,21 +257,38 @@ public class EchoServer extends AbstractServer {
 			System.out.println("create the approve exam to show");
 			getExamsToShowByStudent(msg, client, conn);
 		}
+		if (msg.getqueryToDo().equals("getExamByExamID"))
+			getExamByExamID(msg, client, conn);
 		if (msg.getqueryToDo().equals("getTheExamToPerformComputerized")) {
 			System.out.println("get the exam to do the exam computerized");
 			getExamsToPerformComp(msg, client, conn);
 		}
-		
+		if (msg.getqueryToDo().equals("getStudentAnswersInExam")) {
+			getStudentResultInExam(msg, client, conn);
+		}
+		if (msg.getqueryToDo().equals("changeStudentInExamStatus")) {
+			changeStudentInExamStatus(msg, client, conn);
+		}
+	}
+
+	// ********************************************************************************************
+	// get data or change data in DB methods
+	// ********************************************************************************************
+	// search in db for user with same userID as sentObj in msg
+	private void getConnection(Message msg, ConnectionToClient client, Connection conn2) throws IOException {
+		msg.setReturnObj(client);
+		client.sendToClient(msg);
 
 	}
 
-	public void getExamsToPerformComp(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException
-	{
-		ExamInExecution examTemp = (ExamInExecution)msg.getSentObj();
+	public void getExamsToPerformComp(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		ExamInExecution examTemp = (ExamInExecution) msg.getSentObj();
 		/// start to create the **questions from the exam
 		Statement stmt4 = (Statement) conn.createStatement();
 		ResultSet rs4 = stmt4.executeQuery(
-				"SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="+examTemp.getExamDet().getExamID());
+				"SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="
+						+ examTemp.getExamDet().getExamID());
 		HashMap<Question, Integer> map = new HashMap<Question, Integer>();
 		while (rs4.next()) {
 			Question q = new Question();
@@ -215,6 +310,10 @@ public class EchoServer extends AbstractServer {
 			q.setInstruction(rs4.getString(7));
 			map.put(q, rs4.getInt(3));
 		}
+		Exam e = new Exam();
+		ExamInExecution ee = new ExamInExecution();
+		e.setQuestions(map);
+		ee.setExamDet(e);
 		examTemp.getExamDet().setQuestions(map);
 		examTemp.getExamDet().getQuestionsArrayList();
 		examTemp.getExamDet().setQuestions(null);
@@ -224,11 +323,6 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	
-	// ********************************************************************************************
-	// get data or change data in DB methods
-	// ********************************************************************************************
-	// search in db for user with same userID as sentObj in msg
 	private void searchUserInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		User uToSearch = (User) msg.getSentObj();
@@ -374,6 +468,10 @@ public class EchoServer extends AbstractServer {
 			rs.updateRow();
 			rs.close();
 			msg.setReturnObj(user);
+			connected.add(user);
+			sendToAllClients(connected);
+			connectedClients.put(user, client);
+			// sendToAllClients(connected);
 			client.sendToClient(msg);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -394,6 +492,11 @@ public class EchoServer extends AbstractServer {
 			rs.updateRow();
 			rs.close();
 			msg.setReturnObj(user);
+			connectedClients.remove(user);
+			connected.remove(user);
+			sendToAllClients(connected);
+			// sendToAllClients(connected);
+			System.out.println("logged out");
 			client.sendToClient(msg);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -471,11 +574,11 @@ public class EchoServer extends AbstractServer {
 			rs.insertRow();
 			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			rs2 = stmt.executeQuery("SELECT * FROM answersInQuestion");
-			for (int i = 0; i < 4; i++) {
+			for (int i = 1; i <= 4; i++) {
 				rs2.moveToInsertRow();
 				rs2.updateString(1, q.getQuestionID());
 				rs2.updateString(2, Integer.toString(i));
-				rs2.updateString(3, q.getAnswers()[i]);
+				rs2.updateString(3, q.getAnswers()[i - 1]);
 				rs2.insertRow();
 			}
 			addToQuestionCourseTable(q, conn);
@@ -535,8 +638,10 @@ public class EchoServer extends AbstractServer {
 
 		Statement stmt = (Statement) conn.createStatement();
 		User teacherToSearch = (User) msg.getSentObj();
-		String s = "SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U WHERE E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID=TC.teacherID AND TC.teacherID="
-				+ teacherToSearch.getuID();
+		String s = "SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U "
+				+ "WHERE E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID "
+				+ "AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID=TC.teacherID "
+				+ "AND TC.teacherID=" + teacherToSearch.getuID();
 		ResultSet rs = stmt.executeQuery(s);
 		ArrayList<Exam> tempArr = new ArrayList<Exam>();
 		// HashMap<Question,Integer> map=new HashMap<Question,Integer>();
@@ -585,6 +690,67 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	private void getQuestionsForTeacherInCourse(Message msg, ConnectionToClient client, Connection conn)
+			throws IOException {
+		Statement stmt;
+		ResultSet rs = null, rs2 = null;
+		ArrayList<Question> questionArr = new ArrayList<Question>();
+		try {
+			stmt = (Statement) conn.createStatement();
+			Course course = (Course) msg.getSentObj();
+			String s = "SELECT * From question AS q WHERE q.questionID in "
+					+ "(SELECT qic.questionID FROM questionincourse AS qic " + "WHERE qic.course=" + course.getcID()
+					+ "AND qic.subjectID=" + course.getSubject().getsName() + ")";
+			rs = stmt.executeQuery(s);
+			while (rs.next()) {
+				String[] answers = new String[4];
+				rs2 = stmt
+						.executeQuery("SELECT * FROM answersinquestion AS ans WHERE AS.questionID=" + rs.getString(1));
+				int i = 0;
+				while (rs2.next()) {
+					answers[++i] = rs2.getString(3);
+				}
+				questionArr.add(new Question(rs.getString(2), rs.getString(3), rs.getString(1), answers[0], answers[1],
+						answers[2], answers[3], rs.getString(4), rs.getInt(5)));
+			}
+			rs.close();
+			rs2.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		msg.setReturnObj(questionArr);
+		client.sendToClient(msg);
+	}
+
+	private void getNextExamID(Message msg, ConnectionToClient client, Connection conn) throws IOException {
+		Statement stmt;
+		ResultSet rs = null;
+
+		try {
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Course course = (Course) msg.getSentObj();
+			String s = "SELECT * From courseinsubject AS cis WHERE cis.subjectID=" + course.getcID()
+					+ " AND cis.courseID=" + course.getSubject().getSubjectID();
+			rs = stmt.executeQuery(s);
+			rs.last();
+			int temp = rs.getInt(4);
+			temp++;
+			rs.updateInt(4, temp);
+			rs.updateRow();
+			rs.close();
+			stmt.close();
+			String str = "" + course.getSubject().getSubjectID() + course.getcID() + (temp / 10 == 0 ? "0" : "");
+			str += temp;
+			msg.setReturnObj(str);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		client.sendToClient(msg);
+	}
+
 	private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -604,27 +770,7 @@ public class EchoServer extends AbstractServer {
 			ein.setCourseID(rs.getString(4));
 			ein.setSubjectID(rs.getString(5));
 			ein.setIsGroup(rs.getInt(6) == 1 ? true : false);
-			// Statement stmt2 = (Statement) conn.createStatement();
-			// ResultSet rs2 = stmt.executeQuery("SELECT * FROM exam AS E WHERE
-			// examID="+ein.getExamDet().getExamID());
-			// ein.getExamDet().setDuration(rs2.getInt(6));
-			// ein.getExamDet().setInstructionForStudent(rs2.getString(5));
-			// ein.getExamDet().setInstructionForTeacher(rs2.getString(4));
-			// ein.getExamDet().setTeacherID(rs2.getString(2));
-			// ein.getExamDet().getCourse().setcID(rs2.getString(8));
-			// ein.getExamDet().getCourse().getSubject().setSubjectID(rs2.getString(7));
-			// ein.getExamDet().setWasUsed(rs.getInt(3)==1?true:false);
-			// stmt2 = (Statement) conn.createStatement();
-			// rs2 = stmt.executeQuery("SELECT * FROM questioninexam AS QE WHERE
-			// examID="+ein.getExamDet().getExamID());
-			// while(rs2.next())
-			// {
-			// Question q=new Question();
-			// q.setQuestionID(rs2.getString(1));
-			// q.setQuestionTxt(rs2.getString(2));
-			// q.setTeacherID(teacherId);
-			// ein.getExamDet().getQuestions().put(arg0, arg1)
-			// }
+
 			tempArr.add(ein);
 		}
 		rs.close();
@@ -635,15 +781,25 @@ public class EchoServer extends AbstractServer {
 	}
 
 	private void deleteExam(Message msg, ConnectionToClient client, Connection conn) {
-		Statement stmt;
-		ResultSet rs = null;
+		Statement stmt, stmt2;
+		ResultSet rs = null, rs2 = null;
 		try {
-			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			Exam e = (Exam) msg.getSentObj();
-			String s = "SELECT * FROM exam WHERE examIDID=" + e.getExamID();
+			stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			rs2 = stmt2.executeQuery("SELECT * FROM questionInExam AS QE WHERE QE.examID=" + e.getExamID());
+			while (rs2.next()) {
+				rs2.deleteRow();
+			}
+			rs2.close();
+			stmt2.close();
+
+			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String s = "SELECT * FROM exam WHERE examID=" + e.getExamID();
+
 			rs = stmt.executeQuery(s);
 			rs.last();
 			rs.deleteRow();
+			stmt.close();
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -699,17 +855,15 @@ public class EchoServer extends AbstractServer {
 			stmt = (Statement) conn.createStatement();
 			Exam e = (Exam) msg.getSentObj();
 			stmt.executeUpdate("INSERT INTO exam (examID, teacherID, used, teacherInstruction, studentInstruction, "
-					+ "duration, subjectID, courseID) values (" + "\'010105\', " + "\'" + e.getTeacherID() + "\', "
+					+ "duration, subjectID, courseID) values (\'" + e.getExamID() + "\', \'" + e.getTeacherID() + "\', "
 					+ e.getWasUsed() + ", \'" + e.getInstructionForTeacher() + "\', \'" + e.getInstructionForStudent()
-					+ "\', " + e.getDuration() + ", \'01\', \'02\')");
-			// e.getCourse().getSubject()e.getCourse().getcName()
+					+ "\', " + e.getDuration() + ", \'" + e.getCourse().getSubject().getSubjectID() + "\', \'"
+					+ e.getCourse().getcID() + "\')");
 
 			HashMap<Question, Integer> questions = e.getQuestions();
 			for (Map.Entry<Question, Integer> entry : questions.entrySet()) {
 				String s = "INSERT INTO questioninexam (examID, questionID, pointsPerQuestion) values (";
-				s += "\'010105\', \'" + entry.getKey().getQuestionID() + "\', " + entry.getValue() + ")";
-				// s+="\'"+e.getExamID()+"\', \'"+entry.getKey().getQuestionID()+"\',
-				// "+entry.getValue()+")";
+				s += "\'" + e.getExamID() + "\', \'" + entry.getKey().getQuestionID() + "\', " + entry.getValue() + ")";
 				stmt.executeUpdate(s);
 			}
 			stmt.close();
@@ -799,17 +953,48 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	private void lockExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException {
-
-		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+	private void lockExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
 		ExamInExecution exam = (ExamInExecution) msg.getSentObj();
+		ExecutionDetails ed = new ExecutionDetails(exam.getExamDet().getExamID(), exam.getExecutionID());
+		Iterator it = this.exemanieeList.entrySet().iterator();
+		ArrayList<StudentInExam> students = new ArrayList<StudentInExam>();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			if (ed.equals(pair.getKey())) {
+				students = ((ArrayList) pair.getValue());
+				break;
+			}
+		}
+		for (StudentInExam s : students) {
+			System.out.println("size of students array: " + students.size());
+			Iterator it2 = this.connectedClients.entrySet().iterator();
+			while (it2.hasNext()) {
+				Map.Entry pair = (Map.Entry) it2.next();
+				System.out.println("in map: " + (User) pair.getKey());
+				User u = new User();
+				u.setuID(s.getStudentID());
+				u.setuName(s.getStudentName());
+				System.out.println("user: " + u);
+				if (u.equals(pair.getKey())) {
+					System.out.println("found it");
+					Message m = new Message();
+					m.setReturnObj("examIsLocked");
+					((ConnectionToClient) pair.getValue()).sendToClient(m);
+					System.out.println("locked sent to students");
+					break;
+				}
+			}
+		}
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
 		System.out.println("examID= " + exam.getExamDet().getExamID());
-		ResultSet rs = stmt
-				.executeQuery("SELECT * FROM examInExecution as EE WHERE EE.examID=" + exam.getExamDet().getExamID());
+		ResultSet rs = stmt.executeQuery("SELECT * FROM examInExecution as EE WHERE EE.examID="
+				+ exam.getExamDet().getExamID() + " AND EE.executionID=" + exam.getExecutionID());
 		rs.last();
 		rs.updateInt(5, 1);
 		rs.updateRow();
 		rs.close();
+
 	}
 
 	private void getLockedExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn)
@@ -871,96 +1056,6 @@ public class EchoServer extends AbstractServer {
 
 	}
 
-	private void getAllExamsInDB(Message msg, ConnectionToClient client, Connection conn)
-			throws SQLException, IOException {
-		Statement stmt = (Statement) conn.createStatement();
-		User teacherToSearch = (User) msg.getSentObj(); // ככל הנראה זה מיותר
-		String s = "SELECT *" + " FROM exam AS E,courseInSubject AS C,user AS U " + " WHERE C.subjectID=E.subjectID "
-				+ " AND C.courseID=E.courseID " + " AND E.teacherID=U.userID ";
-		// This SHEILTA returns all the exams with their subject name and course name.
-		ResultSet rs = stmt.executeQuery(s);
-		// rs is an array with all of the SHEILTA results details.
-		ArrayList<Exam> tempArr = new ArrayList<Exam>();
-		// HashMap<Question,Integer> map=new HashMap<Question,Integer>();
-		while (rs.next()) { // את המספרים מגלים לפי הסדר של העמודות בטבלאות לפי השאילתה. לקחת דף ולצייר את
-							// זה.
-			Exam e = new Exam();
-			e.setExamID(rs.getString(1));
-			e.setCourseName(rs.getString(11));
-			e.setTeacherName(rs.getString(13));
-			tempArr.add(e);
-		}
-		// מכאן מתחילים לסדר כל מבחן עם השאלות שלו
-		// הדברים הללו נעשים בשביל שהמנהלת גם תוכל לראות את המבחנים עצמם (בלחיצה למשל)
-		// ולא רק את השמות שלהם.
-		for (int i = 0; i < tempArr.size(); i++) {
-			rs = stmt.executeQuery(
-					"SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="
-							+ tempArr.get(i).getExamID());
-			HashMap<Question, Integer> map = new HashMap<Question, Integer>();
-			while (rs.next()) {
-				Question q = new Question();
-				q.setQuestionID(rs.getString(2));
-				q.setQuestionTxt(rs.getString(5));
-				String[] ans = new String[4];
-				Statement stmt2 = (Statement) conn.createStatement();
-				ResultSet rs2 = stmt2
-						.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID=" + q.getQuestionID());
-				for (int j = 0; rs2.next(); j++) // כאן אנחנו מסדרים את זה כך שלכל שאלה יש את התשובה שלה
-				{
-					ans[j] = rs2.getString(3);
-				}
-				rs2.close();
-				stmt2.close();
-				q.setAnswers(ans);
-				q.setTeacherID(rs.getString(6));
-				q.setTeacherName(rs.getString(11));
-				q.setCorrectAnswer(rs.getInt(8));
-				q.setInstruction(rs.getString(7));
-				map.put(q, rs.getInt(3));
-			}
-		}
-		// From here we returns the details:
-		rs.close();
-		stmt.close();
-		msg.setReturnObj(tempArr);
-		client.sendToClient(msg);
-	}
-
-	private void getAllQuestionsInDB(Message msg, ConnectionToClient client, Connection conn)
-			throws SQLException, IOException {
-		Statement stmt = (Statement) conn.createStatement();
-		User teacherToSearch = (User) msg.getSentObj(); // ככל הנראה זה מיותר
-		String s = "SELECT *" + " FROM aes.question AS Q, aes.user AS U " + " WHERE U.userID=Q.teacherID ";
-		// This SHEILTA returns all the exams with their subject name and course name.
-		ArrayList<Question> tempArr = new ArrayList<Question>();
-		ResultSet rs = stmt.executeQuery(s);
-		// rs is an array with all of the SHEILTA results details.
-		while (rs.next()) {
-			Question q = new Question();
-			q.setQuestionID(rs.getString(1));
-			q.setQuestionTxt(rs.getString(2));
-			q.setTeacherName(rs.getString(8));
-			// from here we match each question with its answers.
-			String[] ans = new String[4];
-			Statement stmt2 = (Statement) conn.createStatement();
-			ResultSet rs2 = stmt2
-					.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID=" + q.getQuestionID());
-			for (int j = 0; rs2.next(); j++) {
-				ans[j] = rs2.getString(3);
-			}
-			rs2.close();
-			stmt2.close();
-			q.setAnswers(ans);
-			tempArr.add(q);
-		}
-		// From here we returns the details:
-		rs.close();
-		stmt.close();
-		msg.setReturnObj(tempArr);
-		client.sendToClient(msg);
-	}
-
 	// This method return all the students in the data base.
 	private void getAllStudentsInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
@@ -1003,22 +1098,65 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	// This method return all the courses in the data base.
-	private void getAllCoursesInDB(Message msg, ConnectionToClient client, Connection conn)
+	private void getExamByExamID(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
-
-	}
-
-	// This method return all the subjects in the data base.
-	private void getAllSubjectsInDB(Message msg, ConnectionToClient client, Connection conn)
-			throws SQLException, IOException {
+		System.out.println("here :) fun liii");
 		Statement stmt = (Statement) conn.createStatement();
-		String s = "SELECT *" + " FROM aes.courseinsubject AS C " + " WHERE U.title = \"Teacher\" ";
+		Exam exam = (Exam) msg.getSentObj();
+		String s = "SELECT * FROM exam AS E, teacherInCourse AS TC,courseInSubject AS C,subject AS S,user AS U WHERE E.examID="
+				+ exam.getExamID()
+				+ " AND E.subjectID=TC.subjectID AND E.courseID=TC.courseID AND E.subjectID=S.subjectID AND C.subjectID=E.subjectID AND C.courseID=E.courseID AND U.userID=TC.teacherID AND U.userID=E.teacherID";
+		ResultSet rs = stmt.executeQuery(s);
+		// HashMap<Question,Integer> map=new HashMap<Question,Integer>();
+		Exam e = new Exam();
+		while (rs.next()) {
+
+			e.setExamID(rs.getString(1));
+			e.setCourse(new Course(rs.getString(8), rs.getString(14), rs.getString(2),
+					(new Subject(rs.getString(7), rs.getString(17)))));
+			e.setWasUsed(rs.getInt(3) == 1);
+			e.setInstructionForTeacher(rs.getString(4));
+			e.setInstructionForStudent(rs.getString(5));
+			e.setDuration(rs.getInt(6));
+			e.setTeacherID(rs.getString(2));
+			e.setTeacherName(rs.getString(20));
+		}
+
+		rs = stmt.executeQuery(
+				"SELECT * FROM questionInExam AS QE,question AS Q, user AS U WHERE Q.teacherID=U.userID AND QE.questionID=Q.questionID AND QE.examID="
+						+ e.getExamID());
+		HashMap<Question, Integer> map = new HashMap<Question, Integer>();
+		while (rs.next()) {
+			Question q = new Question();
+			q.setQuestionID(rs.getString(2));
+			q.setQuestionTxt(rs.getString(5));
+			String[] ans = new String[4];
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2
+					.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID=" + q.getQuestionID());
+			for (int j = 0; rs2.next(); j++) {
+				ans[j] = rs2.getString(3);
+			}
+			rs2.close();
+			stmt2.close();
+			q.setAnswers(ans);
+			q.setTeacherID(rs.getString(6));
+			q.setTeacherName(rs.getString(11));
+			q.setCorrectAnswer(rs.getInt(8));
+			q.setInstruction(rs.getString(7));
+			map.put(q, rs.getInt(3));
+		}
+		e.setQuestions(map);
+		// System.out.println("send the exam to client");
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(e);
+		client.sendToClient(msg);
 	}
 
 	private void getExamsToShowByStudent(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
-		
+
 		Statement stmt = (Statement) conn.createStatement();
 		StudentInExam StudentToSearch = (StudentInExam) msg.getSentObj();
 		ResultSet rs = stmt.executeQuery(" SELECT  * "
@@ -1139,30 +1277,6 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	private void GetGradeByStudentDB(Message msg, ConnectionToClient client, Connection conn)
-			throws SQLException, IOException {
-		Statement stmt = (Statement) conn.createStatement();
-		User StudentToSearch = (User) msg.getSentObj();
-		ResultSet rs = stmt.executeQuery("SELECT sr.examID , sr.grade, sr.examDate , cs.courseName "
-				+ "FROM studentresultinexam AS sr , exam AS e , courseinsubject AS cs "
-				+ "WHERE sr.approved=1 AND sr.studentID=" + StudentToSearch.getuID()
-				+ " AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID");
-		ArrayList<StudentInExam> tempArr = new ArrayList<StudentInExam>();// to save all the relevant exams grade of rhe
-																			// student
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
-		while (rs.next()) {
-			StudentInExam sGrade = new StudentInExam(rs.getString("examID"), rs.getInt("grade"),
-					rs.getTimestamp("examDate"), rs.getString("courseName"), StudentToSearch.getuID());
-			tempArr.add(sGrade);
-
-		}
-		rs.close();
-		stmt.close();
-		System.out.println("hjwhdwehfewhfoewfewjfoehfroo");
-		msg.setReturnObj(tempArr);
-		client.sendToClient(msg);
-	}
-
 	////////////////////////////////////////////////////////////////////////////////
 	///////// this func return all the performance exam on the relevent student
 	///////////////////////////////////////////////////////////////////////////////
@@ -1190,35 +1304,60 @@ public class EchoServer extends AbstractServer {
 		while (rs.next()) {
 			ExamInExecution ee = new ExamInExecution(); // create the new ExamInExecution
 			Exam e = new Exam(); // create the new exam that execute
+
 			e.setExamID(rs.getString(1));
-			e.setCourse(new Course(rs.getString(8), rs.getString(9), rs.getString(12),
-					(new Subject(rs.getString(7), rs.getString(10)))));
+			e.setTeacherID(rs.getString(2)); // SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
 			e.setWasUsed(rs.getInt(3) == 1); // CHANGE THE STATUS OF THE EXAM
 			e.setInstructionForTeacher(rs.getString(4));
 			e.setInstructionForStudent(rs.getString(5));
 			e.setDuration(rs.getInt(6));
-			e.setTeacherID(rs.getString(2)); // SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
-			e.setTeacherName(rs.getString(11)); // SAVE THE TEACHER THAT WROTE THE EXAM
+			e.setCourse(new Course(rs.getString(8), rs.getString(9), rs.getString(2),
+					(new Subject(rs.getString(7), rs.getString(10)))));
 
-			ee.setExamDet(e);
+			String tempID = new String(rs.getString(2)); //
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2.executeQuery(" SELECT U.userName FROM user AS U WHERE U.userID =" + tempID);
+			rs2.next();
+			e.setTeacherName(rs2.getString(1));
+
+			// ee.setExamDet(e);
 			ee.setExecutionID(rs.getInt(13));
 			ee.setLocked(rs.getBoolean(14));
-			ee.setIsGroup(rs.getBoolean(16));
-			// finish to create the exam
-
-			ee.setCourseName(rs.getString(9));
-			ee.setCourseID(rs.getString(8));
-			ee.setSubjectID(rs.getString(7));
 			ee.setExamCode(rs.getString(15));
+			ee.setIsGroup(rs.getBoolean(16));
+			ee.setSubjectID(rs.getString(7));
+			ee.setCourseID(rs.getString(8));
+			ee.setCourseName(rs.getString(9));
+			// finish to create the exam
+			User u = new User();
+			u.setuID(rs.getString(12));
+			u.setuName(rs.getString(11));
+			ee.setExecTeacher(u);
+
 			// finish to create the exam to execute
 
-			String tempID = new String(rs.getString(12)); // CREATE STRING WITH THE ID OF THE THEACHER TO CREATE USER
-			Statement stmt2 = (Statement) conn.createStatement();
-			ResultSet rs2 = stmt2.executeQuery(" SELECT * FROM user AS U WHERE U.userID =" + tempID);
-			rs2.next();
-			User excteacher = new User(rs2.getString(1), rs2.getString(4));
-			excteacher.setuName(rs2.getString(2));
-			ee.setExecTeacher(excteacher);
+			HashMap<Question, Integer> questionsInExam = new HashMap<Question, Integer>();
+			rs2 = stmt2.executeQuery("SELECT * FROM question as q, questioninexam as qic"
+					+ " WHERE qic.questionID=q.questionID AND qic.examID=" + e.getExamID());
+
+			while (rs2.next()) {
+				String temp = rs2.getString(1);
+				Statement stmt3 = (Statement) conn.createStatement();
+				String str = "SELECT * FROM answersinquestion AS ans WHERE ans.questionID=" + temp;
+				ResultSet rs3 = stmt3.executeQuery(str);
+				String[] answers = new String[4];
+				int i = 0;
+				while (rs3.next()) {
+					answers[i++] = rs3.getString(3);
+				}
+				rs3.close();
+				Question q = new Question(rs2.getString(2), rs2.getString(1), rs2.getString(3), rs.getString(4),
+						answers[0], answers[1], answers[2], answers[3], rs2.getInt(5));
+				questionsInExam.put(q, rs2.getInt(9));
+			}
+			e.setQuestions(questionsInExam);
+
+			ee.setExamDet(e);
 			tempArr.add(ee); // add all the exam in exacution to the arr
 			rs2.close();
 			stmt2.close();
@@ -1227,6 +1366,729 @@ public class EchoServer extends AbstractServer {
 		stmt.close();
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
+	}
+
+	private void uploadExamToServer(Object msg, ConnectionToClient client) {
+		int fileSize = ((MyFile) msg).getSize();
+		MyFile myF = (MyFile) msg;
+		try {
+
+			File newFile = new File("C:\\exams\\submittedExams\\SERVER_" + myF.getFileName() + ".docx");
+			FileOutputStream out = new FileOutputStream(newFile);
+			out.write(myF.getMybytearray());
+			out.close();
+		} catch (Exception e) {
+
+		}
+	}
+
+	private void checkLockedExam(ExecutionDetails ed) throws SQLException {
+		Statement stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs2 = stmt2.executeQuery("SELECT * FROM examnieegroup AS eg WHERE eg.examID=" + ed.getExamID()
+				+ " AND eg.executionID=" + ed.getExecutionID()
+				+ "(eg.studentStatus=\"started\" OR eg.studentStatus=\"notStarted\") AND eg.examID=ee.examID AND eg.executionID=ee.executionID");
+		Thread checkExamThread;
+		if (!rs2.next()) {
+			checkExamThread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					Boolean isGroup = null;
+					CheckExam ce = new CheckExam();
+					try {
+						Statement stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+								ResultSet.CONCUR_UPDATABLE);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						ResultSet rs2 = stmt2.executeQuery(
+								"SELECT s.*,e.isGroup FROM studentresultinexam AS s,ExamInExecution AS e WHERE s.examID="
+										+ ed.getExamID() + " AND s.executionID=" + ed.getExecutionID()
+										+ " AND s.computerized=1 AND e.examID=s.examID AND e.executionID=s.executionID");
+						ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+						while (rs2.next()) {
+							StudentInExam student = new StudentInExam();
+							student.setStudentID(rs2.getString(3));
+							student.setExamID(ed.getExamID());
+							student.setExecutionID(ed.getExecutionID());
+							student.setIsComp(rs2.getBoolean(4));
+							student.setGrade(rs2.getInt(5));
+							isGroup = rs2.getBoolean("isGroup");
+							Statement stmt3 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+									ResultSet.CONCUR_UPDATABLE);
+							ResultSet rs3 = stmt3.executeQuery("SELECT * FROM studentanswersinexam WHERE examID="
+									+ ed.getExamID() + " AND executionID=" + ed.getExecutionID() + " AND studentID="
+									+ student.getStudentID());
+
+							int j = 0;
+							while (rs3.next()) {
+								Statement stmt4 = (Statement) conn.createStatement();
+								String str = "SELECT * FROM questioninexam AS qie,Question AS Q WHERE qie.questionID="
+										+ rs3.getString(4) + " AND examID=" + ed.getExamID()
+										+ " AND Q.questionID=qie.questionID";
+								ResultSet rs4 = stmt4.executeQuery(str);
+								rs3.next();
+								Question q = new Question(rs4.getString(5), rs4.getString(4), rs4.getString(6),
+										rs4.getString(7), null, null, null, null, rs3.getInt(8));
+								QuestionInExam qie = new QuestionInExam(rs4.getInt(3), q, j++);
+								student.getCheckedAnswers().put(qie, rs3.getInt(5));
+							}
+							arr.add(student);
+							if (!isGroup)
+								break;
+						}
+						int sum;
+						int histogram[] = new int[10];
+						for (int k = 0; k < 10; k++)
+							histogram[k] = 0;
+						int numOfStudents;
+						HashMap<StudentInExam, ArrayList<Integer>> result = ce.checkExams(arr);
+						for (Map.Entry<StudentInExam, ArrayList<Integer>> entry : result.entrySet()) {
+							Statement stmt4 = (Statement) conn.createStatement();
+							String str = "SELECT * FROM studentresultinexam AS res WHERE res.examID=" + ed.getExamID()
+									+ " AND res.executionID=" + ed.getExecutionID() + " AND studentID="
+									+ entry.getKey().getStudentID();
+							ResultSet rs4 = stmt4.executeQuery(str);
+							rs4.next();
+							rs4.updateInt(5, entry.getValue().get(0));
+							rs4.updateInt(7, entry.getValue().get(1));
+							rs4.updateInt(8, entry.getValue().get(2));
+							rs4.updateRow();
+
+						}
+
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
+			checkExamThread.start();
+		}
+
+	}
+
+	private void changeStudentInExamStatus(Message msg, ConnectionToClient client, Connection conn2)
+			throws SQLException {
+		StudentInExam student = (StudentInExam) msg.getSentObj();
+		ExecutionDetails ed = new ExecutionDetails(student.getExamID(), student.getExecutionID());
+		if (student.getStudentStatus().equalsIgnoreCase("started")) {
+			if (exemanieeList.containsKey(ed))
+				exemanieeList.get(ed).add(student);
+			else {
+				ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+				arr.add(student);
+				exemanieeList.put(ed, arr);
+			}
+			sendToAllClients(exemanieeList);
+		} else if (student.getStudentStatus().equalsIgnoreCase("Finished")) {
+			System.out.println("tring to submit");
+			ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+			arr.add(student);
+			StudentInExam temp = student;
+			temp.setStudentStatus("started");
+			Iterator it = exemanieeList.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry) it.next();
+				if (ed.equals(pair.getKey())) {
+					((ArrayList) pair.getValue()).remove(temp);
+
+				}
+			}
+			Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam");
+			rs.moveToInsertRow();
+			rs.updateString(1, student.getExamID());
+			rs.updateInt(2, student.getExecutionID());
+			rs.updateString(3, student.getStudentID());
+			rs.updateInt(4, student.getIsComp() ? 1 : 0);
+			rs.updateInt(6, student.getActualDuration());
+			rs.insertRow();
+			if (student.getIsComp()) {
+				Statement stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+						ResultSet.CONCUR_UPDATABLE);
+				ResultSet rs2 = stmt2.executeQuery("SELECT * FROM studentanswersinexam");
+				Iterator it2 = student.getCheckedAnswers().entrySet().iterator();
+				while (it2.hasNext()) {
+					Map.Entry pair = (Map.Entry) it2.next();
+					rs2.moveToInsertRow();
+					rs2.updateString(1, student.getExamID());
+					rs2.updateInt(2, student.getExecutionID());
+					rs2.updateString(3, student.getStudentID());
+					rs2.updateString(4, ((Question) pair.getKey()).getQuestionID());
+					rs2.updateInt(5, (int) pair.getValue());
+				}
+			}
+			// sendToAllClients(exemanieeList);
+
+		} else if (student.getStudentStatus().equalsIgnoreCase("notFinished")) {
+			ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+			arr.add(student);
+			StudentInExam temp = student;
+			temp.setStudentStatus("started");
+			Iterator it = exemanieeList.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pair = (Map.Entry) it.next();
+				if (ed.equals(pair.getKey())) {
+					((ArrayList) pair.getValue()).remove(temp);
+				}
+			}
+			Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam");
+			rs.moveToInsertRow();
+			rs.updateString(1, student.getExamID());
+			rs.updateInt(2, student.getExecutionID());
+			rs.updateString(3, student.getStudentID());
+			rs.updateInt(4, student.getIsComp() ? 1 : 0);
+			rs.updateInt(5, 0);
+			rs.updateInt(6, student.getActualDuration());
+			rs.insertRow();
+			sendToAllClients(exemanieeList);
+		}
+	}
+
+	private void sendOverTimeRequest(Message msg, ConnectionToClient client, Connection conn2)
+			throws IOException, SQLException {
+		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
+		Iterator it = connectedClients.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			if (((User) pair.getKey()).getTitle().equalsIgnoreCase("Principle")) {
+				System.out.println(((User) pair.getKey()));
+				Message m = new Message();
+				m.setReturnObj("newOverTimeRequest");
+				((ConnectionToClient) pair.getValue()).sendToClient(m);
+			}
+		}
+		System.out.println("trtretetret");
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests");
+		rs.moveToInsertRow();
+		rs.updateString(1, overtime.getExamID());
+		rs.updateInt(2, overtime.getExecutionID());
+		rs.updateString(3, overtime.getReason());
+		rs.updateInt(4, overtime.getRequestedTime());
+		rs.insertRow();
+		stmt.close();
+		rs.close();
+
+	}
+
+	private void getAllOverTimeRequests(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests");
+		rs.moveToInsertRow();
+		ArrayList<OvertimeDetails> arrOfovertime = new ArrayList<OvertimeDetails>();
+		while (rs.next()) {
+			OvertimeDetails otd = new OvertimeDetails(rs.getString(1), rs.getInt(2), rs.getInt(4), rs.getString(3),
+					false);
+			arrOfovertime.add(otd);
+		}
+		msg.setReturnObj(arrOfovertime);
+		client.sendToClient(msg);
+		stmt.close();
+		rs.close();
+
+	}
+
+	private void denyOvertime(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		rs.deleteRow();
+		rs = stmt.executeQuery("SELECT * FROM examInExecution WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		User u = new User();
+		u.setuID(rs.getString(4));
+		Iterator it2 = this.connectedClients.entrySet().iterator();
+		while (it2.hasNext()) {
+			Map.Entry pair = (Map.Entry) it2.next();
+			if (u.equals(pair.getKey())) {
+				Message m = new Message();
+				m.setReturnObj(overtime);
+				m.setqueryToDo("overtimeApproved");
+				((ConnectionToClient) pair.getValue()).sendToClient(m);
+			}
+		}
+	}
+
+	private void approveOvertime(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
+		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		rs.deleteRow();
+		Iterator it = this.exemanieeList.entrySet().iterator();
+		ArrayList<StudentInExam> students = new ArrayList<StudentInExam>();
+		ExecutionDetails ed = new ExecutionDetails(overtime.getExamID(), overtime.getExecutionID());
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			if (ed.equals(pair.getKey())) {
+				students = ((ArrayList) pair.getValue());
+				break;
+			}
+		}
+		for (StudentInExam s : students) {
+			Iterator it2 = this.connectedClients.entrySet().iterator();
+			while (it2.hasNext()) {
+				Map.Entry pair = (Map.Entry) it2.next();
+				User u = new User();
+				u.setuID(s.getStudentID());
+				u.setuName(s.getStudentName());
+				if (u.equals(pair.getKey())) {
+					Message m = new Message();
+					m.setReturnObj(overtime);
+					m.setqueryToDo("overtimeApproved");
+					((ConnectionToClient) pair.getValue()).sendToClient(m);
+					break;
+				}
+			}
+		}
+		rs = stmt.executeQuery("SELECT * FROM examInExecution WHERE examID=" + overtime.getExamID()
+				+ " AND executionID=" + overtime.getExecutionID());
+		rs.last();
+		User u = new User();
+		u.setuID(rs.getString(4));
+		Iterator it2 = this.connectedClients.entrySet().iterator();
+		while (it2.hasNext()) {
+			Map.Entry pair = (Map.Entry) it2.next();
+			if (u.equals(pair.getKey())) {
+				Message m = new Message();
+				m.setReturnObj(overtime);
+				m.setqueryToDo("overtimeApproved");
+				((ConnectionToClient) pair.getValue()).sendToClient(m);
+			}
+		}
+	}
+
+	private void statisticsforCourse(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Course c = (Course) msg.getSentObj();
+		ArrayList<ExamReport> reports = new ArrayList<ExamReport>();
+		Statement stmt = (Statement) conn.createStatement();
+		String s = "select * from examInExecution as ee, reportforexam as r,"
+				+ "(select e.examID from exam as e where e.subjectID=" + c.getSubject().getSubjectID()
+				+ " and e.courseID=" + c.getcID() + ") as where ee.examID=t.examID AND "
+				+ "ee.examId=r.examID and ee.executionID=r.executionID";
+		ResultSet rs = stmt.executeQuery(s);
+		while (rs.next()) {
+			ExamReport er = new ExamReport();
+			er.setExamID(rs.getString(1));
+			er.setExecutionID(rs.getInt(2));
+			er.setAvg(rs.getFloat(14));
+			er.setMidean(rs.getInt(15));
+			int[] per = new int[10];
+			for (int i = 0; i < 10; i++) {
+				per[i] = rs.getInt(i + 16);
+			}
+			er.setPercentages(per);
+			reports.add(er);
+		}
+		stmt.close();
+		rs.close();
+		msg.setReturnObj(reports);
+		client.sendToClient(msg);
+	}
+
+	private void getAllExamReportsTeacherWrote(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+
+		User u = (User) msg.getSentObj();
+		String s = "select r.* from examInExecution as ee, reportforexam as r,"
+				+ "(SELECT e.examID FROM  exam as e where e.teacherID=" + u.getuID() + ")"
+				+ " as t where ee.examID=t.examID AND ee.examId=r.examID and ee.executionID=r.executionID";
+
+		ArrayList<ExamReport> reports = new ArrayList<ExamReport>();
+		Statement stmt = (Statement) conn.createStatement();
+		ResultSet rs = stmt.executeQuery(s);
+		while (rs.next()) {
+			ExamReport er = new ExamReport();
+			er.setExamID(rs.getString(1));
+			er.setExecutionID(rs.getInt(2));
+			er.setAvg(rs.getFloat(3));
+			er.setMidean(rs.getInt(4));
+			int[] per = new int[10];
+			for (int i = 0; i < 10; i++) {
+				per[i] = rs.getInt(i + 5);
+			}
+			er.setPercentages(per);
+			reports.add(er);
+		}
+		stmt.close();
+		rs.close();
+		msg.setReturnObj(reports);
+		client.sendToClient(msg);
+
+	}
+
+	private void getAllExamsInDB(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		String s = "SELECT * FROM exam AS E, courseInSubject AS C, subject AS S, user as u\r\n"
+				+ "WHERE E.subjectID=C.subjectID AND E.courseID=C.courseID AND E.subjectID=S.subjectID and u.userID=E.teacherID";
+		ResultSet rs = stmt.executeQuery(s);
+		ArrayList<Exam> tempArr = new ArrayList<Exam>();
+		while (rs.next()) {
+			Exam e = new Exam();
+			e.setExamID(rs.getString(1));
+			e.setTeacherID(rs.getString(2));
+			Subject sub = new Subject(rs.getString(7), rs.getString(14));
+			e.setCourse(new Course(rs.getString(8), rs.getString(11), null, sub));
+			e.setInstructionForTeacher(rs.getString(4));
+			e.setInstructionForStudent(rs.getString(5));
+			e.setDuration(rs.getInt(6));
+			e.setWasUsed(rs.getBoolean(3));
+			e.setTeacherName(rs.getString(17));
+			tempArr.add(e);
+		}
+		for (int i = 0; i < tempArr.size(); i++) {
+			rs = stmt.executeQuery("SELECT * FROM questionInExam AS qe, question AS q where qe.questionID=q.questionID"
+					+ " and qe.examID=" + tempArr.get(i).getExamID());
+			HashMap<Question, Integer> map = new HashMap<Question, Integer>();
+			while (rs.next()) {
+				Question q = new Question();
+				q.setQuestionID(rs.getString(2));
+				q.setQuestionTxt(rs.getString(5));
+				String[] ans = new String[4];
+				Statement stmt2 = (Statement) conn.createStatement();
+				ResultSet rs2 = stmt2
+						.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID=" + q.getQuestionID());
+				for (int j = 0; rs2.next(); j++) {
+					ans[j] = rs2.getString(3);
+				}
+				rs2.close();
+				stmt2.close();
+				q.setAnswers(ans);
+				q.setTeacherID(rs.getString(6));
+				// q.setTeacherName(rs.getString(11));
+				q.setCorrectAnswer(rs.getInt(8));
+				q.setInstruction(rs.getString(7));
+				map.put(q, rs.getInt(3));
+			}
+			tempArr.get(i).setQuestions(map);
+		}
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+	}
+
+	private void getAllQuestionsInDB(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		String s = "SELECT * FROM question AS Q, user AS U WHERE U.userID=Q.teacherID ";
+		// This SHEILTA returns all the exams with their subject name and course name.
+		ArrayList<Question> tempArr = new ArrayList<Question>();
+		ResultSet rs = stmt.executeQuery(s);
+		// rs is an array with all of the SHEILTA results details.
+		while (rs.next()) {
+			Question q = new Question();
+			q.setQuestionID(rs.getString(1));
+			q.setQuestionTxt(rs.getString(2));
+			q.setTeacherName(rs.getString(8));
+			q.setCorrectAnswer(rs.getInt(5));
+			q.setTeacherID(rs.getString(7));
+			q.setInstruction(rs.getString(4));
+			// from here we match each question with its answers.
+			String[] ans = new String[4];
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2
+					.executeQuery("SELECT * FROM answersInQuestion AQ WHERE AQ.questionID=" + q.getQuestionID());
+			int j = 0;
+			while (rs2.next()) {
+				ans[j++] = rs2.getString(3);
+			}
+			rs2.close();
+			stmt2.close();
+			q.setAnswers(ans);
+			tempArr.add(q);
+		}
+		// From here we returns the details:
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+	}
+
+	// This method return all the courses in the data base.
+	private void getAllCoursesInDB(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		String s = "SELECT s.subjectID, s.subjectName,c.courseID,c.courseName FROM subject as s, courseinsubject as c"
+				+ " where s.subjectID=c.subjectID";
+		ArrayList<Course> courseList = new ArrayList<Course>();
+		ResultSet rs = stmt.executeQuery(s);
+
+		while (rs.next()) {
+			Subject sub = new Subject(rs.getString(1), rs.getString(2));
+			courseList.add(new Course(rs.getString(3), rs.getString(4), null, sub));
+		}
+		stmt.close();
+		rs.close();
+
+		msg.setReturnObj(courseList);
+		client.sendToClient(msg);
+	}
+
+	// This method return all the subjects in the data base.
+	private void getAllQuestionInExam(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		ResultSet rs = stmt.executeQuery(
+				"SELECT * FROM questioninexam as qie, question as q" + " where qie.questionID=q.questionID");
+		ArrayList<QuestionInExam> qieArr = new ArrayList<QuestionInExam>();
+		int j = 1;
+		while (rs.next()) {
+
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2
+					.executeQuery("SELECT * FROM answersinquestion as a" + " where a.questionID=" + rs.getString(2));
+			int i = 0;
+			String[] arr = new String[4];
+			while (rs2.next()) {
+				arr[i++] = rs2.getString(1);
+			}
+			Question q = new Question(rs.getString(5), rs.getString(4), rs.getString(6), rs.getString(7), arr[0],
+					arr[1], arr[2], arr[3], rs.getInt(8));
+			qieArr.add(new QuestionInExam(rs.getInt(3), q, j++));
+		}
+		stmt.close();
+		rs.close();
+		msg.setReturnObj(qieArr);
+		client.sendToClient(msg);
+	}
+
+	// This method return all the subjects in the data base.
+	private void getAllStudentInExam(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam AS sr , exam AS e , courseinsubject AS cs "
+				+ "WHERE sr.approved=1 AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID");
+		ArrayList<StudentInExam> tempArr = new ArrayList<StudentInExam>();// to save all the relevant exams grade of rhe
+
+		while (rs.next()) {
+			StudentInExam sGrade = new StudentInExam(rs.getString(1), rs.getInt(5), rs.getTimestamp(11),
+					rs.getString(22), rs.getString(3));
+			sGrade.setExecutionID(rs.getInt(2));
+			sGrade.setNumberOfCorrectAnswer(rs.getInt(7));
+			sGrade.setNumberOfWrongAnswer(rs.getInt(8));
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2
+					.executeQuery("SELECT * FROM questioninexam as qie, question as q, studentanswersinexam as s "
+							+ "where qie.questionID=q.questionID and s.questionID=q.questionID and s.examId="
+							+ rs.getString(1));
+			HashMap<QuestionInExam, Integer> que = new HashMap<QuestionInExam, Integer>();
+			int j = 1;
+			while (rs2.next()) {
+
+				Statement stmt3 = (Statement) conn.createStatement();
+				ResultSet rs3 = stmt3.executeQuery(
+						"SELECT * FROM answersinquestion as a" + " where a.questionID=" + rs2.getString(2));
+				int i = 0;
+				String[] arr = new String[4];
+				while (rs3.next()) {
+					arr[i++] = rs3.getString(3);
+				}
+				rs3.close();
+				stmt3.close();
+				Question q = new Question(rs2.getString(5), rs2.getString(4), rs2.getString(6), rs2.getString(7),
+						arr[0], arr[1], arr[2], arr[3], rs2.getInt(8));
+				QuestionInExam qieArr = new QuestionInExam(rs2.getInt(3), q, j++);
+				que.put(qieArr, rs2.getInt(14));
+			}
+			sGrade.setCheckedAnswers(que);
+			stmt2.close();
+			rs2.close();
+			tempArr.add(sGrade);
+		}
+		rs.close();
+		stmt.close();
+		System.out.println("hjwhdwehfewhfoewfewjfoehfroo");
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+
+	}
+
+	// This method return all the subjects in the data base.
+	private void getAllExamInExecution(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		String s = " SELECT  E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName  , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode ,EE.isGroup"
+				+ " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U"
+				+ " WHERE EE.examID=E.examID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID"
+				+ " AND EE.isGroup=0 AND EE.executingTeacherID=U.userID AND E.courseID=C.courseID AND E.subjectID=C.subjectID AND E.subjectID=S.subjectID AND EE.locked=0"
+				+ " union "
+				+ " SELECT E.examID , E.teacherID , E.USED , E.teacherInstruction , E.studentInstruction , E.duration , E.subjectID , E.courseID , C.courseName , S.subjectName , U.userName , EE.executingTeacherID , EE.executionID , EE.locked , EE.examcode ,EE.isGroup "
+				+ " FROM examinexecution as EE, examnieegroup AS EG, exam AS E, studentincourse SC , courseInSubject AS C , subject AS S , user AS U "
+				+ " WHERE EE.examID=E.examID AND EE.locked=0 AND EE.executingTeacherID=U.userID AND E.subjectID=SC.subjectID AND E.courseID=SC.courseID AND E.subjectID=C.subjectID AND E.courseID=C.courseID AND E.subjectID=S.subjectID"
+				+ " AND EE.isGroup=1 AND EG.examID=EE.examID AND EG.executionId=EE.executionID";
+
+		ResultSet rs = stmt.executeQuery(s); // sent the sql as stinrg
+		ArrayList<ExamInExecution> tempArr = new ArrayList<ExamInExecution>();
+
+		while (rs.next()) {
+			ExamInExecution ee = new ExamInExecution(); // create the new ExamInExecution
+			Exam e = new Exam(); // create the new exam that execute
+
+			e.setExamID(rs.getString(1));
+			e.setTeacherID(rs.getString(2)); // SAVE THE ID OF THE TEACHER THAT WROTE THE EXAM
+			e.setWasUsed(rs.getInt(3) == 1); // CHANGE THE STATUS OF THE EXAM
+			e.setInstructionForTeacher(rs.getString(4));
+			e.setInstructionForStudent(rs.getString(5));
+			e.setDuration(rs.getInt(6));
+			e.setCourse(new Course(rs.getString(8), rs.getString(9), rs.getString(2),
+					(new Subject(rs.getString(7), rs.getString(10)))));
+
+			String tempID = new String(rs.getString(2)); //
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2.executeQuery(" SELECT U.userName FROM user AS U WHERE U.userID =" + tempID);
+			rs2.next();
+			e.setTeacherName(rs2.getString(1));
+
+			// ee.setExamDet(e);
+			ee.setExecutionID(rs.getInt(13));
+			ee.setLocked(rs.getBoolean(14));
+			ee.setExamCode(rs.getString(15));
+			ee.setIsGroup(rs.getBoolean(16));
+			ee.setSubjectID(rs.getString(7));
+			ee.setCourseID(rs.getString(8));
+			ee.setCourseName(rs.getString(9));
+			// finish to create the exam
+			User u = new User();
+			u.setuID(rs.getString(12));
+			u.setuName(rs.getString(11));
+			ee.setExecTeacher(u);
+
+			// finish to create the exam to execute
+
+			HashMap<Question, Integer> questionsInExam = new HashMap<Question, Integer>();
+			rs2 = stmt2.executeQuery("SELECT * FROM question as q, questioninexam as qic"
+					+ " WHERE qic.questionID=q.questionID AND qic.examID=" + e.getExamID());
+
+			while (rs2.next()) {
+				String temp = rs2.getString(1);
+				Statement stmt3 = (Statement) conn.createStatement();
+				String str = "SELECT * FROM answersinquestion AS ans WHERE ans.questionID=" + temp;
+				ResultSet rs3 = stmt3.executeQuery(str);
+				String[] answers = new String[4];
+				int i = 0;
+				while (rs3.next()) {
+					answers[i++] = rs3.getString(3);
+				}
+				rs3.close();
+				Question q = new Question(rs2.getString(2), rs2.getString(1), rs2.getString(3), rs.getString(4),
+						answers[0], answers[1], answers[2], answers[3], rs2.getInt(5));
+				questionsInExam.put(q, rs2.getInt(9));
+			}
+			e.setQuestions(questionsInExam);
+
+			ee.setExamDet(e);
+			tempArr.add(ee); // add all the exam in exacution to the arr
+			rs2.close();
+			stmt2.close();
+		}
+		rs.close();
+		stmt.close();
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+
+	}
+
+	// This method return all the subjects in the data base.
+	private void getAllSubjectsInDB(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM subject");
+		ArrayList<Subject> sub = new ArrayList<Subject>();
+		while (rs.next()) {
+			sub.add(new Subject(rs.getString(1), rs.getString(2)));
+		}
+		stmt.close();
+		rs.close();
+		msg.setReturnObj(sub);
+		client.sendToClient(msg);
+	}
+
+	private void GetGradeByStudentDB(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+		Statement stmt = (Statement) conn.createStatement();
+		User StudentToSearch = (User) msg.getSentObj();
+		ResultSet rs = stmt.executeQuery("SELECT sr.examID ,sr.executionID, sr.grade, sr.examDate , cs.courseName "
+				+ "FROM studentresultinexam AS sr , exam AS e , courseinsubject AS cs "
+				+ "WHERE sr.approved=1 AND sr.studentID=" + StudentToSearch.getuID()
+				+ " AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID");
+		ArrayList<StudentInExam> tempArr = new ArrayList<StudentInExam>();// to save all the relevant exams grade of rhe
+
+		while (rs.next()) {
+			StudentInExam sGrade = new StudentInExam(rs.getString("examID"), rs.getInt("grade"),
+					rs.getTimestamp("examDate"), rs.getString("courseName"), StudentToSearch.getuID());
+			sGrade.setExecutionID(rs.getInt("executionID"));
+			tempArr.add(sGrade);
+
+		}
+		rs.close();
+		stmt.close();
+		System.out.println("hjwhdwehfewhfoewfewjfoehfroo");
+		msg.setReturnObj(tempArr);
+		client.sendToClient(msg);
+	}
+
+	private void getStudentResultInExam(Message msg, ConnectionToClient client, Connection conn)
+			throws SQLException, IOException {
+
+		StudentInExam sie = (StudentInExam) msg.getSentObj();
+		Statement stmt = (Statement) conn.createStatement();
+		int cnt = 0;
+		ResultSet rs = stmt
+				.executeQuery("SELECT * FROM studentanswersinexam AS SAE WHERE SAE.studentID=" + sie.getStudentID()
+						+ " AND SAE.examId=" + sie.getExamID() + " AND SAE.executionID=" + sie.getExecutionID());
+		HashMap<QuestionInExam, Integer> map = new HashMap<QuestionInExam, Integer>();
+		while (rs.next()) {
+			int ans = rs.getInt(5);
+			Statement stmt2 = (Statement) conn.createStatement();
+			ResultSet rs2 = stmt2.executeQuery(" SELECT * FROM Question AS Q, questioninexam as qe WHERE "
+					+ "Q.questionID=qe.questionID and  qe.examID=" + rs.getString(1));
+			while (rs2.next()) {
+				String temp = rs2.getString(1);
+				Statement stmt3 = (Statement) conn.createStatement();
+				String str = "SELECT * FROM answersinquestion AS ans WHERE ans.questionID=" + temp;
+				ResultSet rs3 = stmt3.executeQuery(str);
+				String[] answers = new String[4];
+				int i = 0;
+				while (rs3.next()) {
+					answers[i++] = rs3.getString(3);
+				}
+
+				Question q = new Question(rs2.getString(2), rs2.getString(1), rs2.getString(3), rs2.getString(4),
+						answers[0], answers[1], answers[2], answers[3], rs2.getInt(5));
+				QuestionInExam qie = new QuestionInExam(rs.getInt(9), q, cnt++);
+				map.put(qie, ans);
+
+				rs3.close();
+				stmt3.close();
+			}
+			rs2.close();
+			stmt2.close();
+		}
+		sie.setCheckedAnswers(map);
+
+		msg.setReturnObj(sie);
+		rs.close();
+		stmt.close();
+		client.sendToClient(msg);
+
 	}
 
 	/**
@@ -1247,30 +2109,5 @@ public class EchoServer extends AbstractServer {
 
 	// Class methods ***************************************************
 
-	/**
-	 * This method is responsible for the creation of the server instance (there is
-	 * no UI in this phase).
-	 *
-	 * @param args[0]
-	 *            The port number to listen on. Defaults to 5555 if no argument is
-	 *            entered.
-	 */
-	public static void main(String[] args) {
-		int port = 0; // Port to listen on
-
-		try {
-			port = Integer.parseInt(args[0]); // Get port from command line
-		} catch (Throwable t) {
-			port = DEFAULT_PORT; // Set port to 5555
-		}
-
-		EchoServer sv = new EchoServer(port);
-
-		try {
-			sv.listen(); // Start listening for connections
-		} catch (Exception ex) {
-			System.out.println("ERROR - Could not listen for clients!");
-		}
-	}
 }
 // End of EchoServer class

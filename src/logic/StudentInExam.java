@@ -2,8 +2,13 @@ package logic;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
+
+import gui.QuestionInExam;
 
 public class StudentInExam implements Serializable {
+
 	private String studentID;
 	private String studentName;
 	private int grade;
@@ -12,6 +17,26 @@ public class StudentInExam implements Serializable {
 	private Timestamp date; // the date of the exam
 	private String courseName; // the name of the course
 	private String studentStatus;
+	private HashMap<QuestionInExam, Integer> checkedAnswers;
+	private int NumberOfCorrectAnswer;
+	private int NumberOfWrongAnswer;
+	private Boolean isComp;
+	private int actualDuration;
+
+	public String oString() {
+		String s = "";
+		s += "\nExam ID: " + getExamID() + "\tExam Date" + getDate() + "\tCourse name: " + getCourseName() + "\n";
+		if (studentStatus.equals("finished")) {
+			s += "Student Grade: " + getGrade() + "\n" + "Correct Answers: " + getNumberOfCorrectAnswer()
+					+ "\tWrong Answers: " + getNumberOfWrongAnswer();
+			for (Map.Entry<QuestionInExam, Integer> entry : checkedAnswers.entrySet()) {
+				s += entry.getKey().toString() + "\nAnswer selected: " + entry.getValue();
+			}
+		} else {
+			s += "The student hasn't finished the exam\n";
+		}
+		return s;
+	}
 
 	public StudentInExam() {
 		super();
@@ -96,23 +121,70 @@ public class StudentInExam implements Serializable {
 		this.executionID = executionID;
 	}
 
-	/*
-	 * public void Set_actualdoration(int actualdoration) {
-	 * this.actualdoration=actualdoration; }
-	 * 
-	 * public int Get_actualdoration() { return this.actualdoration; }
-	 */
+	public HashMap<QuestionInExam, Integer> getCheckedAnswers() {
+		return checkedAnswers;
+	}
 
-	/*
-	 * public void Set_studentID(String studentID) { this.studentID=studentID; }
-	 * 
-	 * public String Get_studentID() { return this.studentID; }
-	 */
+	public void setCheckedAnswers(HashMap<QuestionInExam, Integer> checkedAnswers) {
+		this.checkedAnswers = checkedAnswers;
+	}
 
-	/*
-	 * public void Set_date(String date) { this.date=date; }
-	 * 
-	 * public String Get_date() { return this.date; }
-	 */
+	public int getNumberOfWrongAnswer() {
+		return NumberOfWrongAnswer;
+	}
+
+	public void setNumberOfWrongAnswer(int numberOfWrongAnswer) {
+		NumberOfWrongAnswer = numberOfWrongAnswer;
+	}
+
+	public int getNumberOfCorrectAnswer() {
+		return NumberOfCorrectAnswer;
+	}
+
+	public void setNumberOfCorrectAnswer(int numberOfCorrectAnswer) {
+		NumberOfCorrectAnswer = numberOfCorrectAnswer;
+	}
+
+	public int getActualDuration() {
+		return actualDuration;
+	}
+
+	public void setActualDuration(int actualDuration) {
+		this.actualDuration = actualDuration;
+	}
+
+	public Boolean getIsComp() {
+		return isComp;
+	}
+
+	public void setIsComp(Boolean isComp) {
+		this.isComp = isComp;
+	}
+
+	public boolean equals(Object arg0) {
+		StudentInExam s = (StudentInExam) arg0;
+		if (!s.getStudentID().equals(this.studentID))
+			return false;
+		if (!s.getExamID().equals(this.examID))
+			return false;
+		if (s.getExecutionID() != this.executionID)
+			return false;
+		return true;
+	}
+
+	public String toString() {
+		String s = "";
+		s += "\nExam ID: " + getExamID() + "\tExam Date" + getDate() + "\tCourse name: " + getCourseName() + "\n";
+		if (studentStatus.equals("finished")) {
+			s += "Student Grade: " + getGrade() + "\n" + "Correct Answers: " + getNumberOfCorrectAnswer()
+					+ "\tWrong Answers: " + getNumberOfWrongAnswer();
+			for (Map.Entry<QuestionInExam, Integer> entry : checkedAnswers.entrySet()) {
+				s += entry.getKey().toString() + "\nAnswer selected: " + entry.getValue();
+			}
+		} else {
+			s += "The student hasn't finished the exam\n";
+		}
+		return s;
+	}
 
 }

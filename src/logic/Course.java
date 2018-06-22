@@ -2,25 +2,27 @@ package logic;
 
 import java.io.Serializable;
 
-public class Course implements Serializable
-{
+public class Course implements Serializable {
 	String cID;
 	String cName;
 	Subject subject;
 	String teacherID;
-	
-	public Course(String cID, String cName,String teacherID,Subject s) {
+
+	public Course(String cID, String cName, String teacherID, Subject s) {
 		super();
 		this.cID = cID;
 		this.cName = cName;
-		this.teacherID=teacherID;
-		subject=s;
+		this.teacherID = teacherID;
+		subject = s;
 	}
-	
-	public Course(String cID,String sID)
-	{
-		this.cID=cID;
-		subject=new Subject(sID,null);
+
+	public Course(Course course) {
+		this(course.getcID(), course.getcName(), course.getcName(), course.getSubject());
+	}
+
+	public Course(String cID, String sID) {
+		this.cID = cID;
+		subject = new Subject(sID, null);
 	}
 
 	public String getcID() {
@@ -55,10 +57,10 @@ public class Course implements Serializable
 		this.teacherID = teacherID;
 	}
 
-	@Override
 	public String toString() {
-		return cName;
+		String s = "";
+		s += "Course name: " + getcID() + " Course ID: \n" + getcID() + subject.toString();
+		return s;
 	}
-	
-	
+
 }

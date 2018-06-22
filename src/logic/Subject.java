@@ -2,8 +2,7 @@ package logic;
 
 import java.io.Serializable;
 
-public class Subject implements Serializable
-{
+public class Subject implements Serializable {
 	String subjectID;
 	String sName;
 
@@ -31,11 +30,7 @@ public class Subject implements Serializable
 
 	@Override
 	public String toString() {
-		return sName;
+		return "Subject name: " + getsName() + " Subject ID: " + getSubjectID();
 	}
 
-	
-	
-	
-	
 }

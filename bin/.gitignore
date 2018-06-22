@@ -1,6 +1,5 @@
-/client/
-/common/
 /gui/
-/images/
 /logic/
 /ocsf/
+/client/
+/images/

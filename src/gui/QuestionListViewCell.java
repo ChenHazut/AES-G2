@@ -11,6 +11,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import logic.ExamInExecution;
 import logic.Question;
 
 public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam>{
@@ -20,13 +21,13 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam>{
 	@FXML
     private Label questionNumber;
     @FXML
-    private RadioButton radioButton1;
+    RadioButton radioButton1;
     @FXML
-    private RadioButton radioButton2;
+    RadioButton radioButton2;
     @FXML
-    private RadioButton radioButton3;
+    RadioButton radioButton3;
     @FXML
-    private RadioButton radioButton4;
+    RadioButton radioButton4;
     @FXML
     private Text questionBody;
     @FXML
@@ -42,8 +43,7 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam>{
     @FXML
     private Label correctAnswerLabel;
 
-
-	private FXMLLoader mLLoader;
+    private FXMLLoader mLLoader;
 
 	@Override
 	protected void updateItem(QuestionInExam qie, boolean empty) {
@@ -85,12 +85,12 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam>{
         	radioButton3.setToggleGroup(group);
         	radioButton4.setToggleGroup(group);
         	
-
+        	setCheckBoxInQuestion(q.getQuestionID());
         	
 	        setGraphic(pane);
 	        }
 
 	    }
 	public abstract Boolean setCorrectAnswerLabel();
-
+	public abstract void setCheckBoxInQuestion(String s);
 }
