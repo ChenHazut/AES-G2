@@ -1,5 +1,6 @@
 package gui;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
@@ -150,11 +151,14 @@ public class ExamFormForStudentGUI {
 		disableListView.toFront();
 		cancleButton.setVisible(false);
 		int actualTime = (countPassedTime / 60) + 1;
+		StudentSelection ss = StudentSelection.getInstance();
 		s.setActualDuration(actualTime);
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		s.setDate(timestamp);
+		s.setIsComp(true);
+		s.setCheckedAnswers(ss.studentAnswers);
 		s.setStudentStatus("finished");
 		st.changeStudentInExamStatus(s);
-		StudentSelection ss = StudentSelection.getInstance();
-		s.setCheckedAnswers(ss.studentAnswers);
 
 	}
 

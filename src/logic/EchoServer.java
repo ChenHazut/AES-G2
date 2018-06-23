@@ -993,14 +993,14 @@ public class EchoServer extends AbstractServer {
 		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 		System.out.println("examID= " + ed.getExamID());
-		ResultSet rs = stmt.executeQuery(
-				"SELECT * FROM examInExecution as EE WHERE EE.examID=" + ed.getExamID() + " AND EE.executionID=" + ed);
+		ResultSet rs = stmt.executeQuery("SELECT * FROM examInExecution AS EE WHERE EE.examID=" + ed.getExamID()
+				+ " AND EE.executionID=" + ed.getExecutionID());
 		rs.last();
 		rs.updateInt(5, 1);
 		rs.updateRow();
 		Boolean isGroup = rs.getBoolean(11);
 		rs.close();
-		checkLockedExam(ed, isGroup);
+		checkLockedExam(ed, isGroup, conn);
 
 	}
 
@@ -1389,54 +1389,67 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
-	private void checkLockedExam(ExecutionDetails ed, Boolean isGroup1) throws SQLException {
+	private void checkLockedExam(ExecutionDetails ed, Boolean isGroup1, Connection conn) throws SQLException {
 		Thread checkExamThread;
+		final Connection conn2 = connectToDB();
 		checkExamThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				CheckExam ce = new CheckExam();
 				System.out.println("start check exam: " + ed.getExamID() + " executionID=" + ed.getExecutionID());
 				try {
-					Statement stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+					Statement stmt2 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 							ResultSet.CONCUR_UPDATABLE);
 					ResultSet rs2 = stmt2.executeQuery("SELECT s.* FROM studentresultinexam AS s WHERE s.examID="
 							+ ed.getExamID() + " AND s.executionID=" + ed.getExecutionID() + " AND s.computerized=1 ");
 					ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+					ArrayList<Integer> arrOfGrades = new ArrayList<Integer>();
+					int[] hist = new int[10];
+					for (int k = 0; k < 10; k++)
+						hist[k] = 0;
 					while (rs2.next()) {
+						System.out.println("checking student: " + rs2.getString(3));
 						StudentInExam student = new StudentInExam();
 						student.setStudentID(rs2.getString(3));
 						student.setExamID(ed.getExamID());
 						student.setExecutionID(ed.getExecutionID());
 						student.setIsComp(rs2.getBoolean(4));
 						student.setGrade(rs2.getInt(5));
-						Statement stmt3 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+						Statement stmt3 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 								ResultSet.CONCUR_UPDATABLE);
-						ResultSet rs3 = stmt3
-								.executeQuery("SELECT * FROM studentanswersinexam AS sa,Question as q WHERE examID="
-										+ ed.getExamID() + " AND executionID=" + ed.getExecutionID() + " AND studentID="
-										+ student.getStudentID() + " AND q.questionID=sa.questionID");
+						ResultSet rs3 = stmt3.executeQuery(
+								"SELECT * FROM studentanswersinexam AS sa,Question as q,questioninexam AS qe WHERE sa.examID="
+										+ ed.getExamID() + " AND sa.executionID=" + ed.getExecutionID()
+										+ " AND sa.studentID=" + student.getStudentID()
+										+ " AND q.questionID=sa.questionID AND qe.examID=" + ed.getExamID()
+										+ " AND qe.questionID=q.questionID");
 
 						int j = 0;
+						student.setCheckedAnswers(new HashMap<QuestionInExam, Integer>());
 						while (rs3.next()) {
 							Question q = new Question(rs3.getString(7), rs3.getString(4), rs3.getString(8),
 									rs3.getString(9), null, null, null, null, rs3.getInt(10));
-							QuestionInExam qie = new QuestionInExam(rs3.getInt(5), q, j++);
+							QuestionInExam qie = new QuestionInExam(rs3.getInt(14), q, j++);
+
 							student.getCheckedAnswers().put(qie, rs3.getInt(5));
 						}
 						arr.add(student);
 					}
+
 					int sum;
 					int histogram[] = new int[10];
-					for (int k = 0; k < 10; k++)
-						histogram[k] = 0;
+
+					System.out.println("checkpoint");
 					int numOfStudents;
 					HashMap<StudentInExam, ArrayList<Integer>> result = ce.checkExams(arr);
 					for (Map.Entry<StudentInExam, ArrayList<Integer>> entry : result.entrySet()) {
-						Statement stmt4 = (Statement) conn.createStatement();
+						Statement stmt4 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+								ResultSet.CONCUR_UPDATABLE);
 						String str = "SELECT * FROM studentresultinexam AS res WHERE res.examID=" + ed.getExamID()
 								+ " AND res.executionID=" + ed.getExecutionID() + " AND studentID="
 								+ entry.getKey().getStudentID();
 						ResultSet rs4 = stmt4.executeQuery(str);
+						arrOfGrades.add(entry.getValue().get(0));
 						rs4.next();
 						rs4.updateInt(5, entry.getValue().get(0));
 						rs4.updateInt(7, entry.getValue().get(1));
@@ -1444,7 +1457,31 @@ public class EchoServer extends AbstractServer {
 						rs4.updateRow();
 						System.out.println(
 								"finished checking exam: " + ed.getExamID() + " executionID=" + ed.getExecutionID());
+
 					}
+					ExamReport er = new ExamReport(arrOfGrades, ed.getExamID(), ed.getExecutionID());
+					Statement stmt4 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+							ResultSet.CONCUR_UPDATABLE);
+					ResultSet rs4 = stmt4.executeQuery("SELECT * FROM reportforexam ");
+					rs4.moveToInsertRow();
+					rs4.updateString(2, ed.getExamID());
+					rs4.updateInt(3, ed.getExecutionID());
+					rs4.updateFloat(4, er.getAvg());
+					System.out.println("precent:");
+					for (int i = 0; i < 10; i++)
+						System.out.println(er.getPercentages()[i]);
+					rs4.updateInt(5, er.getMidean());
+					rs4.updateInt(6, er.getPercentages()[0]);
+					rs4.updateInt(7, er.getPercentages()[1]);
+					rs4.updateInt(8, er.getPercentages()[2]);
+					rs4.updateInt(9, er.getPercentages()[3]);
+					rs4.updateInt(10, er.getPercentages()[4]);
+					rs4.updateInt(11, er.getPercentages()[5]);
+					rs4.updateInt(12, er.getPercentages()[6]);
+					rs4.updateInt(13, er.getPercentages()[7]);
+					rs4.updateInt(14, er.getPercentages()[8]);
+					rs4.updateInt(15, er.getPercentages()[9]);
+					rs4.insertRow();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1463,10 +1500,13 @@ public class EchoServer extends AbstractServer {
 		rs.next();
 		boolean isGroup = rs.getBoolean(11);
 		if (isGroup) {
+			System.out.println("is group= " + isGroup);
 			rs = stmt.executeQuery("SELECT * FROM examnieegroup WHERE examID=" + ed.getExamID() + " AND executionID="
 					+ ed.getExecutionID() + " AND (studentStatus=\"notStarted\" OR studentStatus=\"started\")");
 			if (!rs.next()) {
+				System.out.println("rs is emptyyy");
 				Message msg = new Message();
+				msg.setSentObj(ed);
 				lockExam(msg, null, conn);
 			}
 		} else {
@@ -1486,7 +1526,20 @@ public class EchoServer extends AbstractServer {
 		StudentInExam student = (StudentInExam) msg.getSentObj();
 		Boolean isGroup;
 		ExecutionDetails ed = new ExecutionDetails(student.getExamID(), student.getExecutionID());
+		Statement stmt5 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs5 = stmt5.executeQuery("SELECT * FROM ExamInExecution WHERE examID=" + ed.getExamID()
+				+ " AND executionID=" + ed.getExecutionID());
+		rs5.next();
+		isGroup = rs5.getBoolean(11);
+
 		if (student.getStudentStatus().equalsIgnoreCase("started")) {
+			if (isGroup) {
+				rs5 = stmt5.executeQuery("SELECT * FROM examnieegroup WHERE examID=" + ed.getExamID()
+						+ " AND executionID=" + ed.getExecutionID() + " AND studentID=" + student.getStudentID());
+				rs5.next();
+				rs5.updateString(4, "started");
+				rs5.updateRow();
+			}
 			if (exemanieeList.containsKey(ed))
 				exemanieeList.get(ed).add(student);
 			else {
@@ -1495,7 +1548,20 @@ public class EchoServer extends AbstractServer {
 				exemanieeList.put(ed, arr);
 			}
 			sendToAllClients(exemanieeList);
+			rs5 = stmt5.executeQuery("SELECT * FROM examInExecution WHERE examID=" + ed.getExamID()
+					+ " AND executionID=" + ed.getExecutionID());
+			rs5.next();
+			int c = rs5.getInt(7);
+			rs5.updateInt(7, ++c);
+			rs5.updateRow();
 		} else if (student.getStudentStatus().equalsIgnoreCase("Finished")) {
+			if (isGroup) {
+				rs5 = stmt5.executeQuery("SELECT * FROM examnieegroup WHERE examID=" + ed.getExamID()
+						+ " AND executionID=" + ed.getExecutionID() + " AND studentID=" + student.getStudentID());
+				rs5.next();
+				rs5.updateString(4, "Finished");
+				rs5.updateRow();
+			}
 			System.out.println("tring to submit");
 			ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
 			arr.add(student);
@@ -1517,26 +1583,48 @@ public class EchoServer extends AbstractServer {
 			rs.updateInt(2, student.getExecutionID());
 			rs.updateString(3, student.getStudentID());
 			rs.updateInt(4, student.getIsComp() ? 1 : 0);
+			rs.updateTimestamp(11, student.getDate());
 			rs.updateInt(5, -1);
 			rs.updateInt(6, student.getActualDuration());
 			rs.insertRow();
+			System.out.println("row added to student result in exam");
 			if (student.getIsComp()) {
+				System.out.println("it is comp");
 				Statement stmt2 = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 						ResultSet.CONCUR_UPDATABLE);
 				ResultSet rs2 = stmt2.executeQuery("SELECT * FROM studentanswersinexam");
-				Iterator it2 = student.getCheckedAnswers().entrySet().iterator();
-				while (it2.hasNext()) {
-					Map.Entry pair = (Map.Entry) it2.next();
+				System.out.println("size of question map: " + student.getCheckedAnswers().size());
+				for (Map.Entry<QuestionInExam, Integer> entry : student.getCheckedAnswers().entrySet()) {
+
+					System.out.println("question: " + entry.getKey().getQuestion().getQuestionID() + " And answer is:"
+							+ entry.getValue());
 					rs2.moveToInsertRow();
 					rs2.updateString(1, student.getExamID());
 					rs2.updateInt(2, student.getExecutionID());
 					rs2.updateString(3, student.getStudentID());
-					rs2.updateString(4, ((Question) pair.getKey()).getQuestionID());
-					rs2.updateInt(5, (int) pair.getValue());
+					rs2.updateString(4, entry.getKey().getQuestion().getQuestionID());
+					rs2.updateInt(5, entry.getValue());
+					rs2.insertRow();
 				}
+
 			}
+			rs5 = stmt5.executeQuery("SELECT * FROM examInExecution WHERE examID=" + ed.getExamID()
+					+ " AND executionID=" + ed.getExecutionID());
+			rs5.next();
+			int c = rs5.getInt(8);
+			c++;
+			rs5.updateInt(8, c);
+			rs5.updateRow();
 			checkIfAllStudentFinished(ed, conn2);
+
 		} else if (student.getStudentStatus().equalsIgnoreCase("notFinished")) {
+			if (isGroup) {
+				rs5 = stmt5.executeQuery("SELECT * FROM examnieegroup WHERE examID=" + ed.getExamID()
+						+ " AND executionID=" + ed.getExecutionID() + " AND studentID=" + student.getStudentID());
+				rs5.next();
+				rs5.updateString(4, "notFinished");
+				rs5.updateRow();
+			}
 			ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
 			arr.add(student);
 			StudentInExam temp = student;
@@ -1556,10 +1644,19 @@ public class EchoServer extends AbstractServer {
 			rs.updateInt(2, student.getExecutionID());
 			rs.updateString(3, student.getStudentID());
 			rs.updateInt(4, student.getIsComp() ? 1 : 0);
+			rs.updateTimestamp(11, student.getDate());
 			rs.updateInt(5, 0);
 			rs.updateInt(6, student.getActualDuration());
 			rs.insertRow();
+			rs5 = stmt5.executeQuery("SELECT * FROM examInExecution WHERE examID=" + ed.getExamID()
+					+ " AND executionID=" + ed.getExecutionID());
+			rs5.next();
+			int c = rs5.getInt(9);
+			c++;
+			rs5.updateInt(9, c);
+			rs5.updateRow();
 			checkIfAllStudentFinished(ed, conn2);
+
 		}
 	}
 

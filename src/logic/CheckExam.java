@@ -25,6 +25,14 @@ public class CheckExam {
 			Integer grade = 0;
 			Integer correctAns = 0;
 			Integer wrongAns = 0;
+			System.out.println("*****************************************");
+			System.out.println("size of map is: " + student.getCheckedAnswers().size());
+			System.out.println("student " + student.getStudentID());
+			for (Map.Entry<QuestionInExam, Integer> entry : student.getCheckedAnswers().entrySet()) {
+				System.out.println("Question id: " + entry.getKey().getQuestion().getQuestionID() + " selected ans: "
+						+ entry.getValue() + " correct ans: " + entry.getKey().getQuestion().getCorrectAnswer());
+			}
+			System.out.println("*****************************************");
 			for (Map.Entry<QuestionInExam, Integer> entry : student.getCheckedAnswers().entrySet()) {
 				if (entry.getKey().getQuestion().getCorrectAnswer() == entry.getValue()) {
 					grade += entry.getKey().getPointsInExam();
@@ -33,6 +41,7 @@ public class CheckExam {
 					wrongAns++;
 			}
 			studentResults.add(grade);
+			System.out.println("grade of " + student.getStudentID() + " is:" + grade);
 			studentResults.add(correctAns);
 			studentResults.add(wrongAns);
 			studentResultsMap.put(student, studentResults);

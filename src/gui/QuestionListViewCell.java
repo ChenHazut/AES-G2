@@ -84,13 +84,9 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam> {
 			points.setText(s);
 			questionNumber.setText(Integer.toString(((gui.QuestionInExam) qie).getSerialNumberInExam()) + ")");
 			radioButton1.setToggleGroup(group);
-			radioButton1.setUserData(1);
 			radioButton2.setToggleGroup(group);
-			radioButton1.setUserData(2);
 			radioButton3.setToggleGroup(group);
-			radioButton1.setUserData(3);
 			radioButton4.setToggleGroup(group);
-			radioButton1.setUserData(4);
 
 			setCheckBoxInQuestion(q.getQuestionID());
 
@@ -98,13 +94,25 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam> {
 		}
 		group.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
 			public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
-				if (group.getSelectedToggle() != null) {
-					System.out.println("qID: " + ss.question.getQuestion().getQuestionID());
-					ss.studentAnswers.put(qie, (Integer) group.getSelectedToggle().getUserData());
+				QuestionInExam q = ((gui.QuestionInExam) qie);
+				if (group.getSelectedToggle() != null && q != null) {
+					System.out.println("size of map before: " + ss.studentAnswers.size());
+
+					RadioButton button = (RadioButton) group.getSelectedToggle();
+					int res = 0;
+					if (button.getText().equals("1."))
+						res = 1;
+					else if (button.getText().equals("2."))
+						res = 2;
+					else if (button.getText().equals("3."))
+						res = 3;
+					else if (button.getText().equals("4."))
+						res = 4;
+					ss.studentAnswers.put((gui.QuestionInExam) qie, res);
+					System.out.println("size of map after: " + ss.studentAnswers.size() + " res=" + res);
 				}
 			}
 		});
-
 	}
 
 	public abstract Boolean setCorrectAnswerLabel();
