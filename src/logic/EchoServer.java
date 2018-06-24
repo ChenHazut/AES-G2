@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -196,7 +197,12 @@ public class EchoServer extends AbstractServer {
 																				// e.g to logIn
 			getAllExamReportsTeacherWrote(msg, client, conn);// reut to del
 			System.out.println("inside");
-		}
+		} else if (msg.getqueryToDo().equals("getAllGradesForApprval"))
+			getAllGradesForApprval(msg, client, conn);
+		else if (msg.getqueryToDo().equals("changeGrade"))
+			changeGrade(msg, client, conn);
+		else if (msg.getqueryToDo().equals("approveGrade"))
+			approveGrade(msg, client, conn);
 	}
 
 	private void principalHandler(Message msg, ConnectionToClient client, Connection conn)
@@ -1430,12 +1436,10 @@ public class EchoServer extends AbstractServer {
 							Question q = new Question(rs3.getString(7), rs3.getString(4), rs3.getString(8),
 									rs3.getString(9), null, null, null, null, rs3.getInt(10));
 							QuestionInExam qie = new QuestionInExam(rs3.getInt(14), q, j++);
-
 							student.getCheckedAnswers().put(qie, rs3.getInt(5));
 						}
 						arr.add(student);
 					}
-
 					int sum;
 					int histogram[] = new int[10];
 
@@ -1459,29 +1463,22 @@ public class EchoServer extends AbstractServer {
 								"finished checking exam: " + ed.getExamID() + " executionID=" + ed.getExecutionID());
 
 					}
-					ExamReport er = new ExamReport(arrOfGrades, ed.getExamID(), ed.getExecutionID());
-					Statement stmt4 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-							ResultSet.CONCUR_UPDATABLE);
-					ResultSet rs4 = stmt4.executeQuery("SELECT * FROM reportforexam ");
-					rs4.moveToInsertRow();
-					rs4.updateString(2, ed.getExamID());
-					rs4.updateInt(3, ed.getExecutionID());
-					rs4.updateFloat(4, er.getAvg());
-					System.out.println("precent:");
-					for (int i = 0; i < 10; i++)
-						System.out.println(er.getPercentages()[i]);
-					rs4.updateInt(5, er.getMidean());
-					rs4.updateInt(6, er.getPercentages()[0]);
-					rs4.updateInt(7, er.getPercentages()[1]);
-					rs4.updateInt(8, er.getPercentages()[2]);
-					rs4.updateInt(9, er.getPercentages()[3]);
-					rs4.updateInt(10, er.getPercentages()[4]);
-					rs4.updateInt(11, er.getPercentages()[5]);
-					rs4.updateInt(12, er.getPercentages()[6]);
-					rs4.updateInt(13, er.getPercentages()[7]);
-					rs4.updateInt(14, er.getPercentages()[8]);
-					rs4.updateInt(15, er.getPercentages()[9]);
-					rs4.insertRow();
+					HashSet<StudentInExam> studentCopied = ce.checkForCopies(result);
+					Iterator iterator = studentCopied.iterator();
+					System.out.println("size of set:" + studentCopied.size());
+					while (iterator.hasNext()) {
+						StudentInExam stu = (StudentInExam) iterator.next();
+						Statement stmt4 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+								ResultSet.CONCUR_UPDATABLE);
+						String str = "SELECT * FROM studentresultinexam AS res WHERE res.examID=" + ed.getExamID()
+								+ " AND res.executionID=" + ed.getExecutionID() + " AND studentID="
+								+ stu.getStudentID();
+						ResultSet rs4 = stmt4.executeQuery(str);
+						rs4.next();
+						rs4.updateBoolean(10, true);
+						rs4.updateRow();
+						System.out.println("student " + stu.getStudentID());
+					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1673,7 +1670,6 @@ public class EchoServer extends AbstractServer {
 				((ConnectionToClient) pair.getValue()).sendToClient(m);
 			}
 		}
-		System.out.println("trtretetret");
 		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs = stmt.executeQuery("SELECT * FROM overtimerequests");
 		rs.moveToInsertRow();
@@ -1788,8 +1784,8 @@ public class EchoServer extends AbstractServer {
 		Statement stmt = (Statement) conn.createStatement();
 		String s = "select * from examInExecution as ee, reportforexam as r,"
 				+ "(select e.examID from exam as e where e.subjectID=" + c.getSubject().getSubjectID()
-				+ " and e.courseID=" + c.getcID() + ") as where ee.examID=t.examID AND "
-				+ "ee.examId=r.examID and ee.executionID=r.executionID";
+				+ " and e.courseID=" + c.getcID() + ") as t where ee.examID=t.examID AND "
+				+ "ee.examID=r.examID and ee.executionID=r.executionID";
 		ResultSet rs = stmt.executeQuery(s);
 		while (rs.next()) {
 			ExamReport er = new ExamReport();
@@ -1982,20 +1978,22 @@ public class EchoServer extends AbstractServer {
 	private void getAllStudentInExam(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM studentresultinexam AS sr , exam AS e , courseinsubject AS cs "
-				+ "WHERE sr.approved=1 AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID");
+		ResultSet rs = stmt
+				.executeQuery("SELECT * FROM studentresultinexam AS sr , exam AS e , courseinsubject AS cs , user as u"
+						+ " WHERE sr.approved=1 AND sr.examID=e.examID AND e.subjectID=cs.subjectID AND e.courseID=cs.courseID"
+						+ " and u.userID=sr.studentID");
 		ArrayList<StudentInExam> tempArr = new ArrayList<StudentInExam>();// to save all the relevant exams grade of rhe
 
 		while (rs.next()) {
 			StudentInExam sGrade = new StudentInExam(rs.getString(1), rs.getInt(5), rs.getTimestamp(11),
 					rs.getString(22), rs.getString(3));
-			sGrade.setExecutionID(rs.getInt(2));
 			sGrade.setNumberOfCorrectAnswer(rs.getInt(7));
 			sGrade.setNumberOfWrongAnswer(rs.getInt(8));
+			sGrade.setActualDuration(6);
 			Statement stmt2 = (Statement) conn.createStatement();
 			ResultSet rs2 = stmt2
 					.executeQuery("SELECT * FROM questioninexam as qie, question as q, studentanswersinexam as s "
-							+ "where qie.questionID=q.questionID and s.questionID=q.questionID and s.examId="
+							+ "where qie.questionID=q.questionID and s.questionID=q.questionID and s.examId=qie.examID and s.examId="
 							+ rs.getString(1));
 			HashMap<QuestionInExam, Integer> que = new HashMap<QuestionInExam, Integer>();
 			int j = 1;
@@ -2023,7 +2021,6 @@ public class EchoServer extends AbstractServer {
 		}
 		rs.close();
 		stmt.close();
-		System.out.println("hjwhdwehfewhfoewfewjfoehfroo");
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
 
@@ -2197,6 +2194,127 @@ public class EchoServer extends AbstractServer {
 		stmt.close();
 		client.sendToClient(msg);
 
+	}
+
+	private void insertExamStatToDB(Connection conn2, ExecutionDetails ed) throws SQLException {
+		Statement stmt2 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs2 = stmt2.executeQuery("SELECT s.* FROM studentresultinexam AS s WHERE s.examID=" + ed.getExamID()
+				+ " AND s.executionID=" + ed.getExecutionID());
+		ArrayList<StudentInExam> arr = new ArrayList<StudentInExam>();
+		ArrayList<Integer> arrOfGrades = new ArrayList<Integer>();
+		int[] hist = new int[10];
+		for (int k = 0; k < 10; k++)
+			hist[k] = 0;
+
+		while (rs2.next()) {
+			StudentInExam student = new StudentInExam();
+			student.setStudentID(rs2.getString(3));
+			student.setExamID(ed.getExamID());
+			student.setExecutionID(ed.getExecutionID());
+			student.setIsComp(rs2.getBoolean(4));
+			student.setGrade(rs2.getInt(5));
+			arrOfGrades.add(student.getGrade());
+			arr.add(student);
+		}
+		ExamReport er = new ExamReport(arrOfGrades, ed.getExamID(), ed.getExecutionID());
+		Statement stmt4 = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs4 = stmt4.executeQuery("SELECT * FROM reportforexam ");
+		rs4.moveToInsertRow();
+		rs4.updateString(2, ed.getExamID());
+		rs4.updateInt(3, ed.getExecutionID());
+		rs4.updateFloat(4, er.getAvg());
+		System.out.println("precent:");
+		for (int i = 0; i < 10; i++)
+			System.out.println(er.getPercentages()[i]);
+		rs4.updateInt(5, er.getMidean());
+		rs4.updateInt(6, er.getPercentages()[0]);
+		rs4.updateInt(7, er.getPercentages()[1]);
+		rs4.updateInt(8, er.getPercentages()[2]);
+		rs4.updateInt(9, er.getPercentages()[3]);
+		rs4.updateInt(10, er.getPercentages()[4]);
+		rs4.updateInt(11, er.getPercentages()[5]);
+		rs4.updateInt(12, er.getPercentages()[6]);
+		rs4.updateInt(13, er.getPercentages()[7]);
+		rs4.updateInt(14, er.getPercentages()[8]);
+		rs4.updateInt(15, er.getPercentages()[9]);
+		rs4.insertRow();
+	}
+
+	private void approveGrade(Message msg, ConnectionToClient client, Connection conn2) throws SQLException {
+		StudentInExam student = (StudentInExam) msg.getSentObj();
+		ExecutionDetails ed = new ExecutionDetails(student.getExamID(), student.getExecutionID());
+		Statement stmt = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		String str = "SELECT * FROM studentresultinexam AS s WHERE s.examID=" + student.getExamID()
+				+ " AND s.executionID=" + student.getExecutionID() + " AND s.studentID=" + student.getStudentID();
+		ResultSet rs = stmt.executeQuery(str);
+		rs.next();
+		rs.updateBoolean(9, true);
+		rs.updateRow();
+		str = "SELECT * FROM studentresultinexam AS s WHERE s.examID=" + student.getExamID() + " AND s.executionID="
+				+ student.getExecutionID() + " AND s.studentID=" + student.getStudentID() + " AND s.approved=0";
+		rs = stmt.executeQuery(str);
+		if (!rs.next())
+			insertExamStatToDB(conn2, ed);
+		rs.close();
+		stmt.close();
+
+	}
+
+	private void changeGrade(Message msg, ConnectionToClient client, Connection conn2) throws SQLException {
+		StudentInExam student = (StudentInExam) msg.getSentObj();
+		Statement stmt = (Statement) conn2.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ExecutionDetails ed = new ExecutionDetails(student.getExamID(), student.getExecutionID());
+		String str = "SELECT * FROM studentresultinexam AS s WHERE s.examID=" + student.getExamID()
+				+ " AND s.executionID=" + student.getExecutionID() + " AND s.studentID=" + student.getStudentID();
+		ResultSet rs = stmt.executeQuery(str);
+		rs.next();
+		rs.updateBoolean(9, true);
+		int oldGrade = rs.getInt(5);
+		rs.updateInt(5, student.getGrade());
+		rs.updateRow();
+		str = "SELECT * FROM gradeschanges ";
+		rs = stmt.executeQuery(str);
+		rs.moveToInsertRow();
+		rs.updateString(1, student.getExamID());
+		rs.updateInt(2, student.getExecutionID());
+		rs.updateString(3, student.getStudentID());
+		rs.updateInt(4, oldGrade);
+		rs.updateInt(5, student.getGrade());
+		rs.updateString(6, student.getReasonForGradeChenges());
+		rs.insertRow();
+		str = "SELECT * FROM studentresultinexam AS s WHERE s.examID=" + student.getExamID() + " AND s.executionID="
+				+ student.getExecutionID() + " AND s.approved=0";
+		rs = stmt.executeQuery(str);
+		if (!rs.next())
+			insertExamStatToDB(conn2, ed);
+		rs.close();
+		stmt.close();
+	}
+
+	private void getAllGradesForApprval(Message msg, ConnectionToClient client, Connection conn2)
+			throws SQLException, IOException {
+		User teacher = (User) msg.getSentObj();
+		Statement stmt = (Statement) conn2.createStatement();
+		String str = "SELECT * FROM ExamInExecution AS ee, studentresultinexam AS s,User as u WHERE u.userID=s.studentID AND ee.examID=s.examID AND ee.executionID=s.ExecutionID AND ee.executingTeacherID="
+				+ teacher.getuID() + " AND s.approved=0";
+		ResultSet rs = stmt.executeQuery(str);
+		ArrayList<StudentInExam> sArr = new ArrayList<StudentInExam>();
+		while (rs.next()) {
+			StudentInExam s = new StudentInExam();
+			s.setExamID(rs.getString(1));
+			s.setExecutionID(rs.getInt(2));
+			s.setStudentID(rs.getString(14));
+			s.setStudentName(rs.getString(24));
+			s.setGrade(rs.getInt(16));
+			s.setIsCopied(rs.getBoolean(21));
+			sArr.add(s);
+		}
+		msg.setReturnObj(sArr);
+		client.sendToClient(msg);
+		rs.close();
+		stmt.close();
 	}
 
 	/**

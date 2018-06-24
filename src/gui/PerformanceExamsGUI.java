@@ -69,7 +69,7 @@ public class PerformanceExamsGUI implements Initializable {
 		if (table.getSelectionModel().getSelectedItem() == null)
 			return;
 		ceg.initData(table.getSelectionModel().getSelectedItem());
-		Stage window = new Stage();
+		Stage window = (Stage) ManuallyButton.getScene().getWindow();
 		window.setScene(scene);
 		window.show();
 	}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import logic.ExamInExecution;
 import logic.StudentController;
@@ -33,7 +36,21 @@ public class ComputerizedExamGUI implements Initializable {
 
 	String examCode;
 
+	@FXML
+	private Text enterIDLabel;
+
+	@FXML
+	private TextField idTF;
+
+	@FXML
+	private ImageView okImgID;
+
+	@FXML
+	private Button okButtonID;
+
 	StudentController st;
+	private Stage examFormStage;
+	ExamFormForStudentGUI ExamForStudent;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -50,6 +67,7 @@ public class ComputerizedExamGUI implements Initializable {
 	}
 
 	public void okButtonAction() throws IOException {
+		System.out.println("c0");
 		examCode = insertExamCode.getText();
 
 		if (examCode.equals("")) // check if the student entered ok before enter the exam data
@@ -61,25 +79,46 @@ public class ComputerizedExamGUI implements Initializable {
 		else {
 			/// if the student enter the write exam code
 			if (examCode.equals(exam.getExamCode())) {
-				/// open the exam in the computer
+				System.out.println("exam code is correct");
+				okButtonID.setVisible(true);
+				okImgID.setVisible(true);
+				idTF.setVisible(true);
+				enterIDLabel.setVisible(true);
+
 				st = new StudentController();
 				ExamInExecution examToPerform = st.performCompExam(exam); // to get the questions details of the exam
 				FXMLLoader loader = new FXMLLoader();
 				loader.setLocation(getClass().getResource("ExamFormForStudent.fxml"));
-
 				Parent root = loader.load();
 				Scene scene = new Scene(root);
-				ExamFormForStudentGUI ExamForStudent = loader.getController();
+				ExamForStudent = loader.getController();
 				ExamForStudent.initData(examToPerform, true, 0);
-				Stage stage = (Stage) okButton.getScene().getWindow();
-				stage.setScene(scene);
-				stage.show();
+				this.examFormStage = new Stage();
+				examFormStage.hide();
+				examFormStage.setOnCloseRequest(e -> {
+					if (!ExamForStudent.isSubmittedOrCancelled)
+						e.consume();
+				});
+				examFormStage.setScene(scene);
+
 			}
 			// if the student didnt write the good code
 			else {
 				errorL.setText("The exam code is incorrect!");
 			}
 		}
+
+	}
+
+	@FXML
+	void okButtonIDAction(ActionEvent event) {
+		if (idTF.getText().equalsIgnoreCase(st.getStudent().getuID())) {
+			examFormStage.show();
+			ExamForStudent.startCountDown();
+			Stage s = (Stage) okButton.getScene().getWindow();
+			s.close();
+		} else
+			errorL.setText("wrong ID");
 
 	}
 

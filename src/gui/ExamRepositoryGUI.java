@@ -68,27 +68,6 @@ public class ExamRepositoryGUI implements Initializable {
 			}
 	}
 
-	public void editButtonAction(ActionEvent ae) throws Exception {
-		Exam t = (Exam) table.getSelectionModel().getSelectedItem();
-		if (t == null) {
-			setAlertBox("Choose Exam First");
-			return;
-		} else if (t.getWasUsed()) {
-			setAlertBox("The exam has been used before! you cannot edit the Exam");
-			return;
-		}
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(getClass().getResource("CreateExam.fxml"));
-		Parent root = loader.load();
-		Scene scene = new Scene(root);
-		CreateExamGUI newExam = loader.getController();
-
-		newExam.initData(table.getSelectionModel().getSelectedItem());
-		Stage stage = (Stage) table.getScene().getWindow();
-		stage.setScene(scene);
-		stage.show();
-	}
-
 	private void setAlertBox(String s) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Error!!");
@@ -103,6 +82,10 @@ public class ExamRepositoryGUI implements Initializable {
 
 		// m=new GUImanager();
 		tc = new TeacherController();
+
+	}
+
+	public void editButtonAction(ActionEvent ae) {
 
 	}
 

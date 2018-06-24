@@ -1,196 +1,238 @@
 package gui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.ResourceBundle;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import logic.Course;
-import logic.Exam;
-import logic.ExamInExecution;
 import logic.ExamReport;
-import logic.LoginController;
 import logic.PrincipalController;
 import logic.StudentInExam;
 import logic.TeacherController;
 import logic.User;
 
+/**
+ * This class is the controller for for viewing statistic reports. principal can
+ * view median, average, and histogram on exam grade sorted by: teacher, student
+ * and course.
+ * 
+ * @author nbitas
+ *
+ */
+public class StatisticsMenuGUI implements Initializable {
+	// *********************************
+	// Fields
+	// *********************************
+	@FXML
+	private Label medianLabel;
 
-public class StatisticsMenuGUI implements Initializable
-{
-	    @FXML
-	    private ComboBox<String> reportCombo;
+	@FXML
+	private Label avgLabel;
 
-	    @FXML
-	    private ComboBox<User> personCombo;
+	@FXML
+	private ComboBox<String> reportCombo;
 
-	    @FXML
-	    private ComboBox<ExamReport> examCombo;
-	    
-	    @FXML
-	    private ComboBox<Course> courseCombo;
-		@FXML
-		BarChart<Integer,String>  histograma;
-		@FXML
-		GridPane grid;
-	    
-	    private ArrayList<User> teacherL;
-	    private ArrayList<User> studentL;
-	    private ArrayList<Course> courseL;
-	    private PrincipalController pc;
-	    
-	    @FXML
-	    void examComboAction(ActionEvent event) {
-	    	ExamReport reportToDisplay = examCombo.getValue();
-	    	initiateReport(reportToDisplay);
-	    }
+	@FXML
+	private ComboBox<User> studentCombo;
 
-	    @FXML
-	    void personComboAction(ActionEvent event) {
-	    	User temp = personCombo.getValue();
-	    	ArrayList<ExamReport> arr;
-	    	if(reportCombo.getValue().equals("Teacher")) {
-	    		arr = pc.getAllExamReportsTeacherWrote(temp);
-		    	examCombo.getItems().addAll(arr);
-	    	}	
-	    	else {
-	    		examCombo.setVisible(false);
-	    		ArrayList<StudentInExam> studentGrades =
-	    				pc.getAllExamReportsStudentPerformed(temp);
-	    		ArrayList<Integer> gradeArr = new ArrayList<Integer>();
-	    		for(int i=0; i<studentGrades.size(); i++) {
-	    			gradeArr.add(studentGrades.get(i).getGrade());
-	    		}
-	    		
-	    		ExamReport er = new ExamReport(gradeArr,null,0);
-	    		
-	    		initiateReport(er);
-	    	}
+	@FXML
+	private ComboBox<User> teacherCombo;
 
-	    }
-	    
-	    @FXML
-	    void courseComboAction(ActionEvent event) {
-	    	Course temp = courseCombo.getValue();
-	    	ArrayList<ExamReport> arr = pc.getAllExamsInCourse(temp);
-	    	examCombo.getItems().addAll(arr);
-	    }
+	@FXML
+	private ComboBox<ExamReport> examCombo;
 
-	    @FXML
-	    void reportComboAction(ActionEvent event) {
-	    	String temp = reportCombo.getValue();
-	    	
-	    	if(temp.equals("Student")) {
-	    		personCombo.getItems().clear();
-	    		personCombo.getItems().addAll(studentL);
-	    		personCombo.setVisible(true);
-	    		personCombo.setPromptText("Student List");
-	    		courseCombo.setVisible(false);
-	    	}
-	    	else if (temp.equals("Teacher")){
-	    		personCombo.getItems().clear();
-	    		personCombo.getItems().addAll(teacherL);
-	    		personCombo.setVisible(true);
-	    		personCombo.setPromptText("Teacher List");
-	    		courseCombo.setVisible(false);
-	    		examCombo.setVisible(true);
-	    	}
-	    	else {
-	    		courseCombo.getItems().addAll(courseL);
-	    		personCombo.setVisible(false);
-	    		courseCombo.setVisible(true);
-	    		courseCombo.setPromptText("CourseList");
-	    		examCombo.setVisible(true);
-	    	}
-	    	
-	    }
+	@FXML
+	private ComboBox<Course> courseCombo;
 
-		@Override
-		public void initialize(URL arg0, ResourceBundle arg1) {
-			
-			
+	@FXML
+	private GridPane grid;
+
+	BarChart<String, Number> barChart = null;
+	private ArrayList<User> teacherL;
+	private ArrayList<User> studentL;
+	private ArrayList<Course> courseL;
+	private PrincipalController pc;
+
+	/**
+	 * This method presents the report for the selected exam.
+	 */
+	@FXML
+	void examComboAction(ActionEvent event) {
+		if (barChart != null) {
+			grid.getChildren().remove(barChart);
+			medianLabel.setVisible(false);
+			avgLabel.setVisible(false);
 		}
-	
-		public void initData(User user) {
-			if(user.getTitle().equals("Teacher")) {
-				TeacherController tc=new TeacherController();
-				personCombo.setDisable(true);
-				courseCombo.setDisable(true);
-				reportCombo.setDisable(true);
-				ArrayList<ExamReport> arr = tc.getAllExamReportsTeacherWrote(user);
-		    	examCombo.getItems().addAll(arr);
-			}
-			else {
-				pc= new PrincipalController();
-				reportCombo.getItems().addAll("Student","Teacher","Course");
-				studentL=pc.getAllStudentsInData();
-				teacherL=pc.getAllTeachersInData();
-				courseL=pc.getAllCoursesInData();
-			}
-			
-		}
-		private void initiateReport(ExamReport report) {
-			
-			CategoryAxis xAxis = new CategoryAxis();   
-	        
-			xAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(report.headers))); 
-			xAxis.setLabel("per");  
+		ExamReport reportToDisplay = examCombo.getValue();
+		initiateReport(reportToDisplay);
+	}
 
-			//Defining the y axis 
-			NumberAxis yAxis = new NumberAxis(); 
-			yAxis.setLabel("score");
-			BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);  
-			barChart.setTitle("Grade Histogram");
-			
-			XYChart.Series<String,Number> series1 = new XYChart.Series<String,Number>();
-			for(int i=0; i<report.getPercentages().length; i++) {
-				series1.getData().add(new XYChart.Data<>(report.headers[i],report.getPercentages()[i]));
-			}
-				barChart.getData().add(series1);
-			
-			
-			
-			
-				grid.add(barChart, 0, 0);
-			
-			
-			
-			
-			/*final CategoryAxis xAxis = new CategoryAxis(); // X axis is with the grades categories.
-		    final NumberAxis yAxis = new NumberAxis(); // Y axis is with the numbers of grades for each category.
-
-			XYChart.Series series1 = new XYChart.Series();
-			for(int i=0; i<report.getPercentages().length; i++) {
-				series1.getData().add(new XYChart.Data(report.getPercentages()[i], 
-						report.headers[i]));
-				
-			}
-	        
-			histograma.getData().add(series1);
-		    histograma.setTitle("Grades histogram");
-		    xAxis.setLabel("Grades");       
-		    yAxis.setLabel("Number of exams");*/
+	/**
+	 * This method chooses the student for which to show the report.
+	 * 
+	 * @param event
+	 */
+	@FXML
+	void studentComboAction(ActionEvent event) {
+		if (barChart != null) {
+			grid.getChildren().remove(barChart);
+			medianLabel.setVisible(false);
+			avgLabel.setVisible(false);
 		}
+		User temp = studentCombo.getValue();
+		ArrayList<StudentInExam> studentGrades = pc.getAllExamReportsStudentPerformed(temp);
+		ArrayList<Integer> gradeArr = new ArrayList<Integer>();
+		if (studentGrades == null)
+			return;
+		for (int i = 0; i < studentGrades.size(); i++) {
+			gradeArr.add(studentGrades.get(i).getGrade());
+		}
+		ExamReport er = new ExamReport(gradeArr, null, 0);
+		initiateReport(er);
+	}
+
+	/**
+	 * This method chooses the course for which to show the report.
+	 */
+	@FXML
+	void courseComboAction(ActionEvent event) {
+		if (barChart != null) {
+			grid.getChildren().remove(barChart);
+			medianLabel.setVisible(false);
+			avgLabel.setVisible(false);
+		}
+		examCombo.getItems().clear();
+		examCombo.setPromptText("Choose Exam");
+		Course temp = courseCombo.getValue();
+		ArrayList<ExamReport> arr = pc.getAllExamsInCourse(temp);
+		examCombo.getItems().clear();
+		examCombo.getItems().addAll(arr);
+	}
+
+	/**
+	 * This method chooses the teacher for which to show the report.
+	 */
+	@FXML
+	void teacherComboAction(ActionEvent event) {
+		if (barChart != null) {
+			grid.getChildren().remove(barChart);
+			medianLabel.setVisible(false);
+			avgLabel.setVisible(false);
+		}
+		User temp = teacherCombo.getValue();
+		examCombo.getItems().clear();
+		examCombo.setPromptText("Choose Exam");
+		ArrayList<ExamReport> arr = pc.getAllExamReportsTeacherWrote(temp);
+		examCombo.getItems().addAll(arr);
+	}
+
+	/**
+	 * This method enables the choice of report: student, teacher, course.
+	 */
+	@FXML
+	void reportComboAction(ActionEvent event) {
+		if (barChart != null) {
+			grid.getChildren().remove(barChart);
+			medianLabel.setVisible(false);
+			avgLabel.setVisible(false);
+		}
+		examCombo.getItems().clear();
+		examCombo.setPromptText("Choose Exam");
+		String temp = reportCombo.getValue();
+		if (temp.equals("Student")) {
+			studentCombo.setVisible(true);
+			courseCombo.setVisible(false);
+			teacherCombo.setVisible(false);
+			examCombo.setVisible(false);
+			studentCombo.setPromptText("Student List");
+		} else if (temp.equals("Teacher")) {
+			studentCombo.setVisible(false);
+			courseCombo.setVisible(false);
+			teacherCombo.setVisible(true);
+			examCombo.setVisible(true);
+			teacherCombo.setPromptText("Teacher List");
+		} else {
+			studentCombo.setVisible(false);
+			courseCombo.setVisible(true);
+			teacherCombo.setVisible(false);
+			examCombo.setVisible(true);
+			courseCombo.setPromptText("Course List");
+		}
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+	}
+
+	public void initData(User user) {
+		medianLabel.setVisible(false);
+		avgLabel.setVisible(false);
+		if (user.getTitle().equals("Teacher")) {
+			// teacher can also watch statistic reports for exam she wrote
+			TeacherController tc = new TeacherController();
+			teacherCombo.setDisable(true);
+			studentCombo.setVisible(false);
+			courseCombo.setVisible(false);
+			reportCombo.setDisable(true);
+			ArrayList<ExamReport> arr = tc.getAllExamReportsTeacherWrote(user);
+			examCombo.getItems().addAll(arr);
+		} else {
+			pc = new PrincipalController();
+			reportCombo.getItems().addAll("Student", "Teacher", "Course");
+			studentL = pc.getAllStudentsInData();
+			studentCombo.getItems().addAll(studentL);
+			teacherL = pc.getAllTeachersInData();
+			teacherCombo.getItems().addAll(teacherL);
+			courseL = pc.getAllCoursesInData();
+			courseCombo.getItems().addAll(courseL);
+
+		}
+
+	}
+
+	/*
+	 * This method generates the GUI presentation of the histogram
+	 */
+	private void initiateReport(ExamReport report) {
+		if (report.getMidean() == 0 || report == null) {
+			return;
+		}
+
+		medianLabel.setVisible(true);
+		avgLabel.setVisible(true);
+		medianLabel.setText("The Midean is: " + report.getMidean());
+		avgLabel.setText("The Avarage is: " + report.getAvg());
+		System.out.println("initiateReport2");
+		CategoryAxis xAxis = new CategoryAxis();
+
+		// creating X and Y axis for BarChart
+		xAxis.setCategories(FXCollections.<String>observableArrayList(Arrays.asList(report.headers)));
+		xAxis.setLabel("percentiles");
+		NumberAxis yAxis = new NumberAxis();
+		yAxis.setLabel("gradse");
+		barChart = new BarChart<>(xAxis, yAxis);
+
+		// populating the data
+		XYChart.Series<String, Number> series1 = new XYChart.Series<String, Number>();
+		series1.setName(report.getExamID() + " " + report.getExecutionID());
+		for (int i = 0; i < report.getPercentages().length; i++) {
+			series1.getData().add(new XYChart.Data<>(report.headers[i], report.getPercentages()[i]));
+		}
+		// adding the data to the BarChart
+		barChart.getData().add(series1);
+
+		grid.add(barChart, 0, 1);
+	}
 }
-
-

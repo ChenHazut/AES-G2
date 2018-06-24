@@ -12,46 +12,74 @@ import logic.OvertimeDetails;
 import logic.PrincipalController;
 
 public class OvertimeRequestMenuGUI {
+	// **************************************************
+	// Fields
+	// **************************************************
+	@FXML
+	private TableView<OvertimeDetails> table; // table of overtime requests
 
 	@FXML
-	private TableView<OvertimeDetails> table;
+	private TableColumn<OvertimeDetails, String> examIDCol; // examID column in the overtime requests table
 
 	@FXML
-	private TableColumn<OvertimeDetails, String> examIDCol;
+	private TableColumn<OvertimeDetails, Integer> execIDCol; // executionID column in the overtime requests table
 
 	@FXML
-	private TableColumn<OvertimeDetails, Integer> execIDCol;
+	private TableColumn<OvertimeDetails, Integer> timeCol; // amount of requested overtime in minutes column in the
+															// overtime requests table
 
 	@FXML
-	private TableColumn<OvertimeDetails, Integer> timeCol;
+	private TableColumn<OvertimeDetails, String> reasonCol; // reason for overtime column in the overtime requests table
 
 	@FXML
-	private TableColumn<OvertimeDetails, String> reasonCol;
+	private Button approveBtn; // approve request button
 
 	@FXML
-	private Button approveBtn;
-
-	@FXML
-	private Button denyBtn;
+	private Button denyBtn; // deny request button
 
 	private PrincipalController pc;
 
 	private ObservableList<OvertimeDetails> overtimeOL;
 
+	/**
+	 * this method send request to server to approve the teacher overtime request
+	 * 
+	 * @param event
+	 */
 	@FXML
-	void approveBtnAction(ActionEvent event) {
+	public void approveBtnAction(ActionEvent event) {
 		if (table.getSelectionModel().getSelectedItem() == null)
 			return;
-		pc.approveOvertime(table.getSelectionModel().getSelectedItem());
+		OvertimeDetails r = table.getSelectionModel().getSelectedItem();
+		pc.approveOvertime(r);
+		for (OvertimeDetails otd : overtimeOL)
+			if (otd.getExamID().equals(r.getExamID()) && otd.getExecutionID() == r.getExecutionID())
+				overtimeOL.remove(r);
+		table.getItems().clear();
+		table.getItems().addAll(overtimeOL);
 	}
 
+	/**
+	 * this method send request to server to deny the teacher overtime request
+	 * 
+	 * @param event
+	 */
 	@FXML
-	void denyBtnAction(ActionEvent event) {
+	public void denyBtnAction(ActionEvent event) {
 		if (table.getSelectionModel().getSelectedItem() == null)
 			return;
-		pc.denyOvertime(table.getSelectionModel().getSelectedItem());
+		OvertimeDetails r = table.getSelectionModel().getSelectedItem();
+		pc.denyOvertime(r);
+		for (OvertimeDetails otd : overtimeOL)
+			if (otd.getExamID().equals(r.getExamID()) && otd.getExecutionID() == r.getExecutionID())
+				overtimeOL.remove(r);
+		table.getItems().clear();
+		table.getItems().addAll(overtimeOL);
 	}
 
+	/**
+	 * this method initiates the window information about overtime requests
+	 */
 	public void initData() {
 		examIDCol.setCellValueFactory(new PropertyValueFactory<OvertimeDetails, String>("examID"));
 		execIDCol.setCellValueFactory(new PropertyValueFactory<OvertimeDetails, Integer>("ExecutionID"));

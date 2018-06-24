@@ -25,14 +25,10 @@ public class CheckExam {
 			Integer grade = 0;
 			Integer correctAns = 0;
 			Integer wrongAns = 0;
-			System.out.println("*****************************************");
-			System.out.println("size of map is: " + student.getCheckedAnswers().size());
-			System.out.println("student " + student.getStudentID());
 			for (Map.Entry<QuestionInExam, Integer> entry : student.getCheckedAnswers().entrySet()) {
 				System.out.println("Question id: " + entry.getKey().getQuestion().getQuestionID() + " selected ans: "
 						+ entry.getValue() + " correct ans: " + entry.getKey().getQuestion().getCorrectAnswer());
 			}
-			System.out.println("*****************************************");
 			for (Map.Entry<QuestionInExam, Integer> entry : student.getCheckedAnswers().entrySet()) {
 				if (entry.getKey().getQuestion().getCorrectAnswer() == entry.getValue()) {
 					grade += entry.getKey().getPointsInExam();
@@ -49,22 +45,25 @@ public class CheckExam {
 		return studentResultsMap;
 	}
 
-	public void checkForCopies(ArrayList<StudentInExam> arr) {
+	public HashSet<StudentInExam> checkForCopies(HashMap<StudentInExam, ArrayList<Integer>> result) {
 		HashSet<StudentInExam> studentCopied = new HashSet<StudentInExam>();
-		for (int i = 0; i < arr.size(); i++) {
-			StudentInExam student1 = arr.get(i);
-			Integer wrongAns1 = student1.getNumberOfWrongAnswer();
-			for (int j = 0; j < arr.size(); j++) {
-				StudentInExam student2 = arr.get(j);
-				Integer wrongAns2 = student2.getNumberOfWrongAnswer();
-				if (i != j && wrongAns1 == wrongAns2 && wrongAns1 > 3) {
+		for (Map.Entry<StudentInExam, ArrayList<Integer>> entry1 : result.entrySet()) {
+			StudentInExam student1 = entry1.getKey();
+			Integer wrongAns1 = entry1.getValue().get(2);
+			for (Map.Entry<StudentInExam, ArrayList<Integer>> entry2 : result.entrySet()) {
+				StudentInExam student2 = entry2.getKey();
+				Integer wrongAns2 = entry2.getValue().get(2);
+				System.out.println("1: " + student1.getStudentID() + " 2: " + student2.getStudentID());
+				System.out.println("1w: " + wrongAns1 + " 2w: " + wrongAns2);
+				if (!(student1.getStudentID().equals(student2.getStudentID())) && wrongAns1 == wrongAns2
+						&& wrongAns1 >= 3) {
 					studentCopied.add(student1);
 					studentCopied.add(student2);
 				}
 			}
-
 		}
 
+		return studentCopied;
 	}
 
 }

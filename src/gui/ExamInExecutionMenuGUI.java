@@ -150,7 +150,16 @@ public class ExamInExecutionMenuGUI implements Initializable {
 	}
 
 	@FXML
-	void approveGradesViewBtnAction(ActionEvent event) {
+	void approveGradesViewBtnAction(ActionEvent event) throws IOException {
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("ApproveGrades.fxml"));
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		ApproveGradesGUI approveG = loader.getController();
+		Stage window = (Stage) examsTable.getScene().getWindow();
+		approveG.initData(window);
+		window.setScene(scene);
+		window.show();
 
 	}
 

@@ -378,4 +378,35 @@ public class TeacherController {
 		msg = client.getMessage();
 		return (ArrayList<ExamReport>) msg.getReturnObj();
 	}
+
+	public void approveGrade(StudentInExam s) {
+		Message msg = new Message();
+		msg.setSentObj(s);
+		msg.setqueryToDo("approveGrade");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+	}
+
+	public void changeGrade(StudentInExam s) {
+		Message msg = new Message();
+		msg.setSentObj(s);
+		msg.setqueryToDo("changeGrade");
+		msg.setClassType("Teacher");
+		client.accept(msg);
+	}
+
+	public ArrayList<StudentInExam> getAllGradesForApprval() {
+		Message msg = new Message();
+		msg.setClassType("Teacher");
+		msg.setqueryToDo("getAllGradesForApprval");
+		msg.setSentObj(teacher);
+		client.accept(msg);
+		try {
+			Thread.sleep(3000L);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		msg = client.getMessage();
+		return (ArrayList<StudentInExam>) msg.getReturnObj();
+	}
 }

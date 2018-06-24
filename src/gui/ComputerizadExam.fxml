@@ -9,9 +9,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="233.0" prefWidth="427.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ComputerizedExamGUI">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="299.0" prefWidth="460.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ComputerizedExamGUI">
    <children>
-      <ImageView fitHeight="292.0" fitWidth="427.0" layoutX="1.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="307.0" fitWidth="460.0" layoutX="1.0" layoutY="-2.0" pickOnBounds="true">
          <image>
             <Image url="@../images/backgraond.png" />
          </image>
@@ -42,12 +42,12 @@
          </font>
       </Text>
       <TextField fx:id="insertExamCode" layoutX="258.0" layoutY="146.0" prefHeight="20.0" prefWidth="115.0" />
-      <ImageView fitHeight="46.0" fitWidth="82.0" layoutX="293.0" layoutY="171.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="46.0" fitWidth="82.0" layoutX="387.0" layoutY="136.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/accept.png" />
          </image>
       </ImageView>
-      <Button fx:id="okButton" layoutX="290.0" layoutY="182.0" mnemonicParsing="false" onMouseClicked="#okButtonAction" opacity="0.0" text="Button" />
+      <Button fx:id="okButton" layoutX="384.0" layoutY="147.0" mnemonicParsing="false" onMouseClicked="#okButtonAction" opacity="0.0" text="Button" />
       <Label fx:id="examID" layoutX="201.0" layoutY="77.0" prefHeight="21.0" prefWidth="124.0" text="Label">
          <font>
             <Font size="15.0" />
@@ -58,10 +58,22 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <Label fx:id="errorL" layoutX="75.0" layoutY="48.0" prefHeight="21.0" prefWidth="253.0" textFill="#f20000">
+      <Label fx:id="errorL" layoutX="75.0" layoutY="57.0" prefHeight="21.0" prefWidth="253.0" textFill="#f20000">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Label>
+      <Text fx:id="enterIDLabel" layoutX="50.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter your ID:" visible="false">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Text>
+      <TextField fx:id="idTF" layoutX="227.0" layoutY="193.0" prefHeight="20.0" prefWidth="115.0" visible="false" />
+      <ImageView fx:id="okImgID" fitHeight="46.0" fitWidth="82.0" layoutX="356.0" layoutY="183.0" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../images/accept.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="okButtonID" layoutX="353.0" layoutY="194.0" mnemonicParsing="false" onAction="#okButtonIDAction" onMouseClicked="#okButtonAction" opacity="0.0" text="Button" visible="false" />
    </children>
 </AnchorPane>

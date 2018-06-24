@@ -112,7 +112,26 @@ public class CreateExamGUI implements Initializable {
 					questionsList.get(i).getCheckButton().setSelected(true);
 				}
 			}
+
 		}
+	}
+
+	/*
+	 * This method validates the input in the text fields.
+	 */
+	private boolean validateTextField(TextField tf) {
+		try {
+
+			int temp = Integer.parseInt(duration.getText());
+			if (tf.getText() == null || tf.getText().length() == 0 || temp == 0)
+				throw new NumberFormatException();
+
+		} catch (NumberFormatException e) {
+			MyErrorMessage.show("Text Field is not valid!\nPlease enter only numbers grater than 0", "Wrong Input");
+			return false;
+		}
+
+		return true;
 	}
 
 	public void cancleButtonAction() throws Exception {
@@ -129,32 +148,37 @@ public class CreateExamGUI implements Initializable {
 	}
 
 	public void saveButtonAction() throws Exception {
-		Exam exam = new Exam();
-		exam.setTeacherName(tc.getTeacher().getuName());
-		exam.setTeacherID(tc.getTeacher().getuID());
+		if (courseCombo.getValue() == null || subjectCombo.getValue() == null) {
+			MyErrorMessage.show("You must select subject and course!", "Incomplete details!");
+			return;
+		}
+		if (!validateTextField(duration))
+			return;
+
 		HashMap<Question, Integer> temp = new HashMap<Question, Integer>();
 		ArrayList<QuestionInExam> selectedQuestion = new ArrayList<QuestionInExam>();
-		int j = 0;
-
-		exam.setInstructionForStudent(studentInsructions.getText());
-		exam.setInstructionForTeacher(teacherInstructions.getText());
-		try {
-			exam.setDuration(Integer.parseInt(duration.getText()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		for (int i = 0; i < questionsList.size(); i++) {
+		for (int i = 0, j = 0; i < questionsList.size(); i++) {
 			if (questionsList.get(i).getCheckButton().isSelected()) {
-				int pointsPerQuestion = Integer.parseInt(questionsList.get(i).getPoints().getText());
-				selectedQuestion.add(new QuestionInExam(pointsPerQuestion, questionArr.get(i), ++j));
-				temp.put(questionArr.get(i), pointsPerQuestion);
+				if (validateTextField(questionsList.get(i).getPoints())) {
+					int pointsPerQuestion = Integer.parseInt(questionsList.get(i).getPoints().getText());
+					selectedQuestion.add(new QuestionInExam(pointsPerQuestion, questionArr.get(i), ++j));
+					temp.put(questionArr.get(i), pointsPerQuestion);
+				} else {
+					return;
+				}
 			}
 		}
+		if (selectedQuestion.size() == 0 || selectedQuestion == null) {
+			MyErrorMessage.show("You must select at least one question!", "Incomplete details");
+			return;
+		}
 
+		Exam exam = new Exam();
+		exam.setDuration(Integer.parseInt(duration.getText()));
+		exam.setTeacherName(tc.getTeacher().getuName());
+		exam.setTeacherID(tc.getTeacher().getuID());
 		exam.setQuestions(temp);
-		String g = (String) courseCombo.getValue();
-		Course c = tc.getCourseFromName(g);
+		Course c = tc.getCourseFromName((String) courseCombo.getValue());
 		exam.setCourse(c);
 
 		FXMLLoader loader = new FXMLLoader();

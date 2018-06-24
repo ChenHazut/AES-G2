@@ -149,7 +149,11 @@ public class PrincipalController {
 	}
 
 	public void denyOvertime(OvertimeDetails overtimeDetails) {
-		// TODO Auto-generated method stub
+		Message msg = new Message();
+		msg.setClassType("Principal");
+		msg.setqueryToDo("denyOvertime");
+		msg.setSentObj(overtimeDetails);
+		client.accept(msg);
 
 	}
 

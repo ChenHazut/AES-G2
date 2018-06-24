@@ -4,13 +4,17 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
@@ -72,6 +76,7 @@ public class ExamFormForStudentGUI {
 	private StudentController st;
 	private ClientConsole client;
 	Boolean flag = false;
+	public Boolean isSubmittedOrCancelled = false;
 
 	public void initData(ExamInExecution exam, Boolean studentSolveExam, int grade) {
 		st = new StudentController();
@@ -110,7 +115,6 @@ public class ExamFormForStudentGUI {
 			}
 			int duration = exam.getExamDet().getDuration();
 			currSeconds = hmsToSeconds(duration / 60, duration % 60, 0);
-			startCountDown();
 			System.out.println("starting tocountdown");
 			s = new StudentInExam();
 			s.setIsComp(true);
@@ -135,13 +139,22 @@ public class ExamFormForStudentGUI {
 	}
 
 	public void cancleAction(ActionEvent ae) {
-		s.setStudentStatus("NotFinished");
-		int actualDuration = (countPassedTime / 60) + 1;
-		s.setActualDuration(actualDuration);
-		st.changeStudentInExamStatus(s);
 
-		Stage st = (Stage) submit.getScene().getWindow();
-		st.close();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setHeaderText("Are you sure you want to exit?");
+		alert.setContentText("In case you exit your grade will be 0");
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			s.setStudentStatus("NotFinished");
+			int actualDuration = (countPassedTime / 60) + 1;
+			s.setActualDuration(actualDuration);
+			st.changeStudentInExamStatus(s);
+			isSubmittedOrCancelled = true;
+			Stage st = (Stage) submit.getScene().getWindow();
+			st.close();
+		}
+
 	}
 
 	public void submitExamAction(ActionEvent ae) {
@@ -158,6 +171,7 @@ public class ExamFormForStudentGUI {
 		s.setIsComp(true);
 		s.setCheckedAnswers(ss.studentAnswers);
 		s.setStudentStatus("finished");
+		isSubmittedOrCancelled = true;
 		st.changeStudentInExamStatus(s);
 
 	}
@@ -169,7 +183,7 @@ public class ExamFormForStudentGUI {
 		return total;
 	}
 
-	void startCountDown() {
+	public void startCountDown() {
 		thrd = new Thread(new Runnable() {
 
 			@SuppressWarnings("deprecation")
