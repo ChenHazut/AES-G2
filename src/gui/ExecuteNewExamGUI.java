@@ -253,8 +253,11 @@ public class ExecuteNewExamGUI implements Initializable {
 				}
 			}
 			e.setStudents(selectedStudentsList);
-			if (e.getStudents().size() == 0)
+			if (e.getStudents().size() == 0) {
+
+				MyErrorMessage.show("You must select students to group!", "No selection");
 				return;
+			}
 		}
 		e = tc.executeNewExam(e);
 		FXMLLoader loader = new FXMLLoader();

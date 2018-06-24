@@ -67,6 +67,10 @@ public class QuestionRepositoryGUI implements Initializable {
 	public void deleteQuestionButtonAction(ActionEvent ae) {
 		System.out.println("question is deleted");
 		QuestionGUI q = (QuestionGUI) table.getSelectionModel().getSelectedItem();
+		if (q == null) {
+			MyErrorMessage.show("Select a question", "No selection");
+			return;
+		}
 		Question qToDel = new Question();
 		qToDel.setQuestionID(q.getQuestionID());
 
@@ -78,18 +82,18 @@ public class QuestionRepositoryGUI implements Initializable {
 					break;
 				}
 		} else {
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("error");
-			alert.setHeaderText("Error: the selected question can't be deleted beacuse it assigned to exam");
-			alert.showAndWait();
+			MyErrorMessage.show("Error: the selected question can't be deleted beacuse it assigned to exam",
+					"Can't delete question!");
 		}
 
 	}
 
 	public void editQuestion() throws IOException {
 		QuestionGUI q = (QuestionGUI) table.getSelectionModel().getSelectedItem();
-		if (q == null)
+		if (q == null) {
+			MyErrorMessage.show("Select a question", "No selection");
 			return;
+		}
 
 		Question qToEdit = new Question();
 		qToEdit.setQuestionID(q.getQuestionID());

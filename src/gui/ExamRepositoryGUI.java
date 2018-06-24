@@ -23,13 +23,14 @@ import logic.TeacherController;
 /**
  * This class allows the teacher to manage a question repository including
  * adding new question, deleting a question and editing a question.
+ * 
  * @author reut
  *
  */
 public class ExamRepositoryGUI implements Initializable {
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	@FXML
 	private TableView<Exam> table;
 	@FXML
@@ -53,6 +54,7 @@ public class ExamRepositoryGUI implements Initializable {
 	/**
 	 * This method allows the teacher to create a new exam from the questions
 	 * assigned to his courses, taken from question repository.
+	 * 
 	 * @throws Exception
 	 */
 	public void insertButtonAction(ActionEvent ae) throws Exception {
@@ -69,13 +71,16 @@ public class ExamRepositoryGUI implements Initializable {
 
 	/**
 	 * This method allows the teacher to delete a new exam from the exam repository.
+	 * 
 	 * @throws Exception
 	 */
 	public void deleteButtonAction(ActionEvent ae) {
-		System.out.println("Exam is deleted");
 		Exam tToDel = (Exam) table.getSelectionModel().getSelectedItem();
-		if (tToDel == null)
+		if (tToDel == null) {
+			MyErrorMessage.show("Select an exam!", "No selection");
 			return;
+
+		}
 		tc.deleteExam(tToDel);
 		for (int i = 0; i < examList.size(); i++)
 			if (examList.get(i).getExamID().equals(tToDel.getExamID())) {
@@ -83,7 +88,6 @@ public class ExamRepositoryGUI implements Initializable {
 				break;
 			}
 	}
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
