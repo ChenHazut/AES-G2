@@ -12,8 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -22,7 +20,16 @@ import javafx.stage.Stage;
 import logic.Exam;
 import logic.TeacherController;
 
+/**
+ * This class allows the teacher to manage a question repository including
+ * adding new question, deleting a question and editing a question.
+ * @author reut
+ *
+ */
 public class ExamRepositoryGUI implements Initializable {
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	private TableView<Exam> table;
 	@FXML
@@ -39,10 +46,15 @@ public class ExamRepositoryGUI implements Initializable {
 	private Button insertButton;
 
 	private ArrayList<Exam> arr;
-	ObservableList<Exam> examList;
+	private ObservableList<Exam> examList;
 
-	TeacherController tc;
+	private TeacherController tc;
 
+	/**
+	 * This method allows the teacher to create a new exam from the questions
+	 * assigned to his courses, taken from question repository.
+	 * @throws Exception
+	 */
 	public void insertButtonAction(ActionEvent ae) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("CreateExam.fxml"));
@@ -55,6 +67,10 @@ public class ExamRepositoryGUI implements Initializable {
 		stage.show();
 	}
 
+	/**
+	 * This method allows the teacher to delete a new exam from the exam repository.
+	 * @throws Exception
+	 */
 	public void deleteButtonAction(ActionEvent ae) {
 		System.out.println("Exam is deleted");
 		Exam tToDel = (Exam) table.getSelectionModel().getSelectedItem();
@@ -68,26 +84,6 @@ public class ExamRepositoryGUI implements Initializable {
 			}
 	}
 
-	private void setAlertBox(String s) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Error!!");
-		alert.setHeaderText(null);
-		alert.setContentText(s);
-		alert.setWidth(500);
-		alert.setHeight(320);
-		alert.showAndWait();
-	}
-
-	public ExamRepositoryGUI() {
-
-		// m=new GUImanager();
-		tc = new TeacherController();
-
-	}
-
-	public void editButtonAction(ActionEvent ae) {
-
-	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -95,6 +91,7 @@ public class ExamRepositoryGUI implements Initializable {
 	}
 
 	public void initData() {
+		tc = new TeacherController();
 		examIDCol.setCellValueFactory(new PropertyValueFactory<>("ExamID"));
 		cNameCol.setCellValueFactory(new PropertyValueFactory<>("courseName"));
 		teacherNameCol.setCellValueFactory(new PropertyValueFactory<>("teacherName"));

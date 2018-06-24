@@ -209,6 +209,8 @@ public class CreateExamGUI implements Initializable {
 	public void courseComboBoxAction(ActionEvent event) {
 		if (courseCombo.getValue() == null || subjectCombo.getValue() == null)
 			return;
+		else
+			table.setVisible(true);
 		String course = courseCombo.getValue();
 		ArrayList<Question> arr = new ArrayList<>();
 		for (int i = 0; i < questionArr.size(); i++) {
