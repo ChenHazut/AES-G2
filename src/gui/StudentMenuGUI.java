@@ -13,19 +13,22 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import logic.LoginController;
 import logic.User;
+import login.LoginController;
+import login.LoginGUI;
 
 /**
- * This class is the controller for student main GUI window
- * Allows the student to perform an exam and watch his grade
+ * This class is the controller for student main GUI window Allows the student
+ * to perform an exam and watch his grade
+ * 
  * @author reut
  */
 public class StudentMenuGUI implements Initializable {
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	@FXML
 	Button PerformanceTestsButton; // THE BUTTON TO DO TEST
 	@FXML
@@ -39,27 +42,34 @@ public class StudentMenuGUI implements Initializable {
 	private LoginController lc;
 
 	// **************************************************
-    // Public methods
-    // **************************************************
+	// Public methods
+	// **************************************************
 	/**
-	 * This methods handles the action of showing the user the list of exams he has to perform
+	 * This methods handles the action of showing the user the list of exams he has
+	 * to perform
+	 * 
 	 * @throws Exception
 	 */
 	public void PerformanceTestsButtonAction() throws Exception {
 		PerformanceExamsGUI PG = new PerformanceExamsGUI(); // CREATE THE NEXT WINDOW GUI
 		Stage primaryStage = new Stage();
+		primaryStage.initModality(Modality.APPLICATION_MODAL);
+		primaryStage.setResizable(false);
 		PG.start(primaryStage); // RUN THE NEW WINDOW GUI
 
 	}
 
 	/**
-	 * This methods handles the action of showing the student the list of exams he 
+	 * This methods handles the action of showing the student the list of exams he
 	 * has already performed and were approved by the teacher
+	 * 
 	 * @throws Exception
 	 */
 	public void ShowExamsScoresAction() throws Exception {
 		ShowExamsScoresGUI PG = new ShowExamsScoresGUI(); // CREATE THE NEXT WINDOW GUI
 		Stage primaryStage = new Stage();
+		primaryStage.initModality(Modality.APPLICATION_MODAL);
+		primaryStage.setResizable(false);
 		PG.start(primaryStage); // RUN THE NEW WINDOW GUI
 
 		// Stage stage = (Stage) ExamScoresButton.getScene().getWindow();
@@ -68,7 +78,9 @@ public class StudentMenuGUI implements Initializable {
 	}
 
 	/**
-	 * This methods handles the action pressing the logout button and logs out of the system
+	 * This methods handles the action pressing the logout button and logs out of
+	 * the system
+	 * 
 	 * @throws Exception
 	 */
 	public void logoutButtonAction(ActionEvent ae) throws IOException {
@@ -81,6 +93,7 @@ public class StudentMenuGUI implements Initializable {
 
 	/**
 	 * initialize the data on the student menu
+	 * 
 	 * @param arg0
 	 * @param arg1
 	 */
@@ -93,6 +106,7 @@ public class StudentMenuGUI implements Initializable {
 
 	/**
 	 * this method start the student menu window using fxml
+	 * 
 	 * @param primaryStage
 	 * @throws IOException
 	 */

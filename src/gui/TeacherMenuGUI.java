@@ -12,20 +12,22 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import logic.LoginController;
 import logic.User;
+import login.LoginController;
+import login.LoginGUI;
 
 /**
- * This class is the controller for teacher main GUI window
- * Allows the teacher to execute an exam, approve grade, create questions
- * and exams.
+ * This class is the controller for teacher main GUI window Allows the teacher
+ * to execute an exam, approve grade, create questions and exams.
+ * 
  * @author reut
  */
 public class TeacherMenuGUI implements Initializable {
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	@FXML
 	Button testRepositoryButton;
 	@FXML
@@ -41,7 +43,8 @@ public class TeacherMenuGUI implements Initializable {
 
 	/**
 	 * This method open the question repository window which allow the teacher to
-	 * manage the repository. 
+	 * manage the repository.
+	 * 
 	 * @throws Exception
 	 */
 	public void questionRepositoryButtonAction(ActionEvent ae) throws Exception {
@@ -52,14 +55,17 @@ public class TeacherMenuGUI implements Initializable {
 		QuestionRepositoryGUI qrg = loader.getController();
 		qrg.initData();
 		Stage window = new Stage();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
 		window.show();
 
 	}
 
 	/**
-	 * This method open the exam repository window which allow the teacher to
-	 * manage the repository. 
+	 * This method open the exam repository window which allow the teacher to manage
+	 * the repository.
+	 * 
 	 * @throws Exception
 	 */
 	public void testRepositoryButtonAction(ActionEvent ae) throws Exception {
@@ -70,13 +76,17 @@ public class TeacherMenuGUI implements Initializable {
 		ExamRepositoryGUI examRep = loader.getController();
 		examRep.initData();
 		Stage window = new Stage();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
+
 		window.show();
 	}
 
 	/**
-	 * This method open the execute exam window which allow the teacher to
-	 * send an exam to execution
+	 * This method open the execute exam window which allow the teacher to send an
+	 * exam to execution
+	 * 
 	 * @throws Exception
 	 */
 	public void testInExecutionButtonAction(ActionEvent ae) throws IOException {
@@ -87,13 +97,16 @@ public class TeacherMenuGUI implements Initializable {
 		ExamInExecutionMenuGUI examInExecMenu = loader.getController();
 		examInExecMenu.initData();
 		Stage window = new Stage();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
 		window.show();
 	}
 
 	/**
-	 * This method open the report window which allow the teacher to
-	 * view statistic report for the exam she wrote. 
+	 * This method open the report window which allow the teacher to view statistic
+	 * report for the exam she wrote.
+	 * 
 	 * @throws Exception
 	 */
 	public void reportButtonAction(ActionEvent ae) throws Exception {
@@ -104,12 +117,16 @@ public class TeacherMenuGUI implements Initializable {
 		StatisticsMenuGUI sm = loader.getController();
 		sm.initData(teacher);
 		Stage window = new Stage();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
 		window.show();
 	}
-	
+
 	/**
-	 * This methods handles the action pressing the logout button and logs out of the system
+	 * This methods handles the action pressing the logout button and logs out of
+	 * the system
+	 * 
 	 * @throws Exception
 	 */
 	public void logoutButtonAction(ActionEvent ae) throws IOException {

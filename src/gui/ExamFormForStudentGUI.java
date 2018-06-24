@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import client.ClientConsole;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,12 +22,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.ExamInExecution;
 import logic.OvertimeDetails;
 import logic.Question;
 import logic.StudentController;
 import logic.StudentInExam;
+import login.LoginGUI;
 
 /**
  * This class is the controller of computerized exam for student, both for

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import client.ClientConsole;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,10 +13,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import logic.ClientConsole;
-import logic.LoginController;
 import logic.User;
+import login.LoginController;
+import login.LoginGUI;
 
 /**
  * This class is the controller of principal menu GUI main window. In this
@@ -64,6 +66,8 @@ public class PrincipleMenuGUI2 implements Initializable {
 		OvertimeRequestMenuGUI rot = loader.getController();
 		rot.initData();
 		Stage window = new Stage();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
 		window.show();
 	}
@@ -82,6 +86,8 @@ public class PrincipleMenuGUI2 implements Initializable {
 		StatisticsMenuGUI sm = loader.getController();
 		sm.initData(principal);
 		Stage window = new Stage();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
 		window.show();
 	}
@@ -97,6 +103,8 @@ public class PrincipleMenuGUI2 implements Initializable {
 		// Details menu.
 		SystemDetailsMenuGUI qrg = new SystemDetailsMenuGUI();
 		Stage primaryStage = new Stage();
+		primaryStage.initModality(Modality.APPLICATION_MODAL);
+		primaryStage.setResizable(false);
 		qrg.start(primaryStage);
 	}
 

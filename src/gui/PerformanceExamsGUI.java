@@ -17,23 +17,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import logic.ExamInExecution;
 import logic.StudentController;
 import logic.User;
 
 /**
- * This class is to manage the exams that the student can perform , 
- * the student will see in table all the exam that he can perform and he
- *  will have to choose to perform the exam computerizes of manually
+ * This class is to manage the exams that the student can perform , the student
+ * will see in table all the exam that he can perform and he will have to choose
+ * to perform the exam computerizes of manually
+ * 
  * @author Rotem Vaknin
  *
  */
 public class PerformanceExamsGUI implements Initializable {
 
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	@FXML
 	Button ManuallyButton; // THE BUTTON TO DO TEST ManuallyButton
 	@FXML
@@ -55,8 +57,9 @@ public class PerformanceExamsGUI implements Initializable {
 	private User student; // to save the student that loged in info
 
 	/**
-	 * This method handle the action when the student want to perform the exam manually
-	 * it take the exam info that he choose and open the ManuallyExam fxml
+	 * This method handle the action when the student want to perform the exam
+	 * manually it take the exam info that he choose and open the ManuallyExam fxml
+	 * 
 	 * @throws Exception
 	 */
 	public void ManuallyButtonButtonAction() throws Exception {
@@ -70,14 +73,18 @@ public class PerformanceExamsGUI implements Initializable {
 		ManuallyExamGUI manual = loader.getController();
 		manual.initData(e);
 		Stage window = (Stage) ManuallyButton.getScene().getWindow();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
 		window.show();
 
 	}
 
 	/**
-	 * This method handle the action when the student want to perform the exam computerized
-	 * it takes the exam info about the exam the student choose and open the ComputerizadExam fxml
+	 * This method handle the action when the student want to perform the exam
+	 * computerized it takes the exam info about the exam the student choose and
+	 * open the ComputerizadExam fxml
+	 * 
 	 * @throws Exception
 	 */
 	public void ComputerizedButtonAction() throws Exception {
@@ -90,13 +97,15 @@ public class PerformanceExamsGUI implements Initializable {
 			return;
 		ceg.initData(table.getSelectionModel().getSelectedItem());
 		Stage window = (Stage) ManuallyButton.getScene().getWindow();
+		window.initModality(Modality.APPLICATION_MODAL);
+		window.setResizable(false);
 		window.setScene(scene);
 		window.show();
 	}
 
-
 	/**
 	 * this method show the data of the exams to perform for the student in table
+	 * 
 	 * @param arg0
 	 * @param arg1
 	 */
@@ -121,6 +130,7 @@ public class PerformanceExamsGUI implements Initializable {
 
 	/**
 	 * this method start the student Perform exam window using fxml
+	 * 
 	 * @param primaryStage
 	 * @throws IOException
 	 */

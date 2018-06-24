@@ -2,9 +2,11 @@ package logic;
 
 import java.util.ArrayList;
 
+import client.ClientConsole;
 import common.Message;
-import gui.LoginGUI;
 import gui.QuestionInExam;
+import login.LoginController;
+import login.LoginGUI;
 
 /**
  * This class sends data gotten from principal UI and sends to server and vice

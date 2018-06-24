@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import client.ClientConsole;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,25 +13,26 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import logic.ClientConsole;
 import logic.Exam;
 import logic.ExamInExecution;
 import logic.OvertimeDetails;
 import logic.StudentController;
 import logic.StudentInExam;
+import login.LoginGUI;
 
 /**
- * This class let the student perform an exam manually , 
- * the student downloads the exam to his computer than the count-down begins 
- * and then he can upload the solved answer back to system.
+ * This class let the student perform an exam manually , the student downloads
+ * the exam to his computer than the count-down begins and then he can upload
+ * the solved answer back to system.
+ * 
  * @author Rotem Vaknin
  *
  */
 public class ManuallyExamGUI {
 
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	ExamInExecution exam;
 	@FXML
 	Button downloadExam;
@@ -68,9 +70,13 @@ public class ManuallyExamGUI {
 
 	/**
 	 * This method converts the time allocated for the exam to seconds.
-	 * @param h - the hours allocated for the exam
-	 * @param m - the minutes allocated for the exam
-	 * @param s - seconds allocated for the exam
+	 * 
+	 * @param h
+	 *            - the hours allocated for the exam
+	 * @param m
+	 *            - the minutes allocated for the exam
+	 * @param s
+	 *            - seconds allocated for the exam
 	 * @return The amount of time allocated for the exam to seconds.
 	 */
 	public Integer hmsToSeconds(Integer h, Integer m, Integer s) {
@@ -156,8 +162,7 @@ public class ManuallyExamGUI {
 	}
 
 	/**
-	 * displays the time onto the countdown clock,
-	 * changes every second
+	 * displays the time onto the countdown clock, changes every second
 	 */
 	void setOutput() {
 		LinkedList<Integer> currHms = secondsToHms(currSeconds);
@@ -169,7 +174,9 @@ public class ManuallyExamGUI {
 
 	/**
 	 * Converts the time from seconds to hours, minutes and seconds
-	 * @param currSecond - the seconds to convert
+	 * 
+	 * @param currSecond
+	 *            - the seconds to convert
 	 * @return a list consists of hours, minutes and seconds
 	 */
 	LinkedList<Integer> secondsToHms(Integer currSecond) {
@@ -186,8 +193,9 @@ public class ManuallyExamGUI {
 	}
 
 	/**
-	 * This method downloads the exam onto the user computer and starts 
-	 * the countdown.
+	 * This method downloads the exam onto the user computer and starts the
+	 * countdown.
+	 * 
 	 * @throws IOException
 	 */
 	public void downloadExamAction(ActionEvent ae) throws IOException {
