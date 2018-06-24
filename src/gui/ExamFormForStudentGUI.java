@@ -96,6 +96,7 @@ public class ExamFormForStudentGUI {
 		for (int i = 0; i < selectedQuestion.size(); i++) {
 			int pointsPerQuestion = exam.getExamDet().getQuestions().get(selectedQuestion.get(i));
 			observableQuestions.add(new QuestionInExam(pointsPerQuestion, selectedQuestion.get(i), ++j));
+			ss.studentAnswers.put(new QuestionInExam(pointsPerQuestion, selectedQuestion.get(i), ++j), 0);
 		}
 		listView.setItems(observableQuestions);
 		if (studentSolveExam) {
@@ -127,7 +128,7 @@ public class ExamFormForStudentGUI {
 			st.changeStudentInExamStatus(s);
 
 		} else {
-
+			cancleButton.setVisible(false);
 			st.getStudentResultInExam(st.getStudent().getuID(), exam);
 			listView.setEditable(false);
 			submit.setDisable(true);

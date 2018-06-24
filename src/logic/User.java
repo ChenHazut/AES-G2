@@ -4,29 +4,33 @@ import java.io.Serializable;
 
 /**
  * This class holds user private information and status in the system
+ * 
  * @author reut
  *
  */
 public class User implements Serializable {
 
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 
 	private String uID;
-	private String uName; 
-	private String password; 
-	private String Title;//holds the user type in the system to determine his permeations
-	private String isLoggedIn; //flag to determine user status in the system 
+	private String uName;
+	private String password;
+	private String Title;// holds the user type in the system to determine his permeations
+	private String isLoggedIn; // flag to determine user status in the system
 
 	// **************************************************
-    // constructors
-    // **************************************************
-	
+	// constructors
+	// **************************************************
+
 	/**
 	 * Constructor. create a user with an id and password
-	 * @param uid The id of the user
-	 * @param upass The password of the user
+	 * 
+	 * @param uid
+	 *            The id of the user
+	 * @param upass
+	 *            The password of the user
 	 */
 	public User(String uid, String upass) {
 		uID = uid;
@@ -42,14 +46,17 @@ public class User implements Serializable {
 
 	/**
 	 * Copy constructor.
-	 * @param user - The user to copy
+	 * 
+	 * @param user
+	 *            - The user to copy
 	 */
 	public User(User user) {
-		this(user.getuID(),user.getuName());
+		this(user.getuID(), user.getuName());
 	}
 
 	/**
 	 * Return the user id
+	 * 
 	 * @return the user id
 	 */
 	public String getuID() {
@@ -58,7 +65,9 @@ public class User implements Serializable {
 
 	/**
 	 * Sets the user id
-	 * @param uID - the id to be set
+	 * 
+	 * @param uID
+	 *            - the id to be set
 	 */
 	public void setuID(String uID) {
 		this.uID = uID;
@@ -66,6 +75,7 @@ public class User implements Serializable {
 
 	/**
 	 * Returns the user name
+	 * 
 	 * @return This user name
 	 */
 	public String getuName() {
@@ -74,7 +84,9 @@ public class User implements Serializable {
 
 	/**
 	 * Sets this user name
-	 * @param uName - The name to be set
+	 * 
+	 * @param uName
+	 *            - The name to be set
 	 */
 	public void setuName(String uName) {
 		this.uName = uName;
@@ -82,6 +94,7 @@ public class User implements Serializable {
 
 	/**
 	 * Returns this user password
+	 * 
 	 * @return This user password
 	 */
 	public String getPassword() {
@@ -90,7 +103,9 @@ public class User implements Serializable {
 
 	/**
 	 * Sets this user Password
-	 * @param password - the password to be set
+	 * 
+	 * @param password
+	 *            - the password to be set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -98,22 +113,26 @@ public class User implements Serializable {
 
 	/**
 	 * Returns if the use is logged in
+	 * 
 	 * @return if the user is logged in
 	 */
 	public String getIsLoggedIn() {
 		return isLoggedIn;
 	}
 
-	/**'
-	 * Sets user as logged in or disconnected
-	 * @param isLoggedIn - the new connection status
+	/**
+	 * ' Sets user as logged in or disconnected
+	 * 
+	 * @param isLoggedIn
+	 *            - the new connection status
 	 */
 	public void setIsLoggedIn(String isLoggedIn) {
 		this.isLoggedIn = isLoggedIn;
 	}
 
 	/**
-	 * Returns user's title  
+	 * Returns user's title
+	 * 
 	 * @return the user title
 	 */
 	public String getTitle() {
@@ -122,7 +141,9 @@ public class User implements Serializable {
 
 	/**
 	 * Sets user title
-	 * @param title - the title to be set
+	 * 
+	 * @param title
+	 *            - the title to be set
 	 */
 	public void setTitle(String title) {
 		Title = title;
@@ -134,28 +155,9 @@ public class User implements Serializable {
 	}
 
 	@Override
-    public boolean equals(Object o) {
-
-        if (o == this) return true;
-        if (!(o instanceof User)) {
-            return false;
-        }
-
-        User user = (User) o;
-
-        return user.uID.equals(uID) && user.uName == uName &&
-                user.password == password &&
-                user.Title.equals(Title);
-    }
-    
-	@Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + uID.hashCode();
-        result = 31 * result + uName.hashCode();
-        result = 31 * result + password.hashCode();
-        result = 31 * result + Title.hashCode();
-        return result;
-    }
+	public boolean equals(Object obj) {
+		User u = (User) obj;
+		return uID.equals(u.getuID());
+	}
 
 }

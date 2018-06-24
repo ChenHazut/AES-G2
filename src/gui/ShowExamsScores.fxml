@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="400.0" maxWidth="600.0" minHeight="338.0" minWidth="584.0" prefHeight="338.0" prefWidth="584.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ShowExamsScoresGUI">
+<Pane maxHeight="400.0" maxWidth="600.0" minHeight="338.0" minWidth="584.0" prefHeight="338.0" prefWidth="584.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ShowExamsScoresGUI">
    <children>
-      <ImageView fitHeight="341.0" fitWidth="590.0" layoutX="-4.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="348.0" fitWidth="590.0" layoutX="-4.0" layoutY="-4.0" pickOnBounds="true">
          <image>
-            <Image url="@../../../../../Desktop/פרויקט%20חן/AES-G2/images/backgraond.png" />
+            <Image url="@../images/backgraond.png" />
          </image>
       </ImageView>
       <Label layoutX="190.0" layoutY="6.0" prefHeight="46.0" prefWidth="252.0" text="Student's Grades" textFill="#1348bd">
@@ -30,9 +30,9 @@
             <DropShadow blurType="TWO_PASS_BOX" height="41.755" radius="22.106250000000003" width="48.67" />
          </effect>
       </Label>
-      <ImageView fitHeight="46.0" fitWidth="78.0" layoutX="112.0" layoutY="6.0">
+      <ImageView fitHeight="46.0" fitWidth="48.0" layoutX="142.0" layoutY="6.0">
          <image>
-            <Image url="@../../../../../Desktop/מערכות%20מידע/שנה%20ג'/סמסטר%20ב'/שיטות%20הנדסיות/תמונות%20לפרויקט/כובע%20סטודנט.png" />
+            <Image url="@../images/studentIcon.png" />
          </image>
       </ImageView>
       <TableView fx:id="gradeTable" layoutX="23.0" layoutY="78.0" prefHeight="220.0" prefWidth="402.0">
@@ -45,7 +45,7 @@
       </TableView>
       <ImageView fitHeight="57.0" fitWidth="57.0" layoutX="427.0" layoutY="119.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../Desktop/פרויקט%20חן/AES-G2/images/search.png" />
+            <Image url="@../images/search.png" />
          </image>
       </ImageView>
       <Label layoutX="480.0" layoutY="137.0" text="Show Exam">

@@ -3,7 +3,6 @@ package logic;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.Map;
 
 import gui.QuestionInExam;
 
@@ -148,17 +147,6 @@ public class StudentInExam implements Serializable {
 		this.isComp = isComp;
 	}
 
-	public boolean equals(Object arg0) {
-		StudentInExam s = (StudentInExam) arg0;
-		if (!s.getStudentID().equals(this.studentID))
-			return false;
-		if (!s.getExamID().equals(this.examID))
-			return false;
-		if (s.getExecutionID() != this.executionID)
-			return false;
-		return true;
-	}
-
 	public String getReasonForGradeChenges() {
 		return reasonForGradeChenges;
 	}
@@ -175,6 +163,19 @@ public class StudentInExam implements Serializable {
 		this.isCopied = isCopied;
 	}
 
+	@Override
+	public boolean equals(Object arg0) {
+		StudentInExam s = (StudentInExam) arg0;
+		if (!s.getStudentID().equals(this.studentID))
+			return false;
+		if (!s.getExamID().equals(this.examID))
+			return false;
+		if (s.getExecutionID() != this.executionID)
+			return false;
+		return true;
+	}
+
+	@Override
 	public String toString() {
 		// String s = "";
 		// s += "\nExam ID: " + getExamID() + "\tExam Date" + getDate() + "\tCourse
@@ -190,7 +191,7 @@ public class StudentInExam implements Serializable {
 		// s += "The student hasn't finished the exam\n";
 		// // }
 		// return s;
-		return "dhnfbsdnfbm";
+		return "sid" + studentID;
 	}
 
 }

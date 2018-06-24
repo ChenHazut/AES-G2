@@ -1737,6 +1737,7 @@ public class EchoServer extends AbstractServer {
 		Iterator it = this.exemanieeList.entrySet().iterator();
 		ArrayList<StudentInExam> students = new ArrayList<StudentInExam>();
 		ExecutionDetails ed = new ExecutionDetails(overtime.getExamID(), overtime.getExecutionID());
+		System.out.println("c0");
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry) it.next();
 			if (ed.equals(pair.getKey())) {
@@ -1746,15 +1747,21 @@ public class EchoServer extends AbstractServer {
 		}
 		for (StudentInExam s : students) {
 			Iterator it2 = this.connectedClients.entrySet().iterator();
+			System.out.println("c1");
 			while (it2.hasNext()) {
+				System.out.println("c2");
 				Map.Entry pair = (Map.Entry) it2.next();
+				System.out.println("c3");
 				User u = new User();
+				System.out.println("c4");
 				u.setuID(s.getStudentID());
+				System.out.println("c5");
 				u.setuName(s.getStudentName());
 				if (u.equals(pair.getKey())) {
 					Message m = new Message();
 					m.setReturnObj(overtime);
 					m.setqueryToDo("overtimeApproved");
+					System.out.println("send approved to student " + s.getStudentID());
 					((ConnectionToClient) pair.getValue()).sendToClient(m);
 					break;
 				}
@@ -2178,7 +2185,7 @@ public class EchoServer extends AbstractServer {
 
 				Question q = new Question(rs2.getString(2), rs2.getString(1), rs2.getString(3), rs2.getString(4),
 						answers[0], answers[1], answers[2], answers[3], rs2.getInt(5));
-				QuestionInExam qie = new QuestionInExam(rs.getInt(9), q, cnt++);
+				QuestionInExam qie = new QuestionInExam(rs.getInt(5), q, cnt++);
 				map.put(qie, ans);
 
 				rs3.close();

@@ -19,6 +19,8 @@ public class ExamReport implements Serializable {
 	}
 
 	public ExamReport(ArrayList<Integer> gradeArr, String examID, int executionID) {
+		if (gradeArr != null && gradeArr.size() > 0)
+			return;
 		this.examID = examID;
 		this.executionID = executionID;
 		int sum = 0;

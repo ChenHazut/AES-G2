@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.ArrayList;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,6 +43,8 @@ public class OvertimeRequestMenuGUI {
 
 	private ObservableList<OvertimeDetails> overtimeOL;
 
+	private ArrayList<OvertimeDetails> overtimeArr;
+
 	/**
 	 * this method send request to server to approve the teacher overtime request
 	 * 
@@ -52,9 +56,14 @@ public class OvertimeRequestMenuGUI {
 			return;
 		OvertimeDetails r = table.getSelectionModel().getSelectedItem();
 		pc.approveOvertime(r);
-		for (OvertimeDetails otd : overtimeOL)
-			if (otd.getExamID().equals(r.getExamID()) && otd.getExecutionID() == r.getExecutionID())
-				overtimeOL.remove(r);
+		int i = 0;
+		for (i = 0; i < overtimeArr.size(); i++) {
+			OvertimeDetails o = overtimeArr.get(i);
+			if (o.getExamID().equals(r.getExamID()) && o.getExecutionID() == r.getExecutionID())
+				overtimeArr.remove(i);
+		}
+		overtimeOL.clear();
+		overtimeOL.addAll(overtimeArr);
 		table.getItems().clear();
 		table.getItems().addAll(overtimeOL);
 	}
@@ -70,9 +79,14 @@ public class OvertimeRequestMenuGUI {
 			return;
 		OvertimeDetails r = table.getSelectionModel().getSelectedItem();
 		pc.denyOvertime(r);
-		for (OvertimeDetails otd : overtimeOL)
-			if (otd.getExamID().equals(r.getExamID()) && otd.getExecutionID() == r.getExecutionID())
-				overtimeOL.remove(r);
+		int i = 0;
+		for (i = 0; i < overtimeArr.size(); i++) {
+			OvertimeDetails o = overtimeArr.get(i);
+			if (o.getExamID().equals(r.getExamID()) && o.getExecutionID() == r.getExecutionID())
+				overtimeArr.remove(i);
+		}
+		overtimeOL.clear();
+		overtimeOL.addAll(overtimeArr);
 		table.getItems().clear();
 		table.getItems().addAll(overtimeOL);
 	}
@@ -87,7 +101,8 @@ public class OvertimeRequestMenuGUI {
 		reasonCol.setCellValueFactory(new PropertyValueFactory<OvertimeDetails, String>("reason"));
 		pc = new PrincipalController();
 		overtimeOL = FXCollections.observableArrayList();
-		overtimeOL.addAll(pc.getAllOverTimeRequests());
+		overtimeArr = pc.getAllOverTimeRequests();
+		overtimeOL.addAll(overtimeArr);
 		table.getItems().addAll(overtimeOL);
 	}
 
