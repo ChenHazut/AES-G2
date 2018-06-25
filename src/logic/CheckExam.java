@@ -1,5 +1,9 @@
 package logic;
 
+/**
+ * This class performs the automated checking of a locked exam and checking 
+ * for cheating between the student
+ */
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,12 +12,24 @@ import java.util.Map;
 import gui.QuestionInExam;
 
 public class CheckExam {
+	// **************************************************
+	// Fields
+	// **************************************************
 
+	// the exams details
 	String examID;
 	int executionID;
-
+	// the student we want to check their exams
 	ArrayList<StudentInExam> studentToCheck;
 
+	/**
+	 * This method performs the automated exam checking for specified students When
+	 * an exam is locked the server begins this method automatically
+	 * 
+	 * @param arr
+	 *            - the students who performed the exam
+	 * @return an array list of students and their matching answers in the exam
+	 */
 	public HashMap<StudentInExam, ArrayList<Integer>> checkExams(ArrayList<StudentInExam> arr) {
 		HashMap<StudentInExam, ArrayList<Integer>> studentResultsMap = new HashMap<StudentInExam, ArrayList<Integer>>();
 
@@ -45,6 +61,14 @@ public class CheckExam {
 		return studentResultsMap;
 	}
 
+	/**
+	 * This method performs the automated cheating checking for specified students
+	 * When an exam is checked the server begins this method automatically
+	 * 
+	 * @param result
+	 *            array list of students and their matching answers in the exam
+	 * @return - array list of the checked students with the results
+	 */
 	public HashSet<StudentInExam> checkForCopies(HashMap<StudentInExam, ArrayList<Integer>> result) {
 		HashSet<StudentInExam> studentCopied = new HashSet<StudentInExam>();
 		for (Map.Entry<StudentInExam, ArrayList<Integer>> entry1 : result.entrySet()) {

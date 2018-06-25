@@ -26,7 +26,14 @@ import logic.Subject;
 import logic.TeacherController;
 import logic.User;
 
+/**
+ * this class manage the new question fxml window
+ * @author vakni
+ */
 public class NewQuestionGUI implements Initializable {
+	// **************************************************
+    // Fields
+    // **************************************************	
 
 	@FXML
 	ComboBox<String> correctAnswerCombo;
@@ -75,6 +82,12 @@ public class NewQuestionGUI implements Initializable {
 	TeacherController tc;
 	ObservableList<String> coursesL;
 
+	// **************************************************
+    // Constructors
+    // **************************************************	
+	/**
+	 * constructor that set the theacher that write the question 
+	 */
 	public NewQuestionGUI() {
 
 		// m=new GUImanager();
@@ -82,6 +95,13 @@ public class NewQuestionGUI implements Initializable {
 		teacher = tc.getTeacher();
 	}
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	
+	/**
+	 * run the new question fxml window
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("NewQuestion.fxml"));
 		Scene Scene = new Scene(root);
@@ -91,6 +111,11 @@ public class NewQuestionGUI implements Initializable {
 
 	}
 
+	/**
+	 * initialize the new question window data
+	 * @param arg0
+	 * @param arg1
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		teacherNameLabel.setText(teacher.getuName());
@@ -104,6 +129,9 @@ public class NewQuestionGUI implements Initializable {
 		correctAnswerCombo.getItems().addAll("1", "2", "3", "4");
 	}
 
+	/**
+	 * get the filles deatails on the new question that the teacher wrote
+	 */
 	protected Question getFilledDetails() {
 		int flag = 0;
 		Question updatedQuestion = new Question();
@@ -145,6 +173,11 @@ public class NewQuestionGUI implements Initializable {
 		return null;
 	}
 
+	/**
+	 * save the new question the teacher wrote
+	 * @param ae
+	 * @throws Exception
+	 */
 	public void saveButtonAction(ActionEvent ae) throws Exception {
 		System.out.println("save has been pressed");
 		Question updatedQuestion = getFilledDetails();
@@ -191,6 +224,11 @@ public class NewQuestionGUI implements Initializable {
 
 	}
 
+	/**
+	 * when the teacher cancle the function of create new question by press the cancel button
+	 * @param ae
+	 * @throws Exception
+	 */
 	public void cancleButtonAction(ActionEvent ae) throws Exception {
 		System.out.println("cancle has been pressed");
 		FXMLLoader loader = new FXMLLoader();
@@ -212,6 +250,11 @@ public class NewQuestionGUI implements Initializable {
 
 	}
 
+	/**
+	 * handel the choose of the subject and the course of the question by the teacher
+	 * after she choose the subject she can choose the courses of the subject that in the list
+	 * @param ae
+	 */
 	public void subjectComboBoxAction(ActionEvent ae) {
 		int i;
 		courseCombo.getItems().removeAll(coursesL);
@@ -224,6 +267,9 @@ public class NewQuestionGUI implements Initializable {
 
 	}
 
+	/**
+	 * implements serializable
+	 */
 	public void initData() {
 		// TODO Auto-generated method stub
 

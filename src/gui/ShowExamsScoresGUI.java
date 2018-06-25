@@ -24,8 +24,16 @@ import logic.ExamInExecution;
 import logic.StudentController;
 import logic.StudentInExam;
 import logic.User;
-
+/**
+ * This class is the controller for the Gui window the shows the student the 
+ * grades of the exams he performed and a copy of the exams
+ * @author reut
+ *
+ */
 public class ShowExamsScoresGUI implements Initializable {
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	Button ShowExamButton; // THE BUTTON that show the exam of the student
 	// @FXML
@@ -50,6 +58,12 @@ public class ShowExamsScoresGUI implements Initializable {
 
 	ObservableList<StudentInExam> GradesList;
 
+	/**
+	 * this method handles the action when the student choose an exam to watch from 
+	 * the table and than press show exam it will open the ExamFormForStudent 
+	 * with the exam the student choose
+	 * @throws Exception
+	 */
 	public void ShowExamButtonAction() throws Exception {
 		StudentInExam sie = gradeTable.getSelectionModel().getSelectedItem();
 		if(sie==null) {
@@ -76,6 +90,12 @@ public class ShowExamsScoresGUI implements Initializable {
 
 	}
 
+
+	/**
+	 * this method inisialize the exems approved grades
+	 * @param arg0
+	 * @param arg1
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		st = new StudentController();
@@ -91,6 +111,11 @@ public class ShowExamsScoresGUI implements Initializable {
 		gradeTable.setItems(GradesList);
 	}
 
+	/**
+	 * this method start the student's grades window using fxml
+	 * @param primaryStage
+	 * @throws IOException
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("ShowExamsScores.fxml"));
 		Scene Scene = new Scene(root);

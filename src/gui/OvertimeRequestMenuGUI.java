@@ -1,7 +1,5 @@
 package gui;
 
-import java.util.ArrayList;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +11,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import logic.OvertimeDetails;
 import logic.PrincipalController;
 
+/**
+ * This class mnage the overtime request window.
+ * @author reut
+ */
 public class OvertimeRequestMenuGUI {
 	// **************************************************
 	// Fields
@@ -43,8 +45,7 @@ public class OvertimeRequestMenuGUI {
 
 	private ObservableList<OvertimeDetails> overtimeOL;
 
-	private ArrayList<OvertimeDetails> overtimeArr;
-
+	
 	/**
 	 * this method send request to server to approve the teacher overtime request
 	 * 
@@ -56,14 +57,9 @@ public class OvertimeRequestMenuGUI {
 			return;
 		OvertimeDetails r = table.getSelectionModel().getSelectedItem();
 		pc.approveOvertime(r);
-		int i = 0;
-		for (i = 0; i < overtimeArr.size(); i++) {
-			OvertimeDetails o = overtimeArr.get(i);
-			if (o.getExamID().equals(r.getExamID()) && o.getExecutionID() == r.getExecutionID())
-				overtimeArr.remove(i);
-		}
-		overtimeOL.clear();
-		overtimeOL.addAll(overtimeArr);
+		for (OvertimeDetails otd : overtimeOL)
+			if (otd.getExamID().equals(r.getExamID()) && otd.getExecutionID() == r.getExecutionID())
+				overtimeOL.remove(r);
 		table.getItems().clear();
 		table.getItems().addAll(overtimeOL);
 	}
@@ -79,14 +75,9 @@ public class OvertimeRequestMenuGUI {
 			return;
 		OvertimeDetails r = table.getSelectionModel().getSelectedItem();
 		pc.denyOvertime(r);
-		int i = 0;
-		for (i = 0; i < overtimeArr.size(); i++) {
-			OvertimeDetails o = overtimeArr.get(i);
-			if (o.getExamID().equals(r.getExamID()) && o.getExecutionID() == r.getExecutionID())
-				overtimeArr.remove(i);
-		}
-		overtimeOL.clear();
-		overtimeOL.addAll(overtimeArr);
+		for (OvertimeDetails otd : overtimeOL)
+			if (otd.getExamID().equals(r.getExamID()) && otd.getExecutionID() == r.getExecutionID())
+				overtimeOL.remove(r);
 		table.getItems().clear();
 		table.getItems().addAll(overtimeOL);
 	}
@@ -101,8 +92,7 @@ public class OvertimeRequestMenuGUI {
 		reasonCol.setCellValueFactory(new PropertyValueFactory<OvertimeDetails, String>("reason"));
 		pc = new PrincipalController();
 		overtimeOL = FXCollections.observableArrayList();
-		overtimeArr = pc.getAllOverTimeRequests();
-		overtimeOL.addAll(overtimeArr);
+		overtimeOL.addAll(pc.getAllOverTimeRequests());
 		table.getItems().addAll(overtimeOL);
 	}
 

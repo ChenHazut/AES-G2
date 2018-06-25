@@ -5,7 +5,17 @@ import java.util.ArrayList;
 import common.Message;
 import gui.LoginGUI;
 
+/**
+ * This class sends data gotten teacher from UI and sends to server and vice
+ * versa
+ * 
+ * @author reut
+ *
+ */
 public class TeacherController {
+	// **************************************************
+	// Fields
+	// **************************************************
 	User teacher;
 	LoginController lc;
 	ClientConsole client;
@@ -13,15 +23,25 @@ public class TeacherController {
 	ArrayList<Subject> subjects;
 	ArrayList<Question> selectedQuestions;
 
+	// **************************************************
+	// constructors
+	// **************************************************
+
+	/**
+	 * Default constructor
+	 */
 	public TeacherController() {
 		lc = new LoginController();
 		teacher = lc.getUser();
 		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 	}
 
-	public ArrayList<Question> getAllQuestions()// send request to db to get all question which belong to subject this
-												// teacher teach
-	{
+	/**
+	 * Fetches all questions from DB
+	 * 
+	 * @return
+	 */
+	public ArrayList<Question> getAllQuestions() {
 		Message msg = new Message();
 		msg.setSentObj(teacher);
 		msg.setqueryToDo("getAllQuestionRelevantToTeacher");
@@ -40,6 +60,13 @@ public class TeacherController {
 
 	}
 
+	/**
+	 * Return the next available exam id for this course
+	 * 
+	 * @param course
+	 *            - the course to check
+	 * @return the next available exam id in course
+	 */
 	public String getExamID(Course course) {
 		Message msg = new Message();
 		msg.setSentObj(course);
@@ -57,6 +84,13 @@ public class TeacherController {
 		return str;
 	}
 
+	/**
+	 * Deleltse a question from data base
+	 * 
+	 * @param qToDel
+	 *            - the questions to delete
+	 * @return true if succeeded, false otherwise
+	 */
 	public Boolean deleteQuestion(Question qToDel) {
 		Message msg = new Message();
 		msg.setClassType("teacher");
@@ -74,6 +108,12 @@ public class TeacherController {
 		return b;
 	}
 
+	/**
+	 * save new question to database
+	 * 
+	 * @param qToAdd
+	 *            - the question we want to add
+	 */
 	public Question createNewQuestion(Question qToAdd) {
 		Message questionToSend = new Message();
 		questionToSend.setClassType("Teacher");
@@ -88,6 +128,9 @@ public class TeacherController {
 		return (Question) client.getMessage().getReturnObj();
 	}
 
+	/**
+	 * Fetches from DB all courses that a teacher teaches.
+	 */
 	public void getTeacherCourse() {
 		Message msg = new Message();
 		msg.setSentObj(teacher);
@@ -113,6 +156,12 @@ public class TeacherController {
 			}
 	}
 
+	/**
+	 * Edit an existing question in DB
+	 * 
+	 * @param updatedQuestion
+	 *            - the question with the details that nedd to be updated
+	 */
 	public void editQuestion(Question updatedQuestion) {
 		Message questionToSend = new Message();
 		questionToSend.setClassType("Teacher");
@@ -126,18 +175,40 @@ public class TeacherController {
 		}
 	}
 
+	/**
+	 * Returns the user teacher
+	 * 
+	 * @return the current user
+	 */
 	public User getTeacher() {
 		return teacher;
 	}
 
+	/**
+	 * Returns a subject list
+	 * 
+	 * @return list of all subjects
+	 */
 	public ArrayList<Subject> getSubjects() {
 		return subjects;
 	}
 
+	/**
+	 * Returns a courses list
+	 * 
+	 * @return list of all courses
+	 */
 	public ArrayList<Course> getCourses() {
 		return courses;
 	}
 
+	/**
+	 * Returns the complete course details matching a course name
+	 * 
+	 * @param courseName
+	 *            the course to compare
+	 * @return the Course details
+	 */
 	public Course getCourseFromName(String courseName) {
 		for (int i = 0; i < courses.size(); i++) {
 			String s = courses.get(i).getcName();
@@ -147,6 +218,13 @@ public class TeacherController {
 		return null;
 	}
 
+	/**
+	 * Fetch all questions relevant to a teacher in course from DB
+	 * 
+	 * @param course
+	 *            - the course the teacher teacher
+	 * @return the array off questions
+	 */
 	public ArrayList<Question> getQuestionsForTeacherInCourse(Course course) {
 		Message msg = new Message();
 		msg.setqueryToDo("QuestionForTeacherInCourse");
@@ -164,6 +242,13 @@ public class TeacherController {
 
 	}
 
+	/**
+	 * Returns the teacher details from DB
+	 * 
+	 * @param uID
+	 *            - the id of the teacher
+	 * @return - The teacher details matching the id
+	 */
 	public User teacherDet(String uID) {
 		Message msg = new Message();
 		msg.setSentObj(uID);
@@ -181,6 +266,12 @@ public class TeacherController {
 		return teacher;
 	}
 
+	/**
+	 * Delete exam From DB. possible only if exam is locked (all students submitted)
+	 * 
+	 * @param eToDel
+	 *            - the exam to delete
+	 */
 	public void deleteExam(Exam eToDel) {
 		Message msg = new Message();
 		msg.setClassType("teacher");
@@ -196,6 +287,11 @@ public class TeacherController {
 
 	}
 
+	/**
+	 * Fetchs all exams from DB
+	 * 
+	 * @return array list of exams
+	 */
 	public ArrayList<Exam> getAllExams() {
 		Message msg = new Message();
 		msg.setSentObj(teacher);
@@ -215,6 +311,11 @@ public class TeacherController {
 		return arrOfExams;
 	}
 
+	/**
+	 * Fetchs all exams currently in execution from DB
+	 * 
+	 * @return array list of exams in execution
+	 */
 	public ArrayList<ExamInExecution> getAllExamsInExecutionForTeacher() {
 		Message msg = new Message();
 		msg.setClassType("Teacher");
@@ -233,6 +334,15 @@ public class TeacherController {
 		return arrOfExams;
 	}
 
+	/**
+	 * Fetchs all students assigned to course
+	 * 
+	 * @param sID
+	 *            - the Subject of the course id
+	 * @param cID
+	 *            - the course id
+	 * @return array list of student of type user
+	 */
 	public ArrayList<User> getAllStudentsInCourse(String sID, String cID) {
 		Message msg = new Message();
 		msg.setClassType("Teacher");
@@ -252,6 +362,9 @@ public class TeacherController {
 		return arrOfstudents;
 	}
 
+	/**
+	 * Creates new exam in execution and saved to DB
+	 */
 	public ExamInExecution executeNewExam(ExamInExecution exam) {
 		Message msg = new Message();
 		msg.setClassType("Teacher");
@@ -270,6 +383,13 @@ public class TeacherController {
 		return examInExec;
 	}
 
+	/**
+	 * Fetch examinee group in exam from DB
+	 * 
+	 * @param exam
+	 *            the exam to search
+	 * @return array list of student in exam
+	 */
 	public ArrayList<StudentInExam> getExamnieesOfExam(ExamInExecution exam) {
 		Message msg = new Message();
 		msg.setClassType("Teacher");
@@ -288,6 +408,12 @@ public class TeacherController {
 		return sList;
 	}
 
+	/**
+	 * This method locks an exam which is currently in execution
+	 * 
+	 * @param exam
+	 *            the exam to be locked
+	 */
 	public void lockExam(ExamInExecution exam) {
 
 		Message msg = new Message();
@@ -304,6 +430,11 @@ public class TeacherController {
 
 	}
 
+	/**
+	 * Fetches all locked exams that a teache rsent to execution
+	 * 
+	 * @return array list of exam in execution
+	 */
 	public ArrayList<ExamInExecution> getLockedExamsForTeacher() {
 		Message msg = new Message();
 		msg.setClassType("Teacher");
@@ -322,6 +453,9 @@ public class TeacherController {
 		return arrOfExams;
 	}
 
+	/**
+	 * Returns all the Exams in execution relevant to a teache
+	 */
 	public ArrayList<ExamInExecution> getWrittenExamsForTeacher() {
 		Message msg = new Message();
 		msg.setClassType("Teacher");
@@ -340,14 +474,30 @@ public class TeacherController {
 		return arrOfExams;
 	}
 
+	/**
+	 * Returns an arrayList from the type Question that were selected
+	 * 
+	 * @return array list of questions
+	 */
 	public ArrayList<Question> getSelectedQuestions() {
 		return selectedQuestions;
 	}
 
+	/**
+	 * Set the array list of the selected questions
+	 * 
+	 * @param array
+	 */
 	public void setSelectedQuestions(ArrayList<Question> array) {
 		this.selectedQuestions = array;
 	}
 
+	/**
+	 * Saves new exam to DB
+	 * 
+	 * @param exam
+	 *            - the exam to be saved
+	 */
 	public void saveExam(Exam exam) {
 		Message msg = new Message();
 		msg.setSentObj(exam);
@@ -356,6 +506,12 @@ public class TeacherController {
 		client.accept(msg);
 	}
 
+	/**
+	 * Sends request overTime to principal
+	 * 
+	 * @param overTimeDet
+	 *            - the detailts about the exam and the amount of time
+	 */
 	public void sendRequestToOverTime(OvertimeDetails overTimeDet) {
 		Message msg = new Message();
 		msg.setSentObj(overTimeDet);
@@ -364,6 +520,9 @@ public class TeacherController {
 		client.accept(msg);
 	}
 
+	/**
+	 * This method returns all exam reports teacher wrote
+	 */
 	public ArrayList<ExamReport> getAllExamReportsTeacherWrote(User user) {
 		Message msg = new Message();
 		msg.setClassType("Teacher");
@@ -379,6 +538,11 @@ public class TeacherController {
 		return (ArrayList<ExamReport>) msg.getReturnObj();
 	}
 
+	/**
+	 * gets all approved grades for student in exam
+	 * 
+	 * @param s
+	 */
 	public void approveGrade(StudentInExam s) {
 		Message msg = new Message();
 		msg.setSentObj(s);
@@ -387,6 +551,9 @@ public class TeacherController {
 		client.accept(msg);
 	}
 
+	/**
+	 * changes the grade of a student
+	 */
 	public void changeGrade(StudentInExam s) {
 		Message msg = new Message();
 		msg.setSentObj(s);
@@ -395,6 +562,11 @@ public class TeacherController {
 		client.accept(msg);
 	}
 
+	/**
+	 * get all grades teacher needs to approve
+	 * 
+	 * @return
+	 */
 	public ArrayList<StudentInExam> getAllGradesForApprval() {
 		Message msg = new Message();
 		msg.setClassType("Teacher");

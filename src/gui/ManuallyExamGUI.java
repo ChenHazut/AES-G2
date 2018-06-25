@@ -19,8 +19,18 @@ import logic.OvertimeDetails;
 import logic.StudentController;
 import logic.StudentInExam;
 
+/**
+ * This class let the student perform an exam manually , 
+ * the student downloads the exam to his computer than the count-down begins 
+ * and then he can upload the solved answer back to system.
+ * @author Rotem Vaknin
+ *
+ */
 public class ManuallyExamGUI {
 
+	// **************************************************
+    // Fields
+    // **************************************************
 	ExamInExecution exam;
 	@FXML
 	Button downloadExam;
@@ -56,6 +66,13 @@ public class ManuallyExamGUI {
 	private ClientConsole client;
 	Boolean flag = false;
 
+	/**
+	 * This method converts the time allocated for the exam to seconds.
+	 * @param h - the hours allocated for the exam
+	 * @param m - the minutes allocated for the exam
+	 * @param s - seconds allocated for the exam
+	 * @return The amount of time allocated for the exam to seconds.
+	 */
 	public Integer hmsToSeconds(Integer h, Integer m, Integer s) {
 		Integer hToSeconds = h * 3600;
 		Integer mToSeconds = m * 60;
@@ -63,6 +80,9 @@ public class ManuallyExamGUI {
 		return total;
 	}
 
+	/**
+	 * Starts the count down, counts in seconds
+	 */
 	void startCountDown() {
 		thrd = new Thread(new Runnable() {
 
@@ -135,6 +155,10 @@ public class ManuallyExamGUI {
 		lockThread.start();
 	}
 
+	/**
+	 * displays the time onto the countdown clock,
+	 * changes every second
+	 */
 	void setOutput() {
 		LinkedList<Integer> currHms = secondsToHms(currSeconds);
 		hoursTimer.setText(numberMap.get(currHms.get(0)));
@@ -143,6 +167,11 @@ public class ManuallyExamGUI {
 
 	}
 
+	/**
+	 * Converts the time from seconds to hours, minutes and seconds
+	 * @param currSecond - the seconds to convert
+	 * @return a list consists of hours, minutes and seconds
+	 */
 	LinkedList<Integer> secondsToHms(Integer currSecond) {
 		Integer hours = currSecond / 3600;
 		currSecond = currSecond % 3600;
@@ -156,6 +185,11 @@ public class ManuallyExamGUI {
 		return answer;
 	}
 
+	/**
+	 * This method downloads the exam onto the user computer and starts 
+	 * the countdown.
+	 * @throws IOException
+	 */
 	public void downloadExamAction(ActionEvent ae) throws IOException {
 		s.setStudentStatus("Started");
 		st.changeStudentInExamStatus(s);
@@ -176,6 +210,9 @@ public class ManuallyExamGUI {
 
 	}
 
+	/**
+	 * this method upload the exam from student to system and stops clock.
+	 */
 	public void uploadExamAction(ActionEvent ae) {
 		thrd.stop();
 		st.uploadManualExam("exam_" + exam.getExamDet().getExamID() + "_" + st.getStudent().getuID() + ".docx");
@@ -187,6 +224,9 @@ public class ManuallyExamGUI {
 		st.changeStudentInExamStatus(s);
 	}
 
+	/**
+	 * this initialize the data of the manually exam window
+	 */
 	public void initData(ExamInExecution examInExecution) {
 		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 		st = new StudentController();

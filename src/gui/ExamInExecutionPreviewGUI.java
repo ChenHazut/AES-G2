@@ -33,8 +33,16 @@ import logic.OvertimeDetails;
 import logic.StudentInExam;
 import logic.TeacherController;
 
+/**
+ * This class manage fxml that the the exam in execution form
+ * @author reut
+ *
+ */
 public class ExamInExecutionPreviewGUI implements Initializable {
 
+	// **************************************************
+    // Fields
+    // **************************************************	
 	@FXML
 	private Button backBtn;
 
@@ -114,11 +122,24 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 
 	private Stage stage;
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
 
+	/**
+	 * this method close the exam in execution preview form
+	 * when the teacher press the back button
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void backBtnAction(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -132,6 +153,13 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 		window.show();
 	}
 
+
+	/**
+	 * this method lock the exam in execution
+	 * when the teacher press the lock button
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void lockExamBtnAction(ActionEvent event) throws IOException {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -148,6 +176,12 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 		}
 	}
 
+	/**
+	 * this method handle the teacher request to change the exam time
+	 * when the teacher press the request button
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void requestOvertimeBtnAction(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -171,6 +205,12 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 		}
 	}
 
+	/**
+	 * this method set all the deatails of this window that show the exam in exection for the teacher
+	 * @param selectedItem 
+	 * @param status
+	 * @param st
+	 */
 	public void initData(ExamInExecutionRow selectedItem, String status, Stage st) {
 		studentOL = FXCollections.observableArrayList();
 		this.stage = st;
@@ -240,6 +280,9 @@ public class ExamInExecutionPreviewGUI implements Initializable {
 
 	}
 
+	/**
+	 * 
+	 */
 	@FXML
 	void statBtnAction(ActionEvent event) {
 

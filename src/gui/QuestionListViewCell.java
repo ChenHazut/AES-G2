@@ -15,8 +15,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import logic.Question;
 
+/**
+ * This class extends ListCell<QuestionInExam>
+ * @author vakni
+ *
+ */
 public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam> {
 
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	private AnchorPane pane;
 	@FXML
@@ -48,6 +56,11 @@ public abstract class QuestionListViewCell<T> extends ListCell<QuestionInExam> {
 	final ToggleGroup group = new ToggleGroup();
 	QuestionInExam qie;
 
+	/**
+	 * set all the question in exam details
+	 * @param qie
+	 * @param empty
+	 */
 	@Override
 	protected void updateItem(QuestionInExam qie, boolean empty) {
 		super.updateItem(qie, empty);

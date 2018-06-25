@@ -22,8 +22,18 @@ import logic.ExamInExecution;
 import logic.StudentController;
 import logic.User;
 
+/**
+ * This class is to manage the exams that the student can perform , 
+ * the student will see in table all the exam that he can perform and he
+ *  will have to choose to perform the exam computerizes of manually
+ * @author Rotem Vaknin
+ *
+ */
 public class PerformanceExamsGUI implements Initializable {
 
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	Button ManuallyButton; // THE BUTTON TO DO TEST ManuallyButton
 	@FXML
@@ -44,6 +54,11 @@ public class PerformanceExamsGUI implements Initializable {
 
 	private User student; // to save the student that loged in info
 
+	/**
+	 * This method handle the action when the student want to perform the exam manually
+	 * it take the exam info that he choose and open the ManuallyExam fxml
+	 * @throws Exception
+	 */
 	public void ManuallyButtonButtonAction() throws Exception {
 		ExamInExecution e = table.getSelectionModel().getSelectedItem();
 		if (e == null)
@@ -60,6 +75,11 @@ public class PerformanceExamsGUI implements Initializable {
 
 	}
 
+	/**
+	 * This method handle the action when the student want to perform the exam computerized
+	 * it takes the exam info about the exam the student choose and open the ComputerizadExam fxml
+	 * @throws Exception
+	 */
 	public void ComputerizedButtonAction() throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ComputerizadExam.fxml"));
@@ -74,6 +94,12 @@ public class PerformanceExamsGUI implements Initializable {
 		window.show();
 	}
 
+
+	/**
+	 * this method show the data of the exams to perform for the student in table
+	 * @param arg0
+	 * @param arg1
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		st = new StudentController();
@@ -93,6 +119,11 @@ public class PerformanceExamsGUI implements Initializable {
 		table.setItems(examList);
 	}
 
+	/**
+	 * this method start the student Perform exam window using fxml
+	 * @param primaryStage
+	 * @throws IOException
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("StudentExamToPerform.fxml"));
 		Scene Scene = new Scene(root);

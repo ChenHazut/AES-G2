@@ -40,6 +40,9 @@ import logic.User;
 
 public class ExecuteNewExamGUI implements Initializable {
 
+	// **************************************************
+	// Fields
+	// **************************************************
 	@FXML
 	private TableView<ExamInExecutionRow> table;
 
@@ -137,6 +140,12 @@ public class ExecuteNewExamGUI implements Initializable {
 	Boolean examCodeFlag;
 	ArrayList<StudentInExam> selectedStudentsList;
 
+	// **************************************************
+	// Constructors
+	// **************************************************
+	/**
+	 * constructor the set the variabels of these class
+	 */
 	public ExecuteNewExamGUI() {
 		super();
 		tc = new TeacherController();
@@ -146,12 +155,23 @@ public class ExecuteNewExamGUI implements Initializable {
 		examCodeFlag = false;
 		selectedStudentsList = new ArrayList<StudentInExam>();
 	}
+	// **************************************************
+	// Public methods
+	// **************************************************
 
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
 
+	/**
+	 * search for exam by course or exam id
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void searchButtonAction(ActionEvent event) {
 
@@ -211,6 +231,11 @@ public class ExecuteNewExamGUI implements Initializable {
 
 	}
 
+	/**
+	 * show in course combo box all courses of selected subject
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void chooseSubject(ActionEvent event) {
 		int i;
@@ -223,6 +248,12 @@ public class ExecuteNewExamGUI implements Initializable {
 		courseCombo.getItems().addAll(coursesL);
 	}
 
+	/**
+	 * save all the info the teacher selected and execute the exam
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
 	public void confirmBtnAction(ActionEvent event) throws IOException {
 
 		ExamInExecution e = new ExamInExecution();
@@ -272,6 +303,12 @@ public class ExecuteNewExamGUI implements Initializable {
 		System.out.println("just checking");
 	}
 
+	/**
+	 * this method close thecurrent window and discards all changes
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
 	public void cancleBtnAction(ActionEvent event) throws IOException {
 
 		FXMLLoader loader = new FXMLLoader();
@@ -285,6 +322,9 @@ public class ExecuteNewExamGUI implements Initializable {
 		window.show();
 	}
 
+	/**
+	 * this method saves the details of the chosen exam to execute
+	 */
 	public void selectExam() {
 		RadioButton r = new RadioButton();
 		r = (RadioButton) groupExamSelection.getSelectedToggle();
@@ -304,6 +344,11 @@ public class ExecuteNewExamGUI implements Initializable {
 		studentTable.setItems(students);
 	}
 
+	/**
+	 * this method checks if the exam code that teacher entered is valid
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void examCodeAction(KeyEvent event) {
 		System.out.println("text is:" + examCodeTF.getText());
@@ -326,6 +371,10 @@ public class ExecuteNewExamGUI implements Initializable {
 		System.out.println("everything gonna be alright");
 	}
 
+	/**
+	 * checks if teacher chose that the exam will be open to all studens in course
+	 * or to selected students only
+	 */
 	public void isGroupToggeleAction() {
 		if (isGroupToggle.isSelected()) {
 			studentTable.setVisible(true);
@@ -333,16 +382,29 @@ public class ExecuteNewExamGUI implements Initializable {
 			studentTable.setVisible(false);
 	}
 
+	/**
+	 * shows label with instruction for choosing exam code
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void infoEntered(MouseEvent event) {
 		infoMessage.setVisible(true);
 	}
 
+	/**
+	 * hides the label with instruction for choosing exam code
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void infoExit(MouseEvent event) {
 		infoMessage.setVisible(false);
 	}
 
+	/**
+	 * this method initiates window data
+	 */
 	public void initData() {
 		tc.getTeacherCourse();
 		for (int i = 0; i < tc.getSubjects().size(); i++)

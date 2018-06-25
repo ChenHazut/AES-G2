@@ -20,8 +20,17 @@ import javafx.stage.Stage;
 import logic.Exam;
 import logic.TeacherController;
 
+/**
+ * This class provides the teacher a review of the details inputed into the crate exam
+ * window and awaits final approval.
+ * @author reut
+ *
+ */
 public class ExamFormForTeacherGUI implements Initializable {
 
+	// **************************************************
+    // Fields
+    // **************************************************	
 	private ObservableList<QuestionInExam> observableQuestions;
 
 	@FXML
@@ -47,6 +56,11 @@ public class ExamFormForTeacherGUI implements Initializable {
 	private Exam exam;
 	private TeacherController tc;
 
+	/**
+	 * this method set the exam parameters on the exam form to perform
+	 * @param exam - the exam we want to show
+	 * @param selectedQuestions - ArrayList<QuestionInExam> with the exam's questions
+	 */
 	public void initData(Exam exam, ArrayList<QuestionInExam> selectedQuestions) {
 		tc = new TeacherController();
 		this.exam = exam;
@@ -65,12 +79,19 @@ public class ExamFormForTeacherGUI implements Initializable {
 		listView.setCellFactory(QuestionListView -> new QuestionListViewCellForTeacher<QuestionInExam>());
 
 	}
-
+	
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
 
+	/**
+	 * This method cancels the actions performed so far and resets the teacher main menu.
+	 * @throws Exception
+	 */
 	public void cancleButtonAction() throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ExamRepository.fxml"));
@@ -84,6 +105,10 @@ public class ExamFormForTeacherGUI implements Initializable {
 
 	}
 
+	/**
+	 * This method saves the exam into the database.
+	 * @throws Exception
+	 */
 	public void saveButtonAction() {
 		exam.setWasUsed(false);
 		tc.saveExam(exam);

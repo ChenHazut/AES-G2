@@ -17,7 +17,15 @@ import javafx.stage.Stage;
 import logic.LoginController;
 import logic.User;
 
+/**
+ * This class is the controller for student main GUI window
+ * Allows the student to perform an exam and watch his grade
+ * @author reut
+ */
 public class StudentMenuGUI implements Initializable {
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	Button PerformanceTestsButton; // THE BUTTON TO DO TEST
 	@FXML
@@ -30,6 +38,13 @@ public class StudentMenuGUI implements Initializable {
 	private User student; // to save the student that loged in info
 	private LoginController lc;
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	/**
+	 * This methods handles the action of showing the user the list of exams he has to perform
+	 * @throws Exception
+	 */
 	public void PerformanceTestsButtonAction() throws Exception {
 		PerformanceExamsGUI PG = new PerformanceExamsGUI(); // CREATE THE NEXT WINDOW GUI
 		Stage primaryStage = new Stage();
@@ -37,6 +52,11 @@ public class StudentMenuGUI implements Initializable {
 
 	}
 
+	/**
+	 * This methods handles the action of showing the student the list of exams he 
+	 * has already performed and were approved by the teacher
+	 * @throws Exception
+	 */
 	public void ShowExamsScoresAction() throws Exception {
 		ShowExamsScoresGUI PG = new ShowExamsScoresGUI(); // CREATE THE NEXT WINDOW GUI
 		Stage primaryStage = new Stage();
@@ -47,6 +67,10 @@ public class StudentMenuGUI implements Initializable {
 		// PG.start(stage); //RUN THE NEW WINDOW GUI
 	}
 
+	/**
+	 * This methods handles the action pressing the logout button and logs out of the system
+	 * @throws Exception
+	 */
 	public void logoutButtonAction(ActionEvent ae) throws IOException {
 		lc = new LoginController();
 		lc.logoutUser();
@@ -55,6 +79,11 @@ public class StudentMenuGUI implements Initializable {
 		lg.start(stage);
 	}
 
+	/**
+	 * initialize the data on the student menu
+	 * @param arg0
+	 * @param arg1
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		LoginController lc = new LoginController();// save the user detailed
@@ -62,6 +91,11 @@ public class StudentMenuGUI implements Initializable {
 		helloMsgLabel.setText("Hello " + student.getuName());
 	}
 
+	/**
+	 * this method start the student menu window using fxml
+	 * @param primaryStage
+	 * @throws IOException
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("StudentMenu.fxml"));
 		Scene Scene = new Scene(root);

@@ -26,7 +26,18 @@ import javafx.stage.Stage;
 import logic.Question;
 import logic.TeacherController;
 
+
+/**
+ * This class allows the teacher to manage a question repository including
+ * adding new question, deleting a question and editing a question.
+ * @author reut
+ *
+ */
 public class QuestionRepositoryGUI implements Initializable {
+	
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	private TableView<QuestionGUI> table;
 
@@ -50,6 +61,15 @@ public class QuestionRepositoryGUI implements Initializable {
 
 	TeacherController tc;
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	
+	/**
+	 * This method opens a new window that allows the teacher to insert all the 
+	 * details needed to create a question.
+	 * @throws IOException
+	 */
 	public void insertButtonAction(ActionEvent ae) throws IOException {
 		System.out.println("question is added");
 		FXMLLoader loader = new FXMLLoader();
@@ -64,6 +84,10 @@ public class QuestionRepositoryGUI implements Initializable {
 
 	}
 
+	/**
+	 * This method opens a new window that allows the teacher to delete a question.
+	 * @throws IOException
+	 */
 	public void deleteQuestionButtonAction(ActionEvent ae) {
 		System.out.println("question is deleted");
 		QuestionGUI q = (QuestionGUI) table.getSelectionModel().getSelectedItem();
@@ -88,6 +112,10 @@ public class QuestionRepositoryGUI implements Initializable {
 
 	}
 
+	/**
+	 * This method opens a new window that allows the teacher to delete a question.
+	 * @throws IOException
+	 */
 	public void editQuestion() throws IOException {
 		QuestionGUI q = (QuestionGUI) table.getSelectionModel().getSelectedItem();
 		if (q == null) {
@@ -120,27 +148,46 @@ public class QuestionRepositoryGUI implements Initializable {
 		System.out.println("question is changed");
 	}
 
+	/**
+	 * This method opens a new window that allows the teacher to edit a question.
+	 * @throws IOException
+	 */
 	public void editQuestionButtonAction(ActionEvent ae) throws Exception {
 		editQuestion();
 	}
 
+	/**
+	 * This method enables opening a question to edit in a double click on mouse 
+	 * left button
+	 * @throws IOException
+	 */
 	public void questionTableMouseClicked(MouseEvent me) throws IOException {
 		if (me.getClickCount() == 2 && table.getSelectionModel().getSelectedItem() != null) {
 			editQuestion();
 		}
 	}
 
+	/**
+	 * Constructor.
+	 * create a new instance of teacher controller class
+	 */
 	public QuestionRepositoryGUI() {
 
 		tc = new TeacherController();
 
 	}
 
+	/**
+	 * implements Initializable 
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 	}
 
+	/**
+	 * set all the questions data on the question repository window
+	 */
 	public void initData() {
 
 		arr = tc.getAllQuestions();

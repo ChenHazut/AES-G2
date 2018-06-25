@@ -22,7 +22,16 @@ import logic.ClientConsole;
 import logic.LoginController;
 import logic.User;
 
+/**
+ * This class manage fxml that the the exam in execution form
+ * @author rotem
+ *
+ */
 public class LoginGUI implements Initializable {
+	
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	private ImageView logoIV;
 	@FXML
@@ -51,21 +60,32 @@ public class LoginGUI implements Initializable {
 	private ClientConsole client;
 	public ChatClient chat;
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		userIDTF.setText("11111");
-		passwordTF.setText("1111");
-
 	}
 
+	/**
+	 * when the user press the exit
+	 */
 	@FXML
 	void Exit(ActionEvent event) {
 		System.out.println("exit AES Application");
 		System.exit(0);
 	}
 
-	// listen to presses on the login button
+	/**
+	 * this method manage the login action when the user press on the login button
+	 * @param ae
+	 * @throws Exception
+	 */
 	public void loginButtonAction(ActionEvent ae) throws Exception {
 		// Port
 		if (txtPORT.getText().compareTo("") == 0)// empty text field
@@ -142,6 +162,9 @@ public class LoginGUI implements Initializable {
 		}
 	}
 
+	/**
+	 * this method run the fxml login window
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
 		Scene Scene = new Scene(root);

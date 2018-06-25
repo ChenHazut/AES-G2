@@ -10,8 +10,15 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import logic.ExamReport;
 
+/**
+ * this class manage the reports view
+ * @author vakni
+ */
 public class ReportViewGUI 
 {
+	// **************************************************
+    // Fields
+    // **************************************************	
 	// Labels:
 	@FXML
 	Label repID;
@@ -22,6 +29,10 @@ public class ReportViewGUI
 	@FXML
 	BarChart<String,Integer> histograma;
 
+	/**
+	 * set all the reports data on the fxml window
+	 * @param report as ExamReport
+	 */
 	public void initData(ExamReport report)
 	{
 		final CategoryAxis xAxis = new CategoryAxis(); // X axis is with the grades categories.

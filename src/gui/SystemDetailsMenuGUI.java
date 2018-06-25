@@ -25,7 +25,17 @@ import logic.StudentInExam;
 import logic.Subject;
 import logic.User;
 
+/**
+ * This class is the controller for for viewing of system data. principal can
+ * view all data saved in data base.
+ * 
+ * @author nbitas
+ *
+ */
 public class SystemDetailsMenuGUI implements Initializable {
+	// *********************************
+	// Fields
+	// *********************************
 	@FXML
 	private ComboBox<String> optionCombo;
 	@FXML
@@ -35,6 +45,10 @@ public class SystemDetailsMenuGUI implements Initializable {
 
 	private User principle;
 
+	/**
+	 * This method presents a choice to principal, what kind of data she wants to
+	 * diaplsy. The appropriate data will appear on screen according to her choice.
+	 */
 	public void optionComboAction() {
 		String choise = optionCombo.getValue();
 
@@ -120,12 +134,24 @@ public class SystemDetailsMenuGUI implements Initializable {
 
 	}
 
+	/**
+	 * initialize the system details fxml window
+	 * 
+	 * @param arg0
+	 * @param arg1
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		optionCombo.getItems().addAll("Student List", "Teacher List", "Subject List", "Course List", "Exam List",
 				"Question List", "Student Result In Exam");
 	}
 
+	/**
+	 * start to run the system details window
+	 * 
+	 * @param primaryStage
+	 * @throws IOException
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("SystemDetailsMenu.fxml"));
 		Scene Scene = new Scene(root);

@@ -17,7 +17,18 @@ import logic.ClientConsole;
 import logic.LoginController;
 import logic.User;
 
+/**
+ * This class is the controller of principal menu GUI main window. In this
+ * window she can watch the system's data, get statistic reports and
+ * approve/deny overtime requests for exams.
+ * 
+ * @author reut
+ *
+ */
 public class PrincipleMenuGUI2 implements Initializable {
+	// ************************************
+	// Fields
+	// ************************************
 	@FXML
 	Button ExtraTimeRequestsButton;
 	@FXML
@@ -38,6 +49,12 @@ public class PrincipleMenuGUI2 implements Initializable {
 	private Thread overtimeThread;
 	private ClientConsole client;
 
+	/**
+	 * This method opens a new scene, in this secene teacher can approve or deny
+	 * overtime request for ongoing exams.
+	 * 
+	 * @throws Exception
+	 */
 	public void ExtraTimeRequestsButtonAction() throws Exception {
 		flag = false;
 		FXMLLoader loader = new FXMLLoader();
@@ -51,6 +68,12 @@ public class PrincipleMenuGUI2 implements Initializable {
 		window.show();
 	}
 
+	/**
+	 * This method opens a new scene that allows the principal to view various
+	 * statistic reports.
+	 * 
+	 * @throws Exception
+	 */
 	public void StatisticsButtonAction() throws Exception { // When we click on the Statistics button, it will send us
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("StatisticsMenu.fxml"));
@@ -63,6 +86,12 @@ public class PrincipleMenuGUI2 implements Initializable {
 		window.show();
 	}
 
+	/**
+	 * This method opens a new scene that allows the principal to view The system
+	 * data.
+	 * 
+	 * @throws Exception
+	 */
 	public void SystemDetailsButtonAction() throws Exception {
 		// When we click on the System Details button, it will send us to the System
 		// Details menu.
@@ -71,6 +100,9 @@ public class PrincipleMenuGUI2 implements Initializable {
 		qrg.start(primaryStage);
 	}
 
+	/**
+	 * this method show the data on the principle menu
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
@@ -115,6 +147,12 @@ public class PrincipleMenuGUI2 implements Initializable {
 		overtimeThread.start();
 	}
 
+	/**
+	 * this method run the principle menu gui
+	 * 
+	 * @param primaryStage
+	 * @throws IOException
+	 */
 	public void start(Stage primaryStage) throws IOException {
 		Parent root = FXMLLoader.load(getClass().getResource("principleMenu.fxml"));
 		Scene Scene = new Scene(root);
@@ -129,6 +167,11 @@ public class PrincipleMenuGUI2 implements Initializable {
 		});
 	}
 
+	/**
+	 * THis method logs principal out of the system
+	 * 
+	 * @throws IOException
+	 */
 	public void logoutButtonAction(ActionEvent ae) throws IOException {
 		lc = new LoginController();
 		lc.logoutUser();

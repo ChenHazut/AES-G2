@@ -4,6 +4,12 @@ import gui.LoginGUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+/**
+ * this class is the main of the client thread. it start to run the login GUI
+ * 
+ * @author chen1
+ *
+ */
 public class ClientMain extends Application {
 	/**
 	 * LoginContol variable to create instance of LoginContol to access the start

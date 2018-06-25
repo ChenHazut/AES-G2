@@ -16,7 +16,16 @@ import javafx.stage.Stage;
 import logic.LoginController;
 import logic.User;
 
+/**
+ * This class is the controller for teacher main GUI window
+ * Allows the teacher to execute an exam, approve grade, create questions
+ * and exams.
+ * @author reut
+ */
 public class TeacherMenuGUI implements Initializable {
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	Button testRepositoryButton;
 	@FXML
@@ -30,6 +39,11 @@ public class TeacherMenuGUI implements Initializable {
 	private User teacher;
 	private LoginController lc;
 
+	/**
+	 * This method open the question repository window which allow the teacher to
+	 * manage the repository. 
+	 * @throws Exception
+	 */
 	public void questionRepositoryButtonAction(ActionEvent ae) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("QuestionRepository.fxml"));
@@ -43,6 +57,11 @@ public class TeacherMenuGUI implements Initializable {
 
 	}
 
+	/**
+	 * This method open the exam repository window which allow the teacher to
+	 * manage the repository. 
+	 * @throws Exception
+	 */
 	public void testRepositoryButtonAction(ActionEvent ae) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ExamRepository.fxml"));
@@ -55,6 +74,11 @@ public class TeacherMenuGUI implements Initializable {
 		window.show();
 	}
 
+	/**
+	 * This method open the execute exam window which allow the teacher to
+	 * send an exam to execution
+	 * @throws Exception
+	 */
 	public void testInExecutionButtonAction(ActionEvent ae) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ExamInExecutionMenu.fxml"));
@@ -67,6 +91,11 @@ public class TeacherMenuGUI implements Initializable {
 		window.show();
 	}
 
+	/**
+	 * This method open the report window which allow the teacher to
+	 * view statistic report for the exam she wrote. 
+	 * @throws Exception
+	 */
 	public void reportButtonAction(ActionEvent ae) throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("StatisticsMenu.fxml"));
@@ -78,7 +107,11 @@ public class TeacherMenuGUI implements Initializable {
 		window.setScene(scene);
 		window.show();
 	}
-
+	
+	/**
+	 * This methods handles the action pressing the logout button and logs out of the system
+	 * @throws Exception
+	 */
 	public void logoutButtonAction(ActionEvent ae) throws IOException {
 		lc.logoutUser();
 		Stage stage = (Stage) logoutButton.getScene().getWindow();
@@ -87,12 +120,18 @@ public class TeacherMenuGUI implements Initializable {
 
 	}
 
+	/**
+	 * imolement serializable
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		// Stage stage=(Stage) testRepositoryButton.getScene().getWindow();
 
 	}
 
+	/**
+	 * set all the teacher menu data on the fxml window
+	 */
 	public void initData() {
 
 		lc = new LoginController();

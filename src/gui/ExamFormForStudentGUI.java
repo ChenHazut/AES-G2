@@ -28,8 +28,20 @@ import logic.Question;
 import logic.StudentController;
 import logic.StudentInExam;
 
+/**
+ * This class is the controller of computerized exam for student, both for
+ * viewing an exam copy and for solving the acual exam. The student can answer
+ * the questions here and he can submit the exam as long as the countdownt not
+ * finished.
+ * 
+ * @author Rotem Vaknin
+ *
+ */
 public class ExamFormForStudentGUI {
 
+	// **************************************************
+	// Fields
+	// **************************************************
 	private ObservableList<QuestionInExam> observableQuestions;
 	@FXML
 	private ListView<QuestionInExam> listView;
@@ -78,6 +90,19 @@ public class ExamFormForStudentGUI {
 	Boolean flag = false;
 	public Boolean isSubmittedOrCancelled = false;
 
+	// **************************************************
+	// Public methods
+	// **************************************************
+	/**
+	 * this method set the exam parameters on the exam form to perform
+	 * 
+	 * @param exam
+	 *            - the exam we want to show
+	 * @param studentSolveExam
+	 *            - the status of the srudent and the exam
+	 * @param grade
+	 *            - the grade of the student in the exam if he have
+	 */
 	public void initData(ExamInExecution exam, Boolean studentSolveExam, int grade) {
 		st = new StudentController();
 		StudentSelection ss = StudentSelection.getInstance();
@@ -85,7 +110,7 @@ public class ExamFormForStudentGUI {
 		countPassedTime = 0;
 		this.exam = exam;
 		exeTeacherName.setText(exam.getExecTeacher().getuName());
-		duration.setText(Integer.toString(exam.getExamDet().getDuration()));// לשנות לזמן בפועל
+		duration.setText(Integer.toString(exam.getExamDet().getDuration()));
 		instructions.setText(exam.getExamDet().getInstructionForStudent());
 		courseName.setText(exam.getExamDet().getCourse().getcName());
 		ArrayList<Question> selectedQuestion = new ArrayList<Question>(); // to save all the array q
@@ -139,6 +164,10 @@ public class ExamFormForStudentGUI {
 		}
 	}
 
+	/**
+	 * this method set the information on the student that didn't submit the exam on
+	 * time
+	 */
 	public void cancleAction(ActionEvent ae) {
 
 		Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -158,6 +187,10 @@ public class ExamFormForStudentGUI {
 
 	}
 
+	/**
+	 * this methods is to set the information of the student that submit the exam on
+	 * time
+	 */
 	public void submitExamAction(ActionEvent ae) {
 		thrd.stop();
 		submit.setDisable(true);
@@ -177,6 +210,17 @@ public class ExamFormForStudentGUI {
 
 	}
 
+	/**
+	 * This method converts the time allocated for the exam to seconds.
+	 * 
+	 * @param h
+	 *            - the hours allocated for the exam
+	 * @param m
+	 *            - the minutes allocated for the exam
+	 * @param s
+	 *            - seconds allocated for the exam
+	 * @return The amount of time allocated for the exam to seconds.
+	 */
 	public Integer hmsToSeconds(Integer h, Integer m, Integer s) {
 		Integer hToSeconds = h * 3600;
 		Integer mToSeconds = m * 60;
@@ -184,6 +228,9 @@ public class ExamFormForStudentGUI {
 		return total;
 	}
 
+	/**
+	 * Starts the count down, counts in seconds
+	 */
 	public void startCountDown() {
 		thrd = new Thread(new Runnable() {
 
@@ -254,6 +301,9 @@ public class ExamFormForStudentGUI {
 		lockThread.start();
 	}
 
+	/**
+	 * displays the time onto the countdown clock, changes every second
+	 */
 	void setOutput() {
 		LinkedList<Integer> currHms = secondsToHms(currSeconds);
 		hoursTimer.setText(numberMap.get(currHms.get(0)));
@@ -262,6 +312,13 @@ public class ExamFormForStudentGUI {
 
 	}
 
+	/**
+	 * Converts the time from seconds to hours, minutes and seconds
+	 * 
+	 * @param currSecond
+	 *            - the seconds to convert
+	 * @return a list consists of hours, minutes and seconds
+	 */
 	LinkedList<Integer> secondsToHms(Integer currSecond) {
 		Integer hours = currSecond / 3600;
 		currSecond = currSecond % 3600;

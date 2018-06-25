@@ -28,8 +28,16 @@ import logic.Exam;
 import logic.Question;
 import logic.TeacherController;
 
+/**
+ * This class allows the teacher to create a new exam from the question repository 
+ * @author reut
+ *
+ */
 public class CreateExamGUI implements Initializable {
 
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	private TableView<QuestionGUI> table;
 	@FXML
@@ -65,12 +73,23 @@ public class CreateExamGUI implements Initializable {
 
 	TeacherController tc;
 
+	/**
+	 * Constructor.
+	 * create a new instance of teacher controller class
+	 */
 	public CreateExamGUI() {
 
 		tc = new TeacherController();
 
 	}
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	/**
+	 * initiates data for the GUI window
+	 * @param exam - parameter passed from prevoius window
+	 */
 	public void initData(Exam exam) {
 		courseCombo.setDisable(true);
 		questionsList = FXCollections.observableArrayList();
@@ -93,6 +112,9 @@ public class CreateExamGUI implements Initializable {
 
 	}
 
+	/**
+	 * This method saves the data inputed into the exam form into an exam object.
+	 */
 	private void initateExamDetails(Exam exam) {
 		duration.setText(Integer.toString(exam.getDuration()));
 		teacherInstructions.setText(exam.getInstructionForTeacher());
@@ -116,7 +138,7 @@ public class CreateExamGUI implements Initializable {
 		}
 	}
 
-	/*
+	/**
 	 * This method validates the input in the text fields.
 	 */
 	private boolean validateTextField(TextField tf) {
@@ -134,6 +156,10 @@ public class CreateExamGUI implements Initializable {
 		return true;
 	}
 
+	/**
+	 * This method cancels the actions performed so far and resets the teacher main menu.
+	 * @throws Exception
+	 */
 	public void cancleButtonAction() throws Exception {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(getClass().getResource("ExamRepository.fxml"));
@@ -147,6 +173,10 @@ public class CreateExamGUI implements Initializable {
 
 	}
 
+	/**
+	 * This method opens a display of the final exam form to approve.
+	 * @throws Exception
+	 */
 	public void saveButtonAction() throws Exception {
 		if (courseCombo.getValue() == null || subjectCombo.getValue() == null) {
 			MyErrorMessage.show("You must select subject and course!", "Incomplete details!");
@@ -192,6 +222,10 @@ public class CreateExamGUI implements Initializable {
 		stage.show();
 	}
 
+	/**
+	 * This method opens a list of the assigned courses according to the selected subject.
+	 * @throws Exception
+	 */
 	public void subjectComboBoxAction(ActionEvent ae) {
 		if (subjectCombo.getValue() != null)
 			courseCombo.setDisable(false);
@@ -205,6 +239,10 @@ public class CreateExamGUI implements Initializable {
 		courseCombo.getItems().addAll(coursesL);
 	}
 
+	/**
+	 * This method opens a table view with the questions associated to course and subject selected
+	 * @param event
+	 */
 	@FXML
 	public void courseComboBoxAction(ActionEvent event) {
 		if (courseCombo.getValue() == null || subjectCombo.getValue() == null)
@@ -225,11 +263,17 @@ public class CreateExamGUI implements Initializable {
 		setObservableListForTable(arr);
 	}
 
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
 
+	/**
+	 * This method sets the observable list for the table
+	 */
 	private void setObservableListForTable(ArrayList<Question> arr) {
 		questionsList.clear();
 		for (int i = 0; i < arr.size(); i++) {

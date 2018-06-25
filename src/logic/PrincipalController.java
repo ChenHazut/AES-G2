@@ -6,25 +6,41 @@ import common.Message;
 import gui.LoginGUI;
 import gui.QuestionInExam;
 
+/**
+ * This class sends data gotten from principal UI and sends to server and vice
+ * versa
+ * 
+ * @author reut
+ *
+ */
 public class PrincipalController {
+
+	// **************************************************
+	// Fields
+	// **************************************************
 	User principal;
 	LoginController lc;
 	ClientConsole client;
 
-	public PrincipalController() // The constructor.
-	{
+	// **************************************************
+	// constructors
+	// **************************************************
+
+	/**
+	 * Default constructor
+	 */
+	public PrincipalController() {
 		lc = new LoginController();
 		principal = lc.getUser();
 		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 	}
 
-	/*
+	/**
 	 * This method calls for echo server to get all of the exams and return them the
 	 * client.
 	 */
 	public ArrayList<Exam> getAllExamsInData() {
 		Message msg = new Message();
-		// Now we are going to the principal handler
 		msg.setSentObj(principal);
 		msg.setqueryToDo("getAllExmasInDB");
 		msg.setClassType("Principal");
@@ -33,23 +49,21 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2500L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		msg = client.getMessage();
 		ArrayList<Exam> arrOfExams = new ArrayList<Exam>();
 		arrOfExams = (ArrayList<Exam>) msg.getReturnObj();
-		return arrOfExams; // This is the array from the function in echo server.
+		return arrOfExams;
 	}
 
-	/*
+	/**
 	 * This method calls for echo server to get all of the questions and return them
 	 * the client.
 	 */
 	public ArrayList<Question> getAllQuestionsInData() {
 		Message msg = new Message();
-		// Now we are going to the principal handler
 		msg.setSentObj(principal);
 		msg.setqueryToDo("getAllQuestionsInDB");
 		msg.setClassType("Principal");
@@ -58,23 +72,21 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2500L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		msg = client.getMessage();
 		ArrayList<Question> arrOfQuestions = new ArrayList<Question>();
 		arrOfQuestions = (ArrayList<Question>) msg.getReturnObj();
-		return arrOfQuestions; // This is the array from the function in echo server.
+		return arrOfQuestions;
 	}
 
-	/*
+	/**
 	 * This method calls for echo server to get all of the students and return them
 	 * the client.
 	 */
 	public ArrayList<User> getAllStudentsInData() {
 		Message msg = new Message();
-		// Now we are going to the principal handler
 		msg.setSentObj(principal);
 		msg.setqueryToDo("getAllStudentsInDB");
 		msg.setClassType("Principal");
@@ -83,23 +95,21 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		msg = client.getMessage();
 		ArrayList<User> arrOfStudents = new ArrayList<User>();
 		arrOfStudents = (ArrayList<User>) msg.getReturnObj();
-		return arrOfStudents; // This is the array from the function in echo server.
+		return arrOfStudents;
 	}
 
-	/*
+	/**
 	 * This method calls for echo server to get all of the teachers and return them
 	 * the client.
 	 */
 	public ArrayList<User> getAllTeachersInData() {
 		Message msg = new Message();
-		// Now we are going to the principal handler
 		msg.setSentObj(principal);
 		msg.setqueryToDo("getAllTeachersInDB");
 		msg.setClassType("Principal");
@@ -108,19 +118,21 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		msg = client.getMessage();
 		ArrayList<User> arrOfTeachers = new ArrayList<User>();
 		arrOfTeachers = (ArrayList<User>) msg.getReturnObj();
-		return arrOfTeachers; // This is the array from the function in echo server.
+		return arrOfTeachers;
 	}
 
+	/**
+	 * This method gets all overtime requests for all exams in execution for the
+	 * principal
+	 */
 	public ArrayList<OvertimeDetails> getAllOverTimeRequests() {
 		Message msg = new Message();
-		// Now we are going to the principal handler
 		msg.setqueryToDo("getAllOverTimeRequests");
 		msg.setClassType("Principal");
 
@@ -128,17 +140,19 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		msg = client.getMessage();
 		ArrayList<OvertimeDetails> arrOfovertime = new ArrayList<OvertimeDetails>();
 		arrOfovertime = (ArrayList<OvertimeDetails>) msg.getReturnObj();
-		return arrOfovertime; // This is the array from the function in echo server.
+		return arrOfovertime;
 
 	}
 
+	/**
+	 * This method allows principal to approve overtime request from teacher
+	 */
 	public void approveOvertime(OvertimeDetails overtimeDetails) {
 		Message msg = new Message();
 		msg.setClassType("Principal");
@@ -148,6 +162,9 @@ public class PrincipalController {
 
 	}
 
+	/**
+	 * This method allows principal to deny overtime request from teacher
+	 */
 	public void denyOvertime(OvertimeDetails overtimeDetails) {
 		Message msg = new Message();
 		msg.setClassType("Principal");
@@ -157,6 +174,9 @@ public class PrincipalController {
 
 	}
 
+	/**
+	 * This method gets all exam report for exams that teacher wrote
+	 */
 	public ArrayList<ExamReport> getAllExamReportsTeacherWrote(User user) {
 		Message msg = new Message();
 		msg.setSentObj(user);
@@ -167,15 +187,17 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		msg = client.getMessage();
 		ArrayList<ExamReport> arr = (ArrayList<ExamReport>) msg.getReturnObj();
-		return arr; // This is the array from the function in echo server.
+		return arr;
 	}
 
+	/**
+	 * This methos gets all exam reports for student for the tests he performed
+	 */
 	public ArrayList<StudentInExam> getAllExamReportsStudentPerformed(User user) {
 		Message msg = new Message();
 		// Now we are going to the principal handler
@@ -187,15 +209,17 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		msg = client.getMessage();
 		ArrayList<StudentInExam> arr = (ArrayList<StudentInExam>) msg.getReturnObj();
-		return arr; // This is the array from the function in echo server.
+		return arr;
 	}
 
+	/**
+	 * This method returns all the subjects listed in the system
+	 */
 	public ArrayList<Subject> getAllSubjectsInData() {
 		Message msg = new Message();
 		msg.setSentObj("Course");
@@ -206,7 +230,6 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -214,6 +237,9 @@ public class PrincipalController {
 		return (ArrayList<Subject>) msg.getReturnObj();
 	}
 
+	/**
+	 * This method returns all the courses listed in the system
+	 */
 	public ArrayList<Course> getAllCoursesInData() {
 		Message msg = new Message();
 		msg.setSentObj("Course");
@@ -224,7 +250,6 @@ public class PrincipalController {
 		try {
 			Thread.sleep(3500L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -233,6 +258,9 @@ public class PrincipalController {
 		return arr;
 	}
 
+	/**
+	 * This method returns all the exam in execution currently in the system
+	 */
 	public ArrayList<ExamInExecution> getAllExamInExecution() {
 		Message msg = new Message();
 		msg.setSentObj("Course");
@@ -250,6 +278,9 @@ public class PrincipalController {
 		return (ArrayList<ExamInExecution>) msg.getReturnObj();
 	}
 
+	/**
+	 * This method returns all the student result in exams for a spicific student
+	 */
 	public ArrayList<StudentInExam> getAllStudentInExam() {
 		Message msg = new Message();
 		msg.setSentObj("Course");
@@ -267,6 +298,9 @@ public class PrincipalController {
 		return (ArrayList<StudentInExam>) msg.getReturnObj();
 	}
 
+	/**
+	 * This method returns all the questions listed in the system
+	 */
 	public ArrayList<QuestionInExam> getAllQuestionInExam() {
 		Message msg = new Message();
 		msg.setSentObj("Course");
@@ -284,6 +318,9 @@ public class PrincipalController {
 		return (ArrayList<QuestionInExam>) msg.getReturnObj();
 	}
 
+	/**
+	 * This method returns all the exams assigned to a spicific course
+	 */
 	public ArrayList<ExamReport> getAllExamsInCourse(Course c) {
 		Message msg = new Message();
 		msg.setSentObj(c);
@@ -294,7 +331,6 @@ public class PrincipalController {
 		try {
 			Thread.sleep(2000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

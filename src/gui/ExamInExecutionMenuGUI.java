@@ -23,9 +23,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import logic.ExamInExecution;
 import logic.TeacherController;
-
+/**
+ * This class manage the exam in execution for the teacher
+ * @author reut
+ *
+ */
 public class ExamInExecutionMenuGUI implements Initializable {
 
+	// **************************************************
+    // Fields
+    // **************************************************	
 	@FXML
 	private TableView<ExamInExecutionRow> examsTable;
 
@@ -86,6 +93,13 @@ public class ExamInExecutionMenuGUI implements Initializable {
 	private ArrayList<ExamInExecution> arrLocked;
 	private ArrayList<ExamInExecution> arrWritten;
 
+	// **************************************************
+    // Constructors
+    // **************************************************
+	
+	/**
+	 * constructor the set the variabels of these class
+	 */
 	public ExamInExecutionMenuGUI() {
 		tc = new TeacherController();
 		examArr = FXCollections.observableArrayList();
@@ -96,12 +110,24 @@ public class ExamInExecutionMenuGUI implements Initializable {
 		arrWritten = tc.getWrittenExamsForTeacher();
 
 	}
+	
+	// **************************************************
+    // Public methods
+    // **************************************************
 
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
 
+	/**
+	 * this clas let the teacher choose exam in execution to preview that locked
+	 * @param me
+	 * @throws IOException
+	 */
 	@FXML
 	public void chooseExamInExecutionL(MouseEvent me) throws IOException {
 		if (me.getClickCount() == 2 && examsTableLocked.getSelectionModel().getSelectedItem() != null) {
@@ -118,6 +144,11 @@ public class ExamInExecutionMenuGUI implements Initializable {
 		}
 	}
 
+	/**
+	 * this method let the teacher choose exam in execution to preview that written
+	 * @param me
+	 * @throws IOException
+	 */
 	@FXML
 	public void chooseExamInExecutionW(MouseEvent me) throws IOException {
 		if (me.getClickCount() == 2 && examsTableWritten.getSelectionModel().getSelectedItem() != null) {
@@ -133,6 +164,11 @@ public class ExamInExecutionMenuGUI implements Initializable {
 		}
 	}
 
+	/**
+	 * this method let the teacher choose exam in execution to preview that open
+	 * @param me
+	 * @throws IOException
+	 */
 	@FXML
 	public void chooseExamInExecution(MouseEvent me) throws IOException {
 		if (me.getClickCount() == 2 && examsTable.getSelectionModel().getSelectedItem() != null) {
@@ -149,6 +185,11 @@ public class ExamInExecutionMenuGUI implements Initializable {
 		}
 	}
 
+	/**
+	 * this method handel the action when the teacher want to aprove the grade of the exam
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void approveGradesViewBtnAction(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -163,6 +204,11 @@ public class ExamInExecutionMenuGUI implements Initializable {
 
 	}
 
+	/**
+	 * this method let the teacher execute new exam
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	void executeNewExamBtnAction(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -176,6 +222,9 @@ public class ExamInExecutionMenuGUI implements Initializable {
 		window.show();
 	}
 
+	/**
+	 * this method set all the deatails of this window that show the exam in exection for the teacher in table 
+	 */
 	public void initData() {
 		examIDCol.setCellValueFactory(new PropertyValueFactory<>("examID"));
 		executionIDCol.setCellValueFactory(new PropertyValueFactory<>("executionID"));

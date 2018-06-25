@@ -5,35 +5,66 @@ import java.util.ArrayList;
 import common.Message;
 import gui.LoginGUI;
 
+/**
+ * This class sends data gotten student from UI and sends to server and vice
+ * versa
+ * 
+ * @author reut
+ *
+ */
 public class StudentController {
-
+	// **************************************************
+	// fields
+	// **************************************************
 	User student; // the user is student type
 	LoginController lc; // save all the login parameters
 	ClientConsole client;
-	ArrayList<Course> courses; /////////
-	ArrayList<Subject> subjects; ////////////
+	ArrayList<Course> courses;
+	ArrayList<Subject> subjects;
 	static StudentInExam studentResults;
 
-	public StudentController() // constructor
-	{
+	// **************************************************
+	// constructors
+	// **************************************************
+
+	/**
+	 * Default Constructor
+	 */
+	public StudentController() {
 		lc = new LoginController();
 		student = lc.getUser();
 		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
-		// save all the student info
 	}
 
+	/**
+	 * get student result in exam
+	 */
 	public StudentInExam getStudentResults() {
 		return studentResults;
 	}
 
+	/**
+	 * Return student's user information details
+	 */
 	public User getStudent() {
 		return student;
 	}
 
+	/**
+	 * Sets the User with the parameter details
+	 * 
+	 * @param student
+	 *            - the parameter details
+	 */
 	public void setStudent(User student) {
 		this.student = student;
 	}
 
+	/**
+	 * Returns all the grades of a student
+	 * 
+	 * @return array list of the student's grades
+	 */
 	public ArrayList<StudentInExam> getAllgrades()// send request to db to get all grades of the student
 	{
 		Message msg = new Message();
@@ -56,6 +87,9 @@ public class StudentController {
 		return arrOfGrades;
 	}
 
+	/**
+	 * Returns all exam in execution for a student
+	 */
 	public ArrayList<ExamInExecution> getAllExamsInExecutin() {
 		Message msg = new Message();
 		msg.setSentObj(student);
@@ -75,6 +109,14 @@ public class StudentController {
 		return arrOfExams;
 	}
 
+	/**
+	 * Returns the result of a student in exam
+	 * 
+	 * @param student
+	 *            - the student who performed the exam
+	 * @param exam
+	 *            - the exam
+	 */
 	public void getStudentResultInExam(String studentID, ExamInExecution exam) {
 		Message msg = new Message();
 
@@ -98,7 +140,13 @@ public class StudentController {
 
 	}
 
-	///// method to show the student the approved exam he choose
+	/**
+	 * displays the exam student performed and the grade of that exam.
+	 * 
+	 * @param selectedItem
+	 *            - selected exam from list of exams
+	 * @return the selected exam details
+	 */
 	public ExamInExecution getExamForStudent(StudentInExam selectedItem) {
 		Message msg = new Message();
 		msg.setSentObj(selectedItem);
@@ -118,6 +166,14 @@ public class StudentController {
 		return exam;
 	}
 
+	/**
+	 * This method receives an exam in executions and gets the exam details
+	 * (questions list, duration, ...) matching the examID
+	 * 
+	 * @param exam
+	 *            - the executed exam
+	 * @return an exam object with the requested details
+	 */
 	public Exam getExamByExamID(ExamInExecution exam) {
 		Message msg = new Message();
 		msg.setSentObj(exam.getExamDet());
@@ -137,6 +193,12 @@ public class StudentController {
 		return e;
 	}
 
+	/**
+	 * This method uploads a file into the server's file system
+	 * 
+	 * @param fileExamName
+	 *            - the path to save the file in
+	 */
 	public void uploadManualExam(String fileExamName) {
 		Message msg = new Message();
 		msg.setSentObj(fileExamName);
@@ -153,7 +215,15 @@ public class StudentController {
 		System.out.println("finished uploading");
 	}
 
-	///// method to show the student the approved exam he choose
+	/**
+	 * This method is called after a student selects an exam to perform in a
+	 * computerized way. this method gets all questions in this exam for the student
+	 * to answer.
+	 * 
+	 * @param exam
+	 *            - the exam student chose
+	 * @return the exam student needs to perform
+	 */
 	public ExamInExecution performCompExam(ExamInExecution exam) {
 		Message msg = new Message();
 		msg.setSentObj(exam);
@@ -173,6 +243,12 @@ public class StudentController {
 		return exam;
 	}
 
+	/**
+	 * Changes the student status in the exam. for example: from started to finished
+	 * 
+	 * @param s
+	 *            - the students and the exam details
+	 */
 	public void changeStudentInExamStatus(StudentInExam s) {
 		Message msg = new Message();
 		msg.setSentObj(s);

@@ -4,20 +4,43 @@ import common.Message;
 import gui.LoginGUI;
 import ocsf.server.ConnectionToClient;
 
+/**
+ * this class controls all interaction about the login.
+ * 
+ * @author chen1
+ *
+ */
 public class LoginController {
+	// **************************************************
+	// Fields
+	// **************************************************
 	User userToSend;
 	static User user;
 	ClientConsole client;
 
+	// **************************************************
+	// constructors
+	// **************************************************
+	/**
+	 * constructor called from the logingui
+	 */
 	public LoginController(User u) {
 		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 		userToSend = u;
 	}
 
+	/**
+	 * Default constructor
+	 */
 	public LoginController() {
 		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
 	}
 
+	/**
+	 * saves in server the map of connected users and the connection to each user
+	 * 
+	 * @return
+	 */
 	public ConnectionToClient getClientConnection() {
 		Message msg = new Message();
 		msg.setSentObj(null);
@@ -35,8 +58,12 @@ public class LoginController {
 		return (ConnectionToClient) msg.getReturnObj();
 	}
 
-	public boolean checkIfUserIDExist() // sent message to db to get user details and check if user id exist
-	{
+	/**
+	 * sent message to db to get user details and check if user id exist
+	 * 
+	 * @return
+	 */
+	public boolean checkIfUserIDExist() {
 		Message userMsg = new Message();
 		userMsg.setSentObj(userToSend);
 		userMsg.setqueryToDo("checkIfUserExist");
@@ -56,6 +83,10 @@ public class LoginController {
 		return true;
 	}
 
+	/**
+	 * this method send message to server to login the user that recieved in the
+	 * constructor
+	 */
 	public void loginUser() {
 		Message msg = new Message();
 		msg.setClassType("user");
@@ -73,6 +104,9 @@ public class LoginController {
 
 	}
 
+	/**
+	 * this method send message to server to logout the user that is logged in
+	 */
 	public void logoutUser() {
 		Message msg = new Message();
 		msg.setClassType("user");
@@ -90,20 +124,40 @@ public class LoginController {
 
 	}
 
+	/**
+	 * return the user password
+	 * 
+	 * @return
+	 */
 	public String getPassword() {
 		return user.getPassword();
 	}
 
+	/**
+	 * return true if the user is logged in
+	 * 
+	 * @return
+	 */
 	public boolean isConnected() {
 		if (user.getIsLoggedIn().equals("NO"))
 			return false;
 		return true;
 	}
 
+	/**
+	 * return user title
+	 * 
+	 * @return
+	 */
 	public String getTitle() {
 		return user.getTitle();
 	}
 
+	/**
+	 * return the logged user details
+	 * 
+	 * @return
+	 */
 	public User getUser() {
 		return user;
 	}

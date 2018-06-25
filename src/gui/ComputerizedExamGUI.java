@@ -19,8 +19,16 @@ import javafx.stage.Stage;
 import logic.ExamInExecution;
 import logic.StudentController;
 
+/**
+ * this class manage the fxml of Computerized Exam
+ * @author Rotem Vaknin
+ *
+ */
 public class ComputerizedExamGUI implements Initializable {
 
+	// **************************************************
+    // Fields
+    // **************************************************
 	@FXML
 	Label examID;
 	@FXML
@@ -52,11 +60,22 @@ public class ComputerizedExamGUI implements Initializable {
 	private Stage examFormStage;
 	ExamFormForStudentGUI ExamForStudent;
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
 
+	/**
+	 * set al the data on the Computerized exam window
+	 * @param examInExecution
+	 */
 	public void initData(ExamInExecution examInExecution) {
 		exam = examInExecution;
 		examID.setText(exam.getExamDet().getExamID());
@@ -66,6 +85,10 @@ public class ComputerizedExamGUI implements Initializable {
 
 	}
 
+	/**
+	 * this method handle the ok button of the user and check if the exam code that the user entered is correct
+	 * @throws IOException
+	 */
 	public void okButtonAction() throws IOException {
 		System.out.println("c0");
 		examCode = insertExamCode.getText();
@@ -110,6 +133,10 @@ public class ComputerizedExamGUI implements Initializable {
 
 	}
 
+	/**
+	 * this method check the user ID , if the ID is correct it will open the exam form and the student will be able 
+	 * to answer the exam
+	 */
 	@FXML
 	void okButtonIDAction(ActionEvent event) {
 		if (idTF.getText().equalsIgnoreCase(st.getStudent().getuID())) {

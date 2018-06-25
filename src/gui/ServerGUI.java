@@ -13,9 +13,16 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import logic.EchoServer;
-
+/**
+ * This class manage the server fxml
+ * @author vakni
+ *
+ */
 public class ServerGUI {
-	//
+
+	// **************************************************
+    // Fields
+    // **************************************************	
 	@FXML
 	private TextField portTF;
 
@@ -54,6 +61,10 @@ public class ServerGUI {
 
 	private EchoServer myServer;
 
+	/**
+	 * this method is to handel when the user press on the connect button to conect the server
+	 * @param event
+	 */
 	@SuppressWarnings("deprecation")
 	@FXML
 	void connectButtonAction(ActionEvent event) {
@@ -94,6 +105,10 @@ public class ServerGUI {
 
 	}
 
+	/**
+	 * this method disconect the server when the user press on the disconnect button
+	 * @param event
+	 */
 	@FXML
 	void disconnectButtonAction(ActionEvent event) {
 		OutputMessage.clear();

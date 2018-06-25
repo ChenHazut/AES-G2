@@ -10,16 +10,30 @@ import logic.Question;
 import logic.StudentController;
 import logic.StudentInExam;
 
+/**
+ * Extends QuestionListViewCell<T>
+ * Overrides abstract methods in super class
+ * used for exam form for teacher list view when a teacher reviews the exam
+ * she created before saving.
+ * @author vakni
+ */
 public class QuestionListViewCellForStudetResults<T> 
 				extends QuestionListViewCell<QuestionInExam> {
 
+	// **************************************************
+    // Fields
+    // **************************************************
 	Color c=Color.RED;
 	private int answer;
 	@Override
 	public Boolean setCorrectAnswerLabel() {
 		return true;
 	}
-	
+	/**
+	 * This method displays the exam form the student solved with the results: for correct answer
+	 * color the answer in green, for wrong answer color the answer in red.
+	 * @param questionID as String
+	 */
 	public void setCheckBoxInQuestion(String questionID) {
 		StudentController st = new StudentController();
 		HashMap<QuestionInExam,Integer> questions = st.getStudentResults().getCheckedAnswers();

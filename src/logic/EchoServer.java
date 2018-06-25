@@ -36,7 +36,9 @@ import ocsf.server.ConnectionToClient;
  * @version July 2000
  */
 public class EchoServer extends AbstractServer {
-	// Class variables *************************************************
+	// *******************************
+	// Class variables
+	// *******************************
 
 	/**
 	 * The default port to listen on.
@@ -52,7 +54,9 @@ public class EchoServer extends AbstractServer {
 
 	private HashMap<ExecutionDetails, ArrayList<StudentInExam>> exemanieeList;
 
-	// Constructors ****************************************************
+	// *******************************
+	// Constructors
+	// *******************************
 
 	/**
 	 * Constructs an instance of the echo server.
@@ -70,7 +74,9 @@ public class EchoServer extends AbstractServer {
 
 	}
 
-	// Instance methods ************************************************
+	// *******************************
+	// Instance methods
+	// *******************************
 
 	protected Connection connectToDB() {
 		Connection dbh = null;
@@ -86,6 +92,11 @@ public class EchoServer extends AbstractServer {
 		return dbh;
 	}
 
+	/**
+	 * This method cehcks if the DB is connected.
+	 * 
+	 * @return yes if the DB is connected
+	 */
 	public Boolean checkIfDBConnects() {
 		Boolean result;
 		if (connectToDB() != null)
@@ -110,7 +121,6 @@ public class EchoServer extends AbstractServer {
 	 * @param client
 	 *            The connection from which the message originated.
 	 */
-
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) throws SQLException, IOException {
 		Connection conn = null;
 		conn = connectToDB();
@@ -133,11 +143,15 @@ public class EchoServer extends AbstractServer {
 		conn.close();
 
 	}
-	// **************************************************************************************
+	// ***********************************************************************
+	// **************************************************************************
 	// handlers to handle different class types request of DB
-	// **************************************************************************************
+	// **************************************************************************
+	// ***********************************************************************
 
+	// ***********************************************************************
 	// user handler= handle client request about User class
+	// ***********************************************************************
 	private void userHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
 		if (msg.getqueryToDo().equals("checkIfUserExist")) // send to client the details // e.g to logIn
 			searchUserInDB(msg, client, conn);
@@ -150,7 +164,9 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	// ***********************************************************************
 	// teacher handler= handle client request about Teacher class
+	// ***********************************************************************
 	private void teacherHandler(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		if (msg.getqueryToDo().equals("getAllQuestionRelevantToTeacher"))
@@ -196,7 +212,6 @@ public class EchoServer extends AbstractServer {
 		else if (msg.getqueryToDo().equals("getAllExamReportsTeacherWrote")) { // send to client all the subjectss. //
 																				// e.g to logIn
 			getAllExamReportsTeacherWrote(msg, client, conn);// reut to del
-			System.out.println("inside");
 		} else if (msg.getqueryToDo().equals("getAllGradesForApprval"))
 			getAllGradesForApprval(msg, client, conn);
 		else if (msg.getqueryToDo().equals("changeGrade"))
@@ -205,6 +220,9 @@ public class EchoServer extends AbstractServer {
 			approveGrade(msg, client, conn);
 	}
 
+	// ***********************************************************************
+	// Principal handler= handle client request about principal class
+	// ***********************************************************************
 	private void principalHandler(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		if (msg.getqueryToDo().equals("getAllExmasInDB")) // send to client all the exams. // e.g to logIn
@@ -243,30 +261,28 @@ public class EchoServer extends AbstractServer {
 			getAllExamInExecution(msg, client, conn);
 	}
 
+	// ***********************************************************************
+	// Student handler= handle client request about student class
+	// ***********************************************************************
 	private void StudentrHandler(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
-		System.out.println("***********student handler");
 		if (msg.getqueryToDo().equals("getAllGradesRelevantToStusent")) // send to client the details // e.g to logIn
 		{
-			System.out.println("1212122121121");
 			GetGradeByStudentDB(msg, client, conn);
 		}
 
 		if (msg.getqueryToDo().equals("getAllPerformExamsRelevantToStudent")) // send to client the details // e.g to
 																				// logIn
 		{
-			System.out.println("looking for performing exam");
 			getExamsByStudent(msg, client, conn);
 		}
 
 		if (msg.getqueryToDo().equals("getTheExamForStudentToShow")) {
-			System.out.println("create the approve exam to show");
 			getExamsToShowByStudent(msg, client, conn);
 		}
 		if (msg.getqueryToDo().equals("getExamByExamID"))
 			getExamByExamID(msg, client, conn);
 		if (msg.getqueryToDo().equals("getTheExamToPerformComputerized")) {
-			System.out.println("get the exam to do the exam computerized");
 			getExamsToPerformComp(msg, client, conn);
 		}
 		if (msg.getqueryToDo().equals("getStudentAnswersInExam")) {
@@ -277,17 +293,25 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
-	// ********************************************************************************************
+	// *************************************************************************
 	// get data or change data in DB methods
-	// ********************************************************************************************
-	// search in db for user with same userID as sentObj in msg
+	// *************************************************************************
+
+	/**
+	 * This method search in db for user with same userID as sentObj in msg
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn2
+	 * @throws IOException
+	 */
 	private void getConnection(Message msg, ConnectionToClient client, Connection conn2) throws IOException {
 		msg.setReturnObj(client);
 		client.sendToClient(msg);
 
 	}
 
-	public void getExamsToPerformComp(Message msg, ConnectionToClient client, Connection conn)
+	private void getExamsToPerformComp(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		ExamInExecution examTemp = (ExamInExecution) msg.getSentObj();
 		/// start to create the **questions from the exam
@@ -329,6 +353,16 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get an user as a message and search it at the DB and if its find
+	 * a user like that its returns it to the client as a message.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void searchUserInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		User uToSearch = (User) msg.getSentObj();
@@ -348,7 +382,16 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	// search in db all questions of subjects teacher in msg.sentObj teach
+	/**
+	 * This method search in db all questions of subjects teacher in msg.sentObj
+	 * teach
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getQuestionsByTeacher(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -398,8 +441,16 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	// search in db for question with same qID and edit the requested field.
-	public void editQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException {
+	/**
+	 * This method search in db for question with same qID and edit the requested
+	 * field.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
+	private void editQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 		Statement stmt, stmt2;
 		ResultSet rs = null, rs2 = null;
 		try {
@@ -430,6 +481,14 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method deletes the question that it gets as a message from the DB.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
 	private void deleteQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 		Statement stmt, stmt2;
 		ResultSet rs = null, rs2 = null;
@@ -460,6 +519,16 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method logs in a user that it gets as a message and updates the DB that
+	 * the user is now logged in.
+	 * 
+	 * @param msg
+	 *            - the user that the client wants to connect to the system.
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
 	private void loginUser(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 
 		Statement stmt;
@@ -484,6 +553,16 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method logs out a user that it gets as a message and updates the DB that
+	 * the user is now logged out.
+	 * 
+	 * @param msg
+	 *            - the user that the client wants to disconnect to the system.
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
 	private void logoutUser(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 
 		Statement stmt;
@@ -502,13 +581,20 @@ public class EchoServer extends AbstractServer {
 			connected.remove(user);
 			sendToAllClients(connected);
 			// sendToAllClients(connected);
-			System.out.println("logged out");
+
 			client.sendToClient(msg);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * This method gets a subject and returns its next question.
+	 * 
+	 * @param subjectID
+	 * @param conn
+	 * @return an ID of a question as a string.
+	 */
 	private String getNextQuestionIDOfSubject(String subjectID, Connection conn) {
 		Statement stmt;
 		ResultSet rs = null;
@@ -537,6 +623,12 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method...?
+	 * 
+	 * @param q
+	 * @param conn
+	 */
 	private void addToQuestionCourseTable(Question q, Connection conn) {
 		Statement stmt;
 		ResultSet rs = null;
@@ -560,6 +652,15 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method creates a new questions from the message that it got and save it
+	 * on the DB.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
 	private void createQuestion(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 		Statement stmt, stmt2;
 		ResultSet rs = null, rs2 = null;
@@ -599,6 +700,17 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method get a teacher as a message and returns message with all of the
+	 * courses that the teacher learns.
+	 * 
+	 * @param msg
+	 *            - a teacher.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getCoursesByTeacher(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -607,7 +719,7 @@ public class EchoServer extends AbstractServer {
 				"SELECT * FROM teacherInCourse AS TC,subject AS S, courseInSubject AS C WHERE C.subjectID=TC.subjectID AND C.courseID=TC.courseID AND TC.subjectID=S.subjectID AND TC.teacherID="
 						+ teacherToSearch.getuID());
 		ArrayList<Course> courseList = new ArrayList<Course>();
-		// ArrayList<String> subjectFlag=new ArrayList<String>();
+
 		ArrayList<Subject> subjectList = new ArrayList<Subject>();
 		while (rs.next()) {
 
@@ -619,6 +731,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get a teacher as a message and return message with this teacher
+	 * details.
+	 * 
+	 * @param msg
+	 *            - a teacher
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getTeacherdetails(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		String tid = (String) msg.getSentObj();
@@ -639,6 +762,17 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method get a teacher as a message and return message with this teacher
+	 * exams.
+	 * 
+	 * @param msg
+	 *            - a teacher.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getExamsByTeacher(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -696,6 +830,16 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get a teacher as a message and return message with this teacher
+	 * questions in a course.
+	 * 
+	 * @param msg
+	 *            - a teacher.
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
 	private void getQuestionsForTeacherInCourse(Message msg, ConnectionToClient client, Connection conn)
 			throws IOException {
 		Statement stmt;
@@ -729,6 +873,16 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get an exam as a message and return message with the next exam
+	 * ID.
+	 * 
+	 * @param msg
+	 *            - an exam.
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
 	private void getNextExamID(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 		Statement stmt;
 		ResultSet rs = null;
@@ -757,6 +911,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get a teacher as a message and return message with all of the
+	 * exams of this teacher that is now in execution.
+	 * 
+	 * @param msg
+	 *            - a teacher.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -786,6 +951,14 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method get an exam as a message and delete it from the DB.
+	 * 
+	 * @param msg
+	 *            - an exam.
+	 * @param client
+	 * @param conn
+	 */
 	private void deleteExam(Message msg, ConnectionToClient client, Connection conn) {
 		Statement stmt, stmt2;
 		ResultSet rs = null, rs2 = null;
@@ -812,7 +985,15 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
-	// search in db for question with same qID and edit the requested field.
+	/**
+	 * This method search in db for question with same question ID and edit the
+	 * requested field.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws IOException
+	 */
 	public void editExam(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 		Statement stmt, stmt2;
 		ResultSet rs = null, rs2 = null;
@@ -855,6 +1036,13 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method creats a new exam and sent it to the user as a message.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 */
 	private void createExam(Message msg, ConnectionToClient client, Connection conn) {
 		Statement stmt;
 		try {
@@ -878,6 +1066,15 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method get a course as a message and return all of the students that in
+	 * this course as a message.
+	 * 
+	 * @param msg
+	 *            - a course.
+	 * @param client
+	 * @param conn
+	 */
 	private void getStudentsInCourse(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Course c = (Course) msg.getSentObj();
@@ -901,6 +1098,16 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method get an exam as a message and execute it.
+	 * 
+	 * @param msg
+	 *            - an exam.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void executeNewExam(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		ExamInExecution exam = (ExamInExecution) msg.getSentObj();
@@ -936,6 +1143,15 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method....?
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getExamnieesOfExam(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -959,6 +1175,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get an exam as a message and lock it. The method update the DB
+	 * that the exam is now locked.
+	 * 
+	 * @param msg
+	 *            - an exam.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void lockExam(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
 		ExamInExecution exam;
 		ExecutionDetails ed;
@@ -1010,6 +1237,17 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method get a teacher as a message and return a message with all of the
+	 * locked exams of this teacher.
+	 * 
+	 * @param msg
+	 *            - a teacher.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getLockedExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -1038,6 +1276,15 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method....?
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getWrittenExamsInExecutionByTeacher(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -1069,7 +1316,15 @@ public class EchoServer extends AbstractServer {
 
 	}
 
-	// This method return all the students in the data base.
+	/**
+	 * This method return all the students in the data base.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllStudentsInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -1090,7 +1345,15 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	// This method return all the teachers in the data base.
+	/**
+	 * This method return all the teachers in the data base.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllTeachersInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -1111,6 +1374,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get an exam ID as a message and send back a message with the exam
+	 * of this ID.
+	 * 
+	 * @param msg
+	 *            - an exam.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getExamByExamID(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		System.out.println("here :) fun liii");
@@ -1167,6 +1441,16 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get a student as a message and return a message with his exams.
+	 * 
+	 * @param msg
+	 *            - a student.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getExamsToShowByStudent(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -1290,9 +1574,16 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-	///////// this func return all the performance exam on the relevent student
-	///////////////////////////////////////////////////////////////////////////////
+	/**
+	 * this func return all the performance exam on the relevent student
+	 * 
+	 * @param msg
+	 *            - a student.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getExamsByStudent(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -1381,6 +1672,13 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get a file of an exam as a message and upload it to the DB.
+	 * 
+	 * @param msg
+	 *            - a file of an exam..
+	 * @param client
+	 */
 	private void uploadExamToServer(Object msg, ConnectionToClient client) {
 		int fileSize = ((MyFile) msg).getSize();
 		MyFile myF = (MyFile) msg;
@@ -1395,6 +1693,12 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method...?
+	 * 
+	 * @param ed
+	 * @throws SQLException
+	 */
 	private void checkLockedExam(ExecutionDetails ed, Boolean isGroup1, Connection conn) throws SQLException {
 		Thread checkExamThread;
 		final Connection conn2 = connectToDB();
@@ -1490,6 +1794,15 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method checks if all students that supposed to do the exam submitted.
+	 * 
+	 * @param msg
+	 *            - a student.
+	 * @param client
+	 * @param conn2
+	 * @throws SQLException
+	 */
 	private void checkIfAllStudentFinished(ExecutionDetails ed, Connection conn) throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		ResultSet rs = stmt.executeQuery("SELECT * FROM examInExecution Where examID=" + ed.getExamID()
@@ -1518,6 +1831,15 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method get in a message a student in exam and change his status.
+	 * 
+	 * @param msg
+	 *            - a student.
+	 * @param client
+	 * @param conn2
+	 * @throws SQLException
+	 */
 	private void changeStudentInExamStatus(Message msg, ConnectionToClient client, Connection conn2)
 			throws SQLException, IOException {
 		StudentInExam student = (StudentInExam) msg.getSentObj();
@@ -1657,6 +1979,17 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method get a message with an extra time request and send it to the
+	 * principal.
+	 * 
+	 * @param msg
+	 *            - an extra time request.
+	 * @param client
+	 * @param conn2
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	private void sendOverTimeRequest(Message msg, ConnectionToClient client, Connection conn2)
 			throws IOException, SQLException {
 		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
@@ -1683,6 +2016,15 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method returns all of the over time requests as a message.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllOverTimeRequests(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -1701,6 +2043,16 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method get as a message an extra time request and deny it.
+	 * 
+	 * @param msg
+	 *            - an extra time request.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void denyOvertime(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
@@ -1726,6 +2078,16 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method get as a message an extra time request and approve it.
+	 * 
+	 * @param msg
+	 *            - an extra time request.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void approveOvertime(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		OvertimeDetails overtime = (OvertimeDetails) msg.getSentObj();
@@ -1784,6 +2146,17 @@ public class EchoServer extends AbstractServer {
 		}
 	}
 
+	/**
+	 * This method get a course as a message and sent a message with the statistics
+	 * of this course.
+	 * 
+	 * @param msg
+	 *            - a course.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void statisticsforCourse(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Course c = (Course) msg.getSentObj();
@@ -1813,6 +2186,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get a message with a teacher and return a message with a
+	 * statistics of her exams.
+	 * 
+	 * @param msg
+	 *            - a teacher.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllExamReportsTeacherWrote(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 
@@ -1844,6 +2228,15 @@ public class EchoServer extends AbstractServer {
 
 	}
 
+	/**
+	 * This method send a message with all the exams in the DB.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllExamsInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -1896,6 +2289,15 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method send a message with all the questions in the DB.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllQuestionsInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -1933,7 +2335,15 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	// This method return all the courses in the data base.
+	/**
+	 * This method send a message with all the courses in the DB.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllCoursesInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -1953,7 +2363,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	// This method return all the subjects in the data base.
+	/**
+	 * This method get a message with exam and return a message with all of its
+	 * questions.
+	 * 
+	 * @param msg
+	 *            - an exam.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllQuestionInExam(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -1981,7 +2401,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
-	// This method return all the subjects in the data base.
+	/**
+	 * This method get a message with exam and return a message with all of its
+	 * students.
+	 * 
+	 * @param msg
+	 *            - an exam.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllStudentInExam(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -2033,7 +2463,15 @@ public class EchoServer extends AbstractServer {
 
 	}
 
-	// This method return all the subjects in the data base.
+	/**
+	 * This method return all the exams that now are in execution.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllExamInExecution(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -2118,7 +2556,15 @@ public class EchoServer extends AbstractServer {
 
 	}
 
-	// This method return all the subjects in the data base.
+	/**
+	 * This method return all the subjects in the data base.
+	 * 
+	 * @param msg
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void getAllSubjectsInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -2133,6 +2579,17 @@ public class EchoServer extends AbstractServer {
 		client.sendToClient(msg);
 	}
 
+	/**
+	 * This method get a message with a student and return a message with his
+	 * grades.
+	 * 
+	 * @param msg
+	 *            - a student.
+	 * @param client
+	 * @param conn
+	 * @throws SQLException
+	 * @throws IOException
+	 */
 	private void GetGradeByStudentDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		Statement stmt = (Statement) conn.createStatement();
@@ -2152,7 +2609,7 @@ public class EchoServer extends AbstractServer {
 		}
 		rs.close();
 		stmt.close();
-		System.out.println("hjwhdwehfewhfoewfewjfoehfroo");
+
 		msg.setReturnObj(tempArr);
 		client.sendToClient(msg);
 	}

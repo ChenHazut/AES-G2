@@ -23,7 +23,6 @@ import logic.TeacherController;
 /**
  * This class allows the teacher to manage a question repository including
  * adding new question, deleting a question and editing a question.
- * 
  * @author reut
  *
  */
@@ -51,10 +50,12 @@ public class ExamRepositoryGUI implements Initializable {
 
 	private TeacherController tc;
 
+	// **************************************************
+    // Public methods
+    // **************************************************
 	/**
 	 * This method allows the teacher to create a new exam from the questions
 	 * assigned to his courses, taken from question repository.
-	 * 
 	 * @throws Exception
 	 */
 	public void insertButtonAction(ActionEvent ae) throws Exception {
@@ -88,12 +89,19 @@ public class ExamRepositoryGUI implements Initializable {
 				break;
 			}
 	}
-
+	
+	
+	/**
+	 * implement the Initializable
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
 	}
 
+	/**
+	 * set all the data of the exam in the window fxml
+	 */
 	public void initData() {
 		tc = new TeacherController();
 		examIDCol.setCellValueFactory(new PropertyValueFactory<>("ExamID"));

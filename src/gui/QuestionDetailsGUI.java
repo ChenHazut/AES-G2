@@ -22,7 +22,14 @@ import javafx.stage.Stage;
 import logic.Question;
 import logic.TeacherController;
 
+/**
+ * this method handle the details of the question
+ * @author vakni
+ */
 public class QuestionDetailsGUI implements Initializable {
+	//************************************
+		// Fields
+		//************************************
 	@FXML
 	Label questionIDLabel;
 	@FXML
@@ -68,10 +75,20 @@ public class QuestionDetailsGUI implements Initializable {
 	ObservableList<String> cList;
 	Question q;
 
+	// **************************************************
+    // Public methods
+    // **************************************************
+	
+	/**
+	 * implement the Initializable
+	 */
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 	}
 
+	/**
+	 * manage the filled deatails of the question on DB
+	 */
 	protected Question getFilledDetails() {
 		Question updatedQuestion = new Question();
 		qtxt.setText(" ");
@@ -111,6 +128,10 @@ public class QuestionDetailsGUI implements Initializable {
 		return updatedQuestion;
 	}
 
+	/**
+	 * this methos show the error massage
+	 * @param s as String with the error massage
+	 */
 	private void errorMessage(String s) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Error Dialog");
@@ -119,6 +140,11 @@ public class QuestionDetailsGUI implements Initializable {
 		alert.showAndWait();
 	}
 
+	/**
+	 * save the question details on DB when the teacher press the save button
+	 * @param ae
+	 * @throws Exception
+	 */
 	public void saveButtonAction(ActionEvent ae) throws Exception {
 
 		System.out.println("save has been pressed");
@@ -143,6 +169,11 @@ public class QuestionDetailsGUI implements Initializable {
 		window.show();
 	}
 
+	/**
+	 * this method cancel all the function when the techear press the cancel button
+	 * @param ae
+	 * @throws Exception
+	 */
 	public void cancleButtonAction(ActionEvent ae) throws Exception {
 		System.out.println("cancle has been pressed");
 		FXMLLoader loader = new FXMLLoader();
@@ -156,10 +187,14 @@ public class QuestionDetailsGUI implements Initializable {
 		window.show();
 	}
 
+	
 	public void correctAnswerTextField(ActionEvent ae) {
 
 	}
 
+	/**
+	 * this methos set all the data for the new question create window
+	 */
 	public void initData(Question qToEdit) {
 		q = qToEdit;
 		questionIDLabel.setText(q.getQuestionID());

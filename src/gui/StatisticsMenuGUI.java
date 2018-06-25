@@ -76,6 +76,9 @@ public class StatisticsMenuGUI implements Initializable {
 			avgLabel.setVisible(false);
 		}
 		ExamReport reportToDisplay = examCombo.getValue();
+		if (reportToDisplay == null)
+			return;
+
 		initiateReport(reportToDisplay);
 	}
 
@@ -92,6 +95,8 @@ public class StatisticsMenuGUI implements Initializable {
 			avgLabel.setVisible(false);
 		}
 		User temp = studentCombo.getValue();
+		if (temp == null)
+			return;
 		ArrayList<StudentInExam> studentGrades = pc.getAllExamReportsStudentPerformed(temp);
 		ArrayList<Integer> gradeArr = new ArrayList<Integer>();
 		if (studentGrades == null)
@@ -116,6 +121,8 @@ public class StatisticsMenuGUI implements Initializable {
 		examCombo.getItems().clear();
 		examCombo.setPromptText("Choose Exam");
 		Course temp = courseCombo.getValue();
+		if (temp == null)
+			return;
 		ArrayList<ExamReport> arr = pc.getAllExamsInCourse(temp);
 		examCombo.getItems().clear();
 		examCombo.getItems().addAll(arr);
@@ -132,6 +139,8 @@ public class StatisticsMenuGUI implements Initializable {
 			avgLabel.setVisible(false);
 		}
 		User temp = teacherCombo.getValue();
+		if (temp == null)
+			return;
 		examCombo.getItems().clear();
 		examCombo.setPromptText("Choose Exam");
 		ArrayList<ExamReport> arr = pc.getAllExamReportsTeacherWrote(temp);
@@ -151,6 +160,8 @@ public class StatisticsMenuGUI implements Initializable {
 		examCombo.getItems().clear();
 		examCombo.setPromptText("Choose Exam");
 		String temp = reportCombo.getValue();
+		if (temp == null)
+			return;
 		if (temp.equals("Student")) {
 			studentCombo.setVisible(true);
 			courseCombo.setVisible(false);
@@ -172,10 +183,21 @@ public class StatisticsMenuGUI implements Initializable {
 		}
 	}
 
+	/**
+	 * this method initialize the data on the statistics menue
+	 * 
+	 * @param arg0
+	 * @param arg1
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 	}
 
+	/**
+	 * This method used to pass parameters between UI windows
+	 * 
+	 * @param user
+	 */
 	public void initData(User user) {
 		medianLabel.setVisible(false);
 		avgLabel.setVisible(false);
@@ -208,7 +230,7 @@ public class StatisticsMenuGUI implements Initializable {
 	 * @param report
 	 */
 	private void initiateReport(ExamReport report) {
-		if (report.getCounter() == 0 || report == null) {
+		if (report == null) {
 			return;
 		}
 
@@ -216,7 +238,6 @@ public class StatisticsMenuGUI implements Initializable {
 		avgLabel.setVisible(true);
 		medianLabel.setText("The Midean is: " + report.getMidean());
 		avgLabel.setText("The Avarage is: " + report.getAvg());
-		System.out.println("initiateReport2");
 		CategoryAxis xAxis = new CategoryAxis();
 
 		// creating X and Y axis for BarChart

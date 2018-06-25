@@ -1,15 +1,11 @@
-/************************************************************************** 
- * Copyright (©) Zerli System 2017-2018 - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- * Written by Edo Notes <Edoono24@gmail.com>
- * 			  Tomer Arzuan <Tomerarzu@gmail.com>
- * 			  Matan Sabag <19matan@gmail.com>
- * 			  Ido Kalir <idotehila@gmail.com>
- * 			  Elinor Faddoul<elinor.faddoul@gmail.com
- **************************************************************************/
+
 package gui;
 
+/**
+ * This class manage the server
+ * @author reut
+ *
+ */
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -20,8 +16,17 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class ServerMain extends Application {
+	// **************************************************
+	// Fields
+	// **************************************************
 	public static boolean serverIsConnected = false;
 
+	/**
+	 * this method run the server fxml window
+	 * 
+	 * @param primaryStage
+	 * @throws IOException
+	 */
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -36,6 +41,9 @@ public class ServerMain extends Application {
 
 	}
 
+	/**
+	 * the main method of the server
+	 */
 	public static void main(String[] args) throws SQLException {
 
 		launch(args);
