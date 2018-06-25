@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,6 +30,8 @@ public class PrincipleMenuGUI2 implements Initializable {
 	private Label notification;
 	@FXML
 	private Button viewRequests;
+	@FXML
+	Button logoutButton;
 	private User principal;
 	private LoginController lc;
 	private boolean flag = false;
@@ -124,5 +127,14 @@ public class PrincipleMenuGUI2 implements Initializable {
 			lc.logoutUser();
 			System.exit(0);
 		});
+	}
+
+	public void logoutButtonAction(ActionEvent ae) throws IOException {
+		lc = new LoginController();
+		lc.logoutUser();
+		Stage stage = (Stage) logoutButton.getScene().getWindow();
+		LoginGUI lg = new LoginGUI(); // run login window
+		lg.start(stage);
+
 	}
 }

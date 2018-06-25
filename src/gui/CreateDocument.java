@@ -17,16 +17,38 @@ import logic.Exam;
 import logic.Question;
 import logic.User;
 
+/**
+ * this class generates the exam word file and downloading it to client file
+ * system
+ * 
+ * @author chen1
+ *
+ */
 public class CreateDocument {
-
+	// *********************************
+	// Fields
+	// *********************************
 	Exam exam;
 	private User student;
 
+	/**
+	 * constructor to recive the requested exam details and the student info
+	 * 
+	 * @param exam
+	 * @param student
+	 */
 	public CreateDocument(Exam exam, User student) {
 		this.exam = exam;
 		this.student = student;
 	}
 
+	/**
+	 * this method create the exam word file and transferring it to student file
+	 * system to his requested folder
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	public Boolean createWordExam() throws IOException {
 		// Blank Document
 		XWPFDocument document = new XWPFDocument();

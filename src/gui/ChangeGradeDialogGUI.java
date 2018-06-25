@@ -1,5 +1,8 @@
 package gui;
 
+/**
+ * this class is the controller of the change grade dialog of teacher
+ */
 import org.controlsfx.control.textfield.CustomTextField;
 
 import javafx.event.ActionEvent;
@@ -10,6 +13,9 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 public class ChangeGradeDialogGUI {
+	// *********************************
+	// Fields
+	// *********************************
 	public Boolean result;
 	public int newGrade;
 	public String reason;
@@ -31,6 +37,12 @@ public class ChangeGradeDialogGUI {
 	@FXML
 	private Label errTime;
 
+	/**
+	 * this method closes the dialog and discards changes that made in the class
+	 * (grade doesn't change)
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void cancleButton(ActionEvent event) {
 		result = false;
@@ -38,6 +50,12 @@ public class ChangeGradeDialogGUI {
 		s.hide();
 	}
 
+	/**
+	 * this method closes the dialog and saves the new grade and the reason for the
+	 * change
+	 * 
+	 * @param event
+	 */
 	@FXML
 	void okButtonAction(ActionEvent event) {
 		if (gradeTF.getText() == null) {

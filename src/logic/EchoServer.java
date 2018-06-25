@@ -1508,7 +1508,7 @@ public class EchoServer extends AbstractServer {
 			}
 		} else {
 			rs = stmt.executeQuery("SELECT * FROM aes.studentincourse AS s WHERE s.subjectID="
-					+ ed.getExamID().substring(0, 1) + " AND s.courseID=" + ed.getExamID().substring(2, 3)
+					+ ed.getExamID().substring(0, 2) + " AND s.courseID=" + ed.getExamID().substring(2, 4)
 					+ " AND not exists(SELECT * FROM studentresultinexam as sr where sr.studentID=s.studentID AND sr.examID="
 					+ ed.getExamID() + " AND sr.executionID=" + ed.getExecutionID() + ")");
 			if (!rs.next()) {
@@ -1757,7 +1757,7 @@ public class EchoServer extends AbstractServer {
 				u.setuID(s.getStudentID());
 				System.out.println("c5");
 				u.setuName(s.getStudentName());
-				if (u.equals(pair.getKey())) {
+				if (u.getuID().equals(((User) pair.getKey()).getuID())) {
 					Message m = new Message();
 					m.setReturnObj(overtime);
 					m.setqueryToDo("overtimeApproved");
@@ -1798,11 +1798,11 @@ public class EchoServer extends AbstractServer {
 			ExamReport er = new ExamReport();
 			er.setExamID(rs.getString(1));
 			er.setExecutionID(rs.getInt(2));
-			er.setAvg(rs.getFloat(14));
-			er.setMidean(rs.getInt(15));
+			er.setAvg(rs.getFloat(15));
+			er.setMidean(rs.getInt(16));
 			int[] per = new int[10];
 			for (int i = 0; i < 10; i++) {
-				per[i] = rs.getInt(i + 16);
+				per[i] = rs.getInt(i + 17);
 			}
 			er.setPercentages(per);
 			reports.add(er);
@@ -1826,13 +1826,13 @@ public class EchoServer extends AbstractServer {
 		ResultSet rs = stmt.executeQuery(s);
 		while (rs.next()) {
 			ExamReport er = new ExamReport();
-			er.setExamID(rs.getString(1));
-			er.setExecutionID(rs.getInt(2));
-			er.setAvg(rs.getFloat(3));
-			er.setMidean(rs.getInt(4));
+			er.setExamID(rs.getString(2));
+			er.setExecutionID(rs.getInt(3));
+			er.setAvg(rs.getFloat(4));
+			er.setMidean(rs.getInt(5));
 			int[] per = new int[10];
 			for (int i = 0; i < 10; i++) {
-				per[i] = rs.getInt(i + 5);
+				per[i] = rs.getInt(i + 6);
 			}
 			er.setPercentages(per);
 			reports.add(er);

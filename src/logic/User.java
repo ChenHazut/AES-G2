@@ -155,9 +155,27 @@ public class User implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		User u = (User) obj;
-		return uID.equals(u.getuID());
+	public boolean equals(Object o) {
+
+		if (o == this)
+			return true;
+		if (!(o instanceof User)) {
+			return false;
+		}
+
+		User user = (User) o;
+
+		return user.uID.equals(uID) && user.uName == uName && user.password == password && user.Title.equals(Title);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 17;
+		result = 31 * result + uID.hashCode();
+		result = 31 * result + uName.hashCode();
+		result = 31 * result + password.hashCode();
+		result = 31 * result + Title.hashCode();
+		return result;
 	}
 
 }

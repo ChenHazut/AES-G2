@@ -202,11 +202,13 @@ public class StatisticsMenuGUI implements Initializable {
 
 	}
 
-	/*
+	/**
 	 * This method generates the GUI presentation of the histogram
+	 * 
+	 * @param report
 	 */
 	private void initiateReport(ExamReport report) {
-		if (report.getMidean() == 0 || report == null) {
+		if (report.getCounter() == 0 || report == null) {
 			return;
 		}
 

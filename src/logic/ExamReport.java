@@ -13,18 +13,23 @@ public class ExamReport implements Serializable {
 			"91-100" };
 	private float avg;
 	private int midean;
+	private int counter = 0;
 
 	public ExamReport() {
 
 	}
 
 	public ExamReport(ArrayList<Integer> gradeArr, String examID, int executionID) {
+
 		if (gradeArr != null && gradeArr.size() > 0)
 			return;
+
 		this.examID = examID;
 		this.executionID = executionID;
 		int sum = 0;
 		int[] per = new int[10];
+		setCounter(gradeArr.size());
+
 		for (int i = 0; i < gradeArr.size(); i++) {
 			int grade = gradeArr.get(i);
 			sum += grade;
@@ -49,6 +54,7 @@ public class ExamReport implements Serializable {
 			if (91 <= grade && grade <= 100)
 				per[9]++;
 		}
+
 		Collections.sort(gradeArr);
 		this.percentages = per;
 		midean = gradeArr.get(gradeArr.size() / 2);
@@ -93,6 +99,19 @@ public class ExamReport implements Serializable {
 
 	public void setExamID(String examID) {
 		this.examID = examID;
+	}
+
+	public int getCounter() {
+		return counter;
+	}
+
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
+
+	@Override
+	public String toString() {
+		return "ExamReport [examID=" + examID + ", executionID=" + executionID + "]";
 	}
 
 }

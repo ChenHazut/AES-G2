@@ -63,5 +63,16 @@
       <Button fx:id="StatisticsButton" layoutX="26.0" layoutY="89.0" mnemonicParsing="false" onAction="#StatisticsButtonAction" opacity="0.0" prefHeight="89.0" prefWidth="175.0" text="Statistics" />
       <Button fx:id="SystemDetailsButton" layoutX="26.0" layoutY="183.0" mnemonicParsing="false" onAction="#SystemDetailsButtonAction" opacity="0.0" prefHeight="79.0" prefWidth="214.0" text="System Details" />
       <Button fx:id="ExtraTimeRequestsButton" layoutX="34.0" layoutY="273.0" mnemonicParsing="false" onAction="#ExtraTimeRequestsButtonAction" opacity="0.0" prefHeight="79.0" prefWidth="237.0" text="Extra Time Requests" />
+      <ImageView fitHeight="28.0" fitWidth="159.0" layoutX="499.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/exit.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="527.0" layoutY="14.0" prefHeight="55.0" prefWidth="45.0" text="logout">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
+      </Label>
+      <Button fx:id="logoutButton" layoutX="488.0" layoutY="22.0" mnemonicParsing="false" onAction="#logoutButtonAction" opacity="0.0" prefHeight="39.0" prefWidth="85.0" text="btnlogout" />
    </children>
 </AnchorPane>
