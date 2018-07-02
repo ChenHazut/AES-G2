@@ -166,6 +166,7 @@ public class PrincipleMenuGUI2 implements Initializable {
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
+		primaryStage.setTitle("Principal Menu");
 		primaryStage.show();
 		// from this line the code logs out the user when he press on X button:
 		lc = new LoginController();

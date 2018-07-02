@@ -81,6 +81,7 @@ public class QuestionRepositoryGUI implements Initializable {
 		nqg.initData();
 		Stage window = (Stage) insert.getScene().getWindow();
 		window.setScene(scene);
+		window.setTitle("Create Question Window");
 		window.show();
 
 	}
@@ -147,6 +148,7 @@ public class QuestionRepositoryGUI implements Initializable {
 		qdg.initData(qToEdit);
 		Stage window = (Stage) editQuestionButton.getScene().getWindow();
 		window.setScene(scene);
+		window.setTitle("Edit Question Window");
 		window.show();
 		System.out.println("question is changed");
 	}

@@ -115,6 +115,7 @@ public class StudentMenuGUI implements Initializable {
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		primaryStage.setScene(Scene);
+		primaryStage.setTitle("Student Menu");
 		primaryStage.show();
 		lc = new LoginController();
 		primaryStage.setOnCloseRequest(event -> { // LOG OUT THE USER IF HE PRESS "X"
