@@ -46,7 +46,7 @@ import ocsf.server.ConnectionToClient;
  * @author Paul Holden
  * @version July 2000
  */
-public class EchoServer extends AbstractServer {
+public class EchoServer extends AbstractServer implements IDBHandler {
 	// *******************************
 	// Class variables
 	// *******************************
@@ -374,7 +374,7 @@ public class EchoServer extends AbstractServer {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	private void searchUserInDB(Message msg, ConnectionToClient client, Connection conn)
+	public void searchUserInDB(Message msg, ConnectionToClient client, Connection conn)
 			throws SQLException, IOException {
 		User uToSearch = (User) msg.getSentObj();
 		User tmpUsr = new User();
@@ -387,7 +387,6 @@ public class EchoServer extends AbstractServer {
 			tmpUsr.setPassword(rs.getString(4));
 			tmpUsr.setTitle(rs.getString(5));
 		}
-
 		rs.close();
 		msg.setReturnObj(tmpUsr);
 		client.sendToClient(msg);

@@ -62,7 +62,7 @@
                   <TextArea fx:id="answer2Label" prefHeight="200.0" prefWidth="200.0" />
                </content>
             </TitledPane>
-            <TitledPane animated="false" layoutX="10.0" layoutY="61.0" prefHeight="93.0" prefWidth="445.0" text="Answer3:" textFill="#cf0f0f">
+            <TitledPane animated="false" layoutX="10.0" layoutY="61.0" prefHeight="93.0" prefWidth="445.0" text="Answer 3:" textFill="#cf0f0f">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>

@@ -187,7 +187,7 @@ public class NewQuestionGUI implements Initializable {
 		if (updatedQuestion == null)
 			return;
 
-		if (subjectCombo.getValue() == null || courseCombo.getCheckModel().getCheckedItems() == null) {
+		if (subjectCombo.getValue() == null || courseCombo.getCheckModel().getCheckedItems().isEmpty()) {
 			System.out.println("no subject or course selected");
 			subjectcourseL.setVisible(true);
 			return;

@@ -22,7 +22,7 @@
             <Font name="FrankRuehl" size="15.0" />
          </font>
       </Button>
-      <Button fx:id="insert" layoutX="503.0" layoutY="106.0" mnemonicParsing="false" onAction="#insertButtonAction" prefHeight="35.0" prefWidth="69.0" text="Insert" textFill="#3e2d2d" AnchorPane.bottomAnchor="272.6666666666667" AnchorPane.leftAnchor="503.00000000000006" AnchorPane.rightAnchor="35.00000000000004" AnchorPane.topAnchor="105.99999999999997">
+      <Button fx:id="insert" layoutX="503.0" layoutY="106.0" mnemonicParsing="false" onAction="#insertButtonAction" prefHeight="35.0" prefWidth="69.0" text="Create" textFill="#3e2d2d" AnchorPane.bottomAnchor="272.6666666666667" AnchorPane.leftAnchor="503.00000000000006" AnchorPane.rightAnchor="35.00000000000004" AnchorPane.topAnchor="105.99999999999997">
          <font>
             <Font name="FrankRuehl" size="15.0" />
          </font>
@@ -48,6 +48,10 @@
             <TableColumn fx:id="teacherName" prefWidth="89.3333740234375" text="Author Name" />
         </columns>
       </TableView>
-      <Button fx:id="backButton" layoutX="503.0" layoutY="256.0" mnemonicParsing="false" onAction="#backButtonAction" prefHeight="35.0" prefWidth="69.0" text="Back" />
+      <Button fx:id="backButton" layoutX="503.0" layoutY="352.0" mnemonicParsing="false" onAction="#backButtonAction" prefHeight="35.0" prefWidth="69.0" text="Back">
+         <font>
+            <Font name="FrankRuehl" size="15.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
