@@ -133,7 +133,6 @@ public class EchoServer extends AbstractServer implements IDBHandler {
 	 *            The connection from which the message originated.
 	 */
 	public void handleMessageFromClient(Object msg, ConnectionToClient client) throws SQLException, IOException {
-		Connection conn = null;
 		conn = connectToDB();
 		System.out.println("SQL connection succeed");
 		if (msg instanceof MyFile) {
@@ -308,6 +307,12 @@ public class EchoServer extends AbstractServer implements IDBHandler {
 	// get data or change data in DB methods
 	// *************************************************************************
 
+	private User getUserDet(String q) {
+		User u = new User();
+
+		return u;
+	}
+
 	/**
 	 * This method search in db for user with same userID as sentObj in msg
 	 * 
@@ -378,6 +383,7 @@ public class EchoServer extends AbstractServer implements IDBHandler {
 			throws SQLException, IOException {
 		User uToSearch = (User) msg.getSentObj();
 		User tmpUsr = new User();
+		String q = "SELECT * FROM user WHERE userID=" + uToSearch.getuID();
 		Statement stmt = (Statement) conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE userID=" + uToSearch.getuID());
 		if (rs.next()) {

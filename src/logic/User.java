@@ -37,6 +37,15 @@ public class User implements Serializable {
 		password = upass;
 	}
 
+	public User(String uID, String uName, String password, String title, String isLoggedIn) {
+		super();
+		this.uID = uID;
+		this.uName = uName;
+		this.password = password;
+		Title = title;
+		this.isLoggedIn = isLoggedIn;
+	}
+
 	/**
 	 * Default constructor.
 	 */
