@@ -15,7 +15,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.QuestionDetailsGUI">
    <children>
-      <ImageView fitHeight="609.0" fitWidth="550.0" layoutY="-13.0" pickOnBounds="true">
+      <ImageView fitHeight="629.0" fitWidth="550.0" layoutY="-25.0" pickOnBounds="true">
          <image>
             <Image url="@../images/biggerBackground.png" />
          </image>
@@ -117,12 +117,12 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Label fx:id="corAns" layoutX="58.0" layoutY="324.0" prefHeight="21.0" prefWidth="11.0" text="*" textFill="#1a09ff" visible="false">
+      <Label fx:id="corAns" layoutX="58.0" layoutY="367.0" prefHeight="21.0" prefWidth="11.0" text="*" textFill="#1a09ff" visible="false">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Label fx:id="subjectcourseL" layoutX="60.0" layoutY="375.0" prefHeight="21.0" prefWidth="11.0" text="*" textFill="#1a09ff" visible="false">
+      <Label fx:id="subjectcourseL" layoutX="60.0" layoutY="397.0" prefHeight="21.0" prefWidth="11.0" text="*" textFill="#1a09ff" visible="false">
          <font>
             <Font size="24.0" />
          </font>

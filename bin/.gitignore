@@ -1,8 +1,8 @@
 /client/
 /common/
 /gui/
+/images/
 /logic/
 /login/
 /ocsf/
 /server/
-/IDBHandler.class

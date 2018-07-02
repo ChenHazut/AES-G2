@@ -132,11 +132,17 @@ public class NewQuestionGUI implements Initializable {
 	}
 
 	/**
-	 * get the filles deatails on the new question that the teacher wrote
+	 * get the fills details on the new question that the teacher wrote
 	 */
 	protected Question getFilledDetails() {
 		int flag = 0;
 		Question updatedQuestion = new Question();
+		qtxt.setVisible(false);
+		qans1.setVisible(false);
+		qans2.setVisible(false);
+		qans3.setVisible(false);
+		qans4.setVisible(false);
+		corAns.setVisible(false);
 
 		updatedQuestion.setTeacherName(tc.getTeacher().getuName());
 		updatedQuestion.setTeacherID(tc.getTeacher().getuID());
@@ -146,6 +152,7 @@ public class NewQuestionGUI implements Initializable {
 		} else
 			updatedQuestion.setQuestionTxt(QuestionLabel.getText());
 		updatedQuestion.setInstruction(instructionLabel.getText());
+		
 		if (answer1Label.getText().equals("")) {
 			qans1.setVisible(true);
 			flag = 1;
@@ -170,8 +177,12 @@ public class NewQuestionGUI implements Initializable {
 			flag = 1;
 		} else
 			updatedQuestion.setCorrectAnswer(Integer.parseInt((String) correctAnswerCombo.getValue()));
+		
 		if (flag == 0)
 			return updatedQuestion;
+		else 
+			MyErrorMessage.show("Please fill all marked fields", "Missing details!");
+		
 		return null;
 	}
 

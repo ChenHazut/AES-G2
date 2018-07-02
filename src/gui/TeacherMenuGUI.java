@@ -58,6 +58,7 @@ public class TeacherMenuGUI implements Initializable {
 		window.initModality(Modality.APPLICATION_MODAL);
 		window.setResizable(false);
 		window.setScene(scene);
+		window.setTitle("Quesion Repository Menu");
 		window.show();
 
 	}

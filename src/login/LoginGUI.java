@@ -140,6 +140,7 @@ public class LoginGUI implements Initializable {
 					teacherMenu.initData();
 					Stage window = new Stage();
 					window.setScene(scene);
+					window.setTitle("Teacher Menu");
 					window.show();
 					window.setOnCloseRequest(event -> {
 						lc.logoutUser();
@@ -174,6 +175,7 @@ public class LoginGUI implements Initializable {
 		Scene Scene = new Scene(root);
 		Scene.getStylesheets().add(getClass().getResource("/gui/application.css").toExternalForm());
 		primaryStage.setScene(Scene);
+		primaryStage.setTitle("Login Menu");
 		primaryStage.show();
 
 		primaryStage.setOnCloseRequest(event -> {
