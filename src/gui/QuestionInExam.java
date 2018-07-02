@@ -6,27 +6,32 @@ import logic.Question;
 
 /**
  * This class save details on question in exam
+ * 
  * @author reut
  *
  */
 public class QuestionInExam implements Serializable {
 
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	private int pointsInExam;
 	private Question question;
 	private int serialNumberInExam;
 
 	// **************************************************
-    // constructors
-    // **************************************************
-	
+	// constructors
+	// **************************************************
+
 	/**
 	 * this constructor set the question in exam details
-	 * @param pointsInExam as int - the point on the question in the exam
-	 * @param question as Question
-	 * @param serialNumberInExam as int
+	 * 
+	 * @param pointsInExam
+	 *            as int - the point on the question in the exam
+	 * @param question
+	 *            as Question
+	 * @param serialNumberInExam
+	 *            as int
 	 */
 	public QuestionInExam(int pointsInExam, Question question, int serialNumberInExam) {
 		this.setPointsInExam(pointsInExam);
@@ -36,6 +41,7 @@ public class QuestionInExam implements Serializable {
 
 	/**
 	 * return the question object that in the exam
+	 * 
 	 * @return questio as Question object
 	 */
 	public Question getQuestion() {
@@ -44,7 +50,9 @@ public class QuestionInExam implements Serializable {
 
 	/**
 	 * save the question in the exam
-	 * @param question as Question
+	 * 
+	 * @param question
+	 *            as Question
 	 */
 	public void setQuestion(Question question) {
 		this.question = question;
@@ -52,6 +60,7 @@ public class QuestionInExam implements Serializable {
 
 	/**
 	 * return the points of the qoestion in the exam
+	 * 
 	 * @return pointsInExam as int
 	 */
 	public int getPointsInExam() {
@@ -60,14 +69,17 @@ public class QuestionInExam implements Serializable {
 
 	/**
 	 * save the point of the question in the exam
-	 * @param pointsInExam as int
+	 * 
+	 * @param pointsInExam
+	 *            as int
 	 */
 	public void setPointsInExam(int pointsInExam) {
 		this.pointsInExam = pointsInExam;
 	}
 
 	/**
-	 * return the serial  number of the question in exam
+	 * return the serial number of the question in exam
+	 * 
 	 * @return serialNumberInExam as int
 	 */
 	public int getSerialNumberInExam() {
@@ -75,8 +87,10 @@ public class QuestionInExam implements Serializable {
 	}
 
 	/**
-	 * save the serial  number of the question in exam
-	 * @param serialNumberInExam as int
+	 * save the serial number of the question in exam
+	 * 
+	 * @param serialNumberInExam
+	 *            as int
 	 */
 	public void setSerialNumberInExam(int serialNumberInExam) {
 		this.serialNumberInExam = serialNumberInExam;
@@ -95,6 +109,7 @@ public class QuestionInExam implements Serializable {
 
 	/**
 	 * to run over the equal method
+	 * 
 	 * @param obj
 	 * @return boolean
 	 */
@@ -113,6 +128,13 @@ public class QuestionInExam implements Serializable {
 		} else if (!question.equals(other.question))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+
+		return serialNumberInExam + ")\t( " + pointsInExam + (pointsInExam > 10 ? " point)\n" : " points)\n")
+				+ question.toString();
 	}
 
 }

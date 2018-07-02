@@ -48,5 +48,6 @@
             <TableColumn fx:id="teacherName" prefWidth="89.3333740234375" text="Author Name" />
         </columns>
       </TableView>
+      <Button fx:id="backButton" layoutX="503.0" layoutY="256.0" mnemonicParsing="false" onAction="#backButtonAction" prefHeight="35.0" prefWidth="69.0" text="Back" />
    </children>
 </AnchorPane>

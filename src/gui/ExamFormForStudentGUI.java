@@ -177,6 +177,8 @@ public class ExamFormForStudentGUI {
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.OK) {
+			StudentSelection ss = StudentSelection.getInstance();
+			s.setCheckedAnswers(ss.studentAnswers);
 			s.setStudentStatus("NotFinished");
 			int actualDuration = (countPassedTime / 60) + 1;
 			s.setActualDuration(actualDuration);

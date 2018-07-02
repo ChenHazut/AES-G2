@@ -3,6 +3,7 @@ package logic;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.Map;
 
 import gui.QuestionInExam;
 
@@ -385,21 +386,16 @@ public class StudentInExam implements Serializable {
 
 	@Override
 	public String toString() {
-		// String s = "";
-		// s += "\nExam ID: " + getExamID() + "\tExam Date" + getDate() + "\tCourse
-		// name: " + getCourseName() + "\n";
-		// // if (studentStatus.equals("finished")) {
-		// s += "Student Grade: " + getGrade() + "\n" + "Correct Answers: " +
-		// getNumberOfCorrectAnswer()
-		// + "\tWrong Answers: " + getNumberOfWrongAnswer();
-		// for (Map.Entry<QuestionInExam, Integer> entry : checkedAnswers.entrySet()) {
-		// s += entry.getKey().toString() + "\nAnswer selected: " + entry.getValue();
-		// }
-		// // } else {
-		// s += "The student hasn't finished the exam\n";
-		// // }
-		// return s;
-		return "sid" + studentID;
+		String s = "";
+		s += "\nExam ID: " + getExamID() + "\tExam Date" + getDate() + "\tCourse name: " + getCourseName() + "\n";
+
+		s += "Student Grade: " + getGrade() + "\n" + "Correct Answers: " + getNumberOfCorrectAnswer()
+				+ "\tWrong Answers: " + getNumberOfWrongAnswer() + "\n";
+		for (Map.Entry<QuestionInExam, Integer> entry : checkedAnswers.entrySet()) {
+			s += entry.getKey().toString() + "\nAnswer selected: " + entry.getValue();
+		}
+
+		return s;
 	}
 
 }

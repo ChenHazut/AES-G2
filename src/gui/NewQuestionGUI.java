@@ -28,12 +28,13 @@ import logic.User;
 
 /**
  * this class manage the new question fxml window
+ * 
  * @author vakni
  */
 public class NewQuestionGUI implements Initializable {
 	// **************************************************
-    // Fields
-    // **************************************************	
+	// Fields
+	// **************************************************
 
 	@FXML
 	ComboBox<String> correctAnswerCombo;
@@ -83,10 +84,10 @@ public class NewQuestionGUI implements Initializable {
 	ObservableList<String> coursesL;
 
 	// **************************************************
-    // Constructors
-    // **************************************************	
+	// Constructors
+	// **************************************************
 	/**
-	 * constructor that set the theacher that write the question 
+	 * constructor that set the theacher that write the question
 	 */
 	public NewQuestionGUI() {
 
@@ -96,9 +97,9 @@ public class NewQuestionGUI implements Initializable {
 	}
 
 	// **************************************************
-    // Public methods
-    // **************************************************
-	
+	// Public methods
+	// **************************************************
+
 	/**
 	 * run the new question fxml window
 	 */
@@ -113,6 +114,7 @@ public class NewQuestionGUI implements Initializable {
 
 	/**
 	 * initialize the new question window data
+	 * 
 	 * @param arg0
 	 * @param arg1
 	 */
@@ -175,6 +177,7 @@ public class NewQuestionGUI implements Initializable {
 
 	/**
 	 * save the new question the teacher wrote
+	 * 
 	 * @param ae
 	 * @throws Exception
 	 */
@@ -225,7 +228,9 @@ public class NewQuestionGUI implements Initializable {
 	}
 
 	/**
-	 * when the teacher cancle the function of create new question by press the cancel button
+	 * when the teacher cancle the function of create new question by press the
+	 * cancel button
+	 * 
 	 * @param ae
 	 * @throws Exception
 	 */
@@ -251,15 +256,16 @@ public class NewQuestionGUI implements Initializable {
 	}
 
 	/**
-	 * handel the choose of the subject and the course of the question by the teacher
-	 * after she choose the subject she can choose the courses of the subject that in the list
+	 * handel the choose of the subject and the course of the question by the
+	 * teacher after she choose the subject she can choose the courses of the
+	 * subject that in the list
+	 * 
 	 * @param ae
 	 */
 	public void subjectComboBoxAction(ActionEvent ae) {
 		int i;
 		courseCombo.getItems().removeAll(coursesL);
-		for (i = 0; i < coursesL.size(); i++)
-			coursesL.remove(i);
+		coursesL.clear();
 		for (i = 0; i < tc.getCourses().size(); i++)
 			if (tc.getCourses().get(i).getSubject().getsName().equals(subjectCombo.getValue()))
 				coursesL.add(tc.getCourses().get(i).getcName());

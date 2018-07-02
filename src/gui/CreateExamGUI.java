@@ -29,15 +29,17 @@ import logic.Question;
 import logic.TeacherController;
 
 /**
- * This class allows the teacher to create a new exam from the question repository 
+ * This class allows the teacher to create a new exam from the question
+ * repository
+ * 
  * @author reut
  *
  */
 public class CreateExamGUI implements Initializable {
 
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	@FXML
 	private TableView<QuestionGUI> table;
 	@FXML
@@ -74,8 +76,7 @@ public class CreateExamGUI implements Initializable {
 	TeacherController tc;
 
 	/**
-	 * Constructor.
-	 * create a new instance of teacher controller class
+	 * Constructor. create a new instance of teacher controller class
 	 */
 	public CreateExamGUI() {
 
@@ -84,11 +85,13 @@ public class CreateExamGUI implements Initializable {
 	}
 
 	// **************************************************
-    // Public methods
-    // **************************************************
+	// Public methods
+	// **************************************************
 	/**
 	 * initiates data for the GUI window
-	 * @param exam - parameter passed from prevoius window
+	 * 
+	 * @param exam
+	 *            - parameter passed from prevoius window
 	 */
 	public void initData(Exam exam) {
 		courseCombo.setDisable(true);
@@ -157,7 +160,9 @@ public class CreateExamGUI implements Initializable {
 	}
 
 	/**
-	 * This method cancels the actions performed so far and resets the teacher main menu.
+	 * This method cancels the actions performed so far and resets the teacher main
+	 * menu.
+	 * 
 	 * @throws Exception
 	 */
 	public void cancleButtonAction() throws Exception {
@@ -175,6 +180,7 @@ public class CreateExamGUI implements Initializable {
 
 	/**
 	 * This method opens a display of the final exam form to approve.
+	 * 
 	 * @throws Exception
 	 */
 	public void saveButtonAction() throws Exception {
@@ -208,6 +214,8 @@ public class CreateExamGUI implements Initializable {
 		exam.setTeacherName(tc.getTeacher().getuName());
 		exam.setTeacherID(tc.getTeacher().getuID());
 		exam.setQuestions(temp);
+		exam.setInstructionForStudent(studentInsructions.getText());
+		exam.setInstructionForTeacher(teacherInstructions.getText());
 		Course c = tc.getCourseFromName((String) courseCombo.getValue());
 		exam.setCourse(c);
 
@@ -223,7 +231,9 @@ public class CreateExamGUI implements Initializable {
 	}
 
 	/**
-	 * This method opens a list of the assigned courses according to the selected subject.
+	 * This method opens a list of the assigned courses according to the selected
+	 * subject.
+	 * 
 	 * @throws Exception
 	 */
 	public void subjectComboBoxAction(ActionEvent ae) {
@@ -240,7 +250,9 @@ public class CreateExamGUI implements Initializable {
 	}
 
 	/**
-	 * This method opens a table view with the questions associated to course and subject selected
+	 * This method opens a table view with the questions associated to course and
+	 * subject selected
+	 * 
 	 * @param event
 	 */
 	@FXML

@@ -1,6 +1,7 @@
 package gui;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,9 +62,14 @@ public class ApproveGradesGUI {
 			return;
 		StudentInExam s = table.getSelectionModel().getSelectedItem();
 		tc.approveGrade(s);
-		for (StudentInExam student : studentsGradesOL)
-			if (student.getExamID().equals(student.getExamID()) && student.getExecutionID() == s.getExecutionID())
-				studentsGradesOL.remove(s);
+		int i = 0;
+		for (Iterator<StudentInExam> iterator = studentsGradesOL.iterator(); iterator.hasNext(); i++) {
+			StudentInExam student = iterator.next();
+			if (student.getExamID().equals(s.getExamID()) && student.getExecutionID() == s.getExecutionID()
+					&& student.getStudentID().equals(s.getStudentID()))
+				i = studentsGradesOL.indexOf(s);
+		}
+		studentsGradesOL.remove(i);
 		table.getItems().clear();
 		table.getItems().addAll(studentsGradesOL);
 	}
@@ -104,12 +110,14 @@ public class ApproveGradesGUI {
 			System.out.println("c4");
 			tc.changeGrade(s);
 			System.out.println("c5");
-			for (StudentInExam student : studentsGradesOL)
-				if (student.getExamID().equals(student.getExamID()) && student.getExecutionID() == s.getExecutionID()) {
-					System.out.println("c6");
-					studentsGradesOL.remove(s);
-					System.out.println("c7");
-				}
+			int i = 0;
+			for (Iterator<StudentInExam> iterator = studentsGradesOL.iterator(); iterator.hasNext();) {
+				StudentInExam student = iterator.next();
+				if (student.getExamID().equals(s.getExamID()) && student.getExecutionID() == s.getExecutionID()
+						&& student.getStudentID().equals(s.getStudentID()))
+					i = studentsGradesOL.indexOf(s);
+			}
+			studentsGradesOL.remove(i);
 			table.getItems().clear();
 			table.getItems().addAll(studentsGradesOL);
 		}

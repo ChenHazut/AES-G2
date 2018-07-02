@@ -13,8 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -26,18 +24,18 @@ import javafx.stage.Stage;
 import logic.Question;
 import logic.TeacherController;
 
-
 /**
  * This class allows the teacher to manage a question repository including
  * adding new question, deleting a question and editing a question.
+ * 
  * @author reut
  *
  */
 public class QuestionRepositoryGUI implements Initializable {
-	
+
 	// **************************************************
-    // Fields
-    // **************************************************
+	// Fields
+	// **************************************************
 	@FXML
 	private TableView<QuestionGUI> table;
 
@@ -55,6 +53,8 @@ public class QuestionRepositoryGUI implements Initializable {
 	private Button insert;
 	@FXML
 	private ImageView image;
+	@FXML
+	private Button backButton;
 	private ArrayList<Question> arr;
 
 	ObservableList<QuestionGUI> questionList;
@@ -62,12 +62,13 @@ public class QuestionRepositoryGUI implements Initializable {
 	TeacherController tc;
 
 	// **************************************************
-    // Public methods
-    // **************************************************
-	
+	// Public methods
+	// **************************************************
+
 	/**
-	 * This method opens a new window that allows the teacher to insert all the 
+	 * This method opens a new window that allows the teacher to insert all the
 	 * details needed to create a question.
+	 * 
 	 * @throws IOException
 	 */
 	public void insertButtonAction(ActionEvent ae) throws IOException {
@@ -86,6 +87,7 @@ public class QuestionRepositoryGUI implements Initializable {
 
 	/**
 	 * This method opens a new window that allows the teacher to delete a question.
+	 * 
 	 * @throws IOException
 	 */
 	public void deleteQuestionButtonAction(ActionEvent ae) {
@@ -114,6 +116,7 @@ public class QuestionRepositoryGUI implements Initializable {
 
 	/**
 	 * This method opens a new window that allows the teacher to delete a question.
+	 * 
 	 * @throws IOException
 	 */
 	public void editQuestion() throws IOException {
@@ -150,15 +153,22 @@ public class QuestionRepositoryGUI implements Initializable {
 
 	/**
 	 * This method opens a new window that allows the teacher to edit a question.
+	 * 
 	 * @throws IOException
 	 */
 	public void editQuestionButtonAction(ActionEvent ae) throws Exception {
 		editQuestion();
 	}
 
+	public void backButtonAction(ActionEvent ae) {
+		Stage window = (Stage) backButton.getScene().getWindow();
+		window.close();
+	}
+
 	/**
-	 * This method enables opening a question to edit in a double click on mouse 
+	 * This method enables opening a question to edit in a double click on mouse
 	 * left button
+	 * 
 	 * @throws IOException
 	 */
 	public void questionTableMouseClicked(MouseEvent me) throws IOException {
@@ -168,8 +178,7 @@ public class QuestionRepositoryGUI implements Initializable {
 	}
 
 	/**
-	 * Constructor.
-	 * create a new instance of teacher controller class
+	 * Constructor. create a new instance of teacher controller class
 	 */
 	public QuestionRepositoryGUI() {
 
@@ -178,7 +187,7 @@ public class QuestionRepositoryGUI implements Initializable {
 	}
 
 	/**
-	 * implements Initializable 
+	 * implements Initializable
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

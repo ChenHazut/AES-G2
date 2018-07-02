@@ -17,7 +17,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import logic.ExamInExecution;
 import logic.StudentController;
@@ -73,8 +72,7 @@ public class PerformanceExamsGUI implements Initializable {
 		ManuallyExamGUI manual = loader.getController();
 		manual.initData(e);
 		Stage window = (Stage) ManuallyButton.getScene().getWindow();
-		window.initModality(Modality.APPLICATION_MODAL);
-		window.setResizable(false);
+
 		window.setScene(scene);
 		window.show();
 
@@ -97,8 +95,7 @@ public class PerformanceExamsGUI implements Initializable {
 			return;
 		ceg.initData(table.getSelectionModel().getSelectedItem());
 		Stage window = (Stage) ManuallyButton.getScene().getWindow();
-		window.initModality(Modality.APPLICATION_MODAL);
-		window.setResizable(false);
+
 		window.setScene(scene);
 		window.show();
 	}
