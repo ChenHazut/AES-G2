@@ -3,6 +3,7 @@ package server;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import logic.Subject;
 import logic.User;
 import ocsf.server.ConnectionToClient;
 
-public class DBHandler extends EchoServer implements IDBHandler {
+public class DBHandler extends EchoServer implements IDBHandler, Serializable {
 	private Connection connection;
 
 	public DBHandler(int port, String dbName, String dbPass, Connection conn) {
@@ -47,8 +48,7 @@ public class DBHandler extends EchoServer implements IDBHandler {
 	// ***********************************************************************
 	// user handler= handle client request about User class
 	// ***********************************************************************
-	public Object userHandler(Message msg, ConnectionToClient client, Connection conn)
-			throws SQLException, IOException {
+	public void userHandler(Message msg, ConnectionToClient client, Connection conn) throws SQLException, IOException {
 		this.connection = conn;
 		if (msg.getqueryToDo().equals("getUserDetails")) // send to client the details // e.g to logIn
 			searchUserInDB(msg, client, conn);
@@ -58,7 +58,7 @@ public class DBHandler extends EchoServer implements IDBHandler {
 			logoutUser(msg, client, conn);
 		else if (msg.getqueryToDo().equals("getConnection"))
 			getConnection(msg, client, conn);
-		return null;
+
 	}
 
 	// ***********************************************************************
@@ -193,7 +193,7 @@ public class DBHandler extends EchoServer implements IDBHandler {
 		}
 	}
 
-	public User getUserDet(String q) {
+	public void getUserDet(String q, ConnectionToClient client) {
 		User u = new User();
 		Connection conn = connectToDB();
 		try {
@@ -212,8 +212,15 @@ public class DBHandler extends EchoServer implements IDBHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Message msg = new Message();
+		msg.setReturnObj(u);
+		try {
+			client.sendToClient(msg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		return u;
 	}
 
 	/**
@@ -287,9 +294,7 @@ public class DBHandler extends EchoServer implements IDBHandler {
 		User uToSearch = (User) msg.getSentObj();
 		User tmpUsr = new User();
 		String q = "SELECT * FROM user WHERE userID=" + uToSearch.getuID();
-
-		msg.setReturnObj(getUserDet(q));
-		client.sendToClient(msg);
+		getUserDet(q, client);
 	}
 
 	/**
@@ -429,14 +434,27 @@ public class DBHandler extends EchoServer implements IDBHandler {
 		}
 	}
 
-	public User loginUser(String s) {
+	public void loginUser(String s, ConnectionToClient client) {
 		Statement stmt;
 		ResultSet rs = null;
 		User u = null;
+		Message msg = new Message();
 		try {
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			rs = stmt.executeQuery("SELECT * FROM user WHERE userID=" + s);
 			rs.last();
+			if (rs.getBoolean(3)) {
+				msg.setReturnObj(null);
+				rs.close();
+				stmt.close();
+				try {
+					client.sendToClient(msg);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return;
+			}
 			rs.updateInt(3, 1);
 			rs.updateRow();
 			u = new User(rs.getString(1), rs.getString(2), rs.getString(4), rs.getString(5),
@@ -446,8 +464,14 @@ public class DBHandler extends EchoServer implements IDBHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return u;
 
+		msg.setReturnObj(u);
+		try {
+			client.sendToClient(msg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -463,7 +487,7 @@ public class DBHandler extends EchoServer implements IDBHandler {
 	public void loginUser(Message msg, ConnectionToClient client, Connection conn) throws IOException {
 
 		User user = (User) msg.getSentObj();
-		user = loginUser(user.getuID());
+		loginUser(user.getuID(), client);
 		msg.setReturnObj(user);
 		connected.add(user);
 		sendToAllClients(connected);

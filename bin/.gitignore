@@ -1,6 +1,6 @@
 /server/
-/ocsf/
-/common/
 /gui/
 /logic/
 /login/
+/client/
+/common/

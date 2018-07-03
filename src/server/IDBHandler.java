@@ -6,15 +6,14 @@ import java.sql.SQLException;
 import com.mysql.jdbc.Connection;
 
 import common.Message;
-import logic.User;
 import ocsf.server.ConnectionToClient;
 
 public interface IDBHandler {
-	public User getUserDet(String q);
+	public void getUserDet(String q, ConnectionToClient client);
 
-	public User loginUser(String s);
+	public void loginUser(String s, ConnectionToClient client);
 
-	public Object userHandler(Message m, ConnectionToClient client, Connection conn) throws SQLException, IOException;
+	public void userHandler(Message m, ConnectionToClient client, Connection conn) throws SQLException, IOException;
 
 	public void teacherHandler(Message m, ConnectionToClient client, Connection conn) throws SQLException, IOException;
 

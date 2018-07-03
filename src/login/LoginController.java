@@ -57,6 +57,12 @@ public class LoginController {
 		return (ConnectionToClient) msg.getReturnObj();
 	}
 
+	/**
+	 * --tested-- this method checks if user ID and password are entered
+	 * 
+	 * @param u
+	 * @return
+	 */
 	public Boolean checkUserDetails(User u) {
 		if (u.getuID() == null || u.getPassword() == null)
 			return false;
@@ -64,6 +70,15 @@ public class LoginController {
 
 	}
 
+	/**
+	 * --tested-- this method receive user to check- u- and full real
+	 * user-userToCompare- and check if u ID is the same as ID of userToCompare
+	 * 
+	 * @param u
+	 * @param userToCompare
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
 	public Boolean checkPassword(User u, User userToCompare) throws IllegalArgumentException {
 		if (!u.getuID().equals(userToCompare.getuID()))
 			throw new IllegalArgumentException("ID of userToCompare is diffrent from ID of user");
@@ -73,46 +88,48 @@ public class LoginController {
 	}
 
 	/**
-	 * sent message to db to get user details and check if user id exist
+	 * --tested-- sent message to db to get user details and check if user id exist
 	 * 
 	 * @return
 	 */
-	public User checkIfUserIDExist(User u) {
+	public User checkIfUserIDExist(User u, String handler) {
 
 		Message userMsg = new Message();
 		userMsg.setSentObj(u);
 		userMsg.setqueryToDo("getUserDetails");
 		userMsg.setClassType("User");
+		userMsg.setHandler(handler);
 		client.accept(userMsg);
 
 		try {
-			Thread.sleep(1500L);
+			Thread.sleep(2500L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		userMsg = client.getMessage();
 		user = (User) userMsg.getReturnObj();
-		if (user.getuName() == null)
+		if (user == null || user.getuName() == null)
 			return null;
 		return user;
 	}
 
 	/**
-	 * this method send message to server to login the user that recieved in the
+	 * this method send message to server to login the user that received in the
 	 * constructor
 	 * 
 	 * @return
 	 */
-	public User loginUser() {
+	public User loginUser(User userToLog, String handler) {
 		Message msg = new Message();
 		msg.setClassType("user");
 		msg.setqueryToDo("signIn");
-		user.setIsLoggedIn("YES");
-		msg.setSentObj(user);
+		userToLog.setIsLoggedIn("YES");
+		msg.setHandler(handler);
+		msg.setSentObj(userToLog);
 		client.accept(msg);
 		try {
-			Thread.sleep(1500L);
+			Thread.sleep(2500L);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -121,6 +138,73 @@ public class LoginController {
 		user = (User) msg.getReturnObj();
 		return user;
 
+	}
+
+	/**
+	 * this method checks the port user entered. if it is empty method return the
+	 * default port- 5555
+	 * 
+	 * @param txtPort
+	 * @return
+	 */
+	public int checkPort(String txtPort) {
+		int port;
+
+		// Port
+		if (txtPort.compareTo("") == 0)// empty text field
+		{
+			port = 5555;
+		} else {
+			port = Integer.parseInt(txtPort);
+		}
+		return port;
+	}
+
+	/**
+	 * this method checks the ip user entered. if it is empty method return the
+	 * default ip
+	 * 
+	 * @param txtIP
+	 * @return
+	 */
+	public String checkIP(String txtIP) {
+		String ip;
+		// IP
+		if (txtIP.compareTo("") == 0)// empty text field
+		{
+			ip = "localhost";
+		} else {
+			ip = txtIP;
+		}
+		return ip;
+	}
+
+	/**
+	 * this method checks if user id exist and if the password is valid and if the
+	 * user isn't logged in already in case of error method return error message to
+	 * gui
+	 * 
+	 * @param enteredUser
+	 * @return
+	 */
+	public String checkAllLoginDetails(User enteredUser) {
+		User userRecived;
+		if (!checkUserDetails(enteredUser)) // if one or more of fields are empty
+			return ("details are missing");
+		else {
+			userRecived = checkIfUserIDExist(enteredUser, null);
+			if (userRecived == null) // if user id doesn't exist
+			{
+				return ("User ID doesn't exist");
+			} else if (!checkPassword(enteredUser, userRecived)) // if password is incorrect
+			{
+				return ("password is wrong");
+			} else if (userRecived.getIsLoggedIn().equalsIgnoreCase("YES")) // if user already connected
+			{
+				return ("user already logged in");
+			}
+		}
+		return "OK" + userRecived.getTitle();
 	}
 
 	/**

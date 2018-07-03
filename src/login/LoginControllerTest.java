@@ -17,6 +17,9 @@ public class LoginControllerTest {
 		lc = new LoginController();
 	}
 
+	// ****************************************************
+	// checkUserDetails
+	// ****************************************************
 	@Test
 	public void testCheckUserDetailsNoPassword() {
 
@@ -52,11 +55,14 @@ public class LoginControllerTest {
 		assertTrue(expected.equals(result));
 	}
 
+	// ****************************************************
+	// checkIfUserIDExist
+	// ****************************************************
 	@Test
 	public void testCheckIfUserIDExistWithCorrectID() {
 		Boolean expected = true;
 		User userEntered = new User("11111", "0000");
-		User userRecived = lc.checkIfUserIDExist(userEntered);
+		User userRecived = lc.checkIfUserIDExist(userEntered, "test");
 		Boolean result = userRecived == null ? false : true;
 		assertTrue(expected.equals(result));
 	}
@@ -65,11 +71,14 @@ public class LoginControllerTest {
 	public void testCheckIfUserIDExistWithWrongID() {
 		Boolean expected = false;
 		User userEntered = new User("11133", "0000");
-		User userRecived = lc.checkIfUserIDExist(userEntered);
+		User userRecived = lc.checkIfUserIDExist(userEntered, "test");
 		Boolean result = userRecived == null ? false : true;
 		assertTrue(expected.equals(result));
 	}
 
+	// ****************************************************
+	// CheckPassword
+	// ****************************************************
 	@Test
 	public void testCheckPasswordCaseUsersIDsDiffrentCorrectException() {
 
@@ -126,14 +135,38 @@ public class LoginControllerTest {
 		}
 	}
 
+	// ****************************************************
+	// loginUser
+	// ****************************************************
 	@Test
-	public void testLoginUser() {
-		fail("Not yet implemented");
+	public void testLoginUserCaseUserDoesNotExist() {
+		User expected = null;
+		User userToLog = new User();
+		userToLog.setuID("33243");
+		User result = lc.loginUser(userToLog, "test");
+		assertTrue(result == expected);
 	}
 
-	// @Test
-	// public void testGetUser() {
-	// fail("Not yet implemented");
-	// }
+	@Test
+	public void testLoginUserCaseUserExistAndNotConnected() {
+		User expected = new User("11111", "Donald Duck", "0000", "Teacher", "YES");
+		User userToLog = new User();
+		userToLog.setuID("11111");
+		User result = lc.loginUser(userToLog, "test");
+		assertTrue(result.getuID().equals(expected.getuID()));
+		assertTrue(result.getuName().equals(expected.getuName()));
+		assertTrue(result.getTitle().equals(expected.getTitle()));
+		assertTrue(result.getIsLoggedIn().equals(expected.getIsLoggedIn()));
+		assertTrue(result.getPassword().equals(expected.getPassword()));
+	}
+
+	@Test
+	public void testLoginUserCaseUserExistAndIsConnected() {
+		User expected = null;
+		User userToLog = new User();
+		userToLog.setuID("33333");
+		User result = lc.loginUser(userToLog, "test");
+		assertTrue(result == expected);
+	}
 
 }

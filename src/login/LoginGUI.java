@@ -91,79 +91,50 @@ public class LoginGUI implements Initializable {
 	 * @throws Exception
 	 */
 	public void loginButtonAction(ActionEvent ae) throws Exception {
-		// Port
-		if (txtPORT.getText().compareTo("") == 0)// empty text field
-		{
-			port = 5555;
-		} else {
-			port = Integer.parseInt(txtPORT.getText());
-		}
-
-		// IP
-		if (txtServerIP.getText().compareTo("") == 0)// empty text field
-		{
-			IP = "localhost";
-		} else {
-			IP = txtServerIP.getText();
-		}
+		LoginController lc = new LoginController();
+		IP = lc.checkIP(txtServerIP.getText());
+		port = lc.checkPort(txtPORT.getText());
+		client = new ClientConsole(IP, port);
 		uid = userIDTF.getText();
 		upass = passwordTF.getText();
 		User u = new User(uid, upass);
-		client = new ClientConsole(this.IP, this.port);
-		LoginController lc = new LoginController();
-
-		if (!lc.checkUserDetails(u)) // if one or more of fields are empty
-			errorL.setText("details are missing");
+		String msg = lc.checkAllLoginDetails(u);
+		if (!msg.substring(0, 2).equals("OK"))
+			errorL.setText(msg);
 		else {
-			User userRecived = lc.checkIfUserIDExist(u);
-			if (userRecived == null) // if user id doesn't exist
+			flag = true;
+			u = lc.loginUser(u, null);
+			((Node) ae.getSource()).getScene().getWindow().hide();
+			if (msg.endsWith("Teacher"))// if user is teacher
 			{
-				System.out.println("id doesn't exist");
-				errorL.setText("User ID doesn't exist");
-			} else if (!lc.checkPassword(u, userRecived)) // if password is incorrect
-			{
-				System.out.println("password is wrong");
-				errorL.setText("password is wrong");
-			} else if (userRecived.getIsLoggedIn().equalsIgnoreCase("YES")) // if user already connected
-			{
-				System.out.println("user already logged in");
-				errorL.setText("user already logged in");
-			} else {
-				flag = true;
-				lc.loginUser();
-				((Node) ae.getSource()).getScene().getWindow().hide();
-				if (userRecived.getTitle().equalsIgnoreCase("teacher"))// if user is teacher
-				{
-					FXMLLoader loader = new FXMLLoader();
-					loader.setLocation(getClass().getResource("/gui/TeacherMenu.fxml"));
-					Parent root = loader.load();
-					Scene scene = new Scene(root);
-					TeacherMenuGUI teacherMenu = loader.getController();
-					teacherMenu.initData();
-					Stage window = new Stage();
-					window.setScene(scene);
-					window.setTitle("Teacher Menu");
-					window.show();
-					window.setOnCloseRequest(event -> {
-						lc.logoutUser();
-						System.out.println("exit AES Application");
-						System.exit(0);
-					});
-				}
+				FXMLLoader loader = new FXMLLoader();
+				loader.setLocation(getClass().getResource("/gui/TeacherMenu.fxml"));
+				Parent root = loader.load();
+				Scene scene = new Scene(root);
+				TeacherMenuGUI teacherMenu = loader.getController();
+				teacherMenu.initData();
+				Stage window = new Stage();
+				window.setScene(scene);
+				window.setTitle("Teacher Menu");
+				window.show();
+				window.setOnCloseRequest(event -> {
+					lc.logoutUser();
+					System.out.println("exit AES Application");
+					System.exit(0);
+				});
+			}
 
-				if (userRecived.getTitle().equalsIgnoreCase("Student")) // if user is student
-				{
-					Stage primaryStage = new Stage();
-					StudentMenuGUI tmg = new StudentMenuGUI();
-					tmg.start(primaryStage);
-				}
-				if (userRecived.getTitle().equalsIgnoreCase("Principle")) // if user is principle
-				{
-					Stage primaryStage = new Stage();
-					PrincipleMenuGUI2 tmg = new PrincipleMenuGUI2();
-					tmg.start(primaryStage);
-				}
-
+			if (msg.endsWith("Student")) // if user is student
+			{
+				Stage primaryStage = new Stage();
+				StudentMenuGUI tmg = new StudentMenuGUI();
+				tmg.start(primaryStage);
+			}
+			if (msg.endsWith("Principle")) // if user is principle
+			{
+				Stage primaryStage = new Stage();
+				PrincipleMenuGUI2 tmg = new PrincipleMenuGUI2();
+				tmg.start(primaryStage);
 			}
 
 		}
