@@ -4,6 +4,7 @@ import client.ClientConsole;
 import common.Message;
 import logic.User;
 import ocsf.server.ConnectionToClient;
+import server.IDBHandler;
 
 /**
  * this class controls all interaction about the login.
@@ -18,23 +19,20 @@ public class LoginController {
 	User userToSend;
 	static User user;
 	ClientConsole client;
+	private IDBHandler handler;
 
 	// **************************************************
 	// constructors
 	// **************************************************
-	/**
-	 * constructor called from the logingui
-	 */
-	public LoginController(User u) {
-		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
-		userToSend = u;
-	}
 
 	/**
 	 * Default constructor
 	 */
 	public LoginController() {
-		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		if (LoginGUI.flag)
+			this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		else
+			this.client = new ClientConsole("localhost", 5555);
 	}
 
 	/**
@@ -59,15 +57,31 @@ public class LoginController {
 		return (ConnectionToClient) msg.getReturnObj();
 	}
 
+	public Boolean checkUserDetails(User u) {
+		if (u.getuID() == null || u.getPassword() == null)
+			return false;
+		return true;
+
+	}
+
+	public Boolean checkPassword(User u, User userToCompare) throws IllegalArgumentException {
+		if (!u.getuID().equals(userToCompare.getuID()))
+			throw new IllegalArgumentException("ID of userToCompare is diffrent from ID of user");
+		if (u.getPassword().equals(userToCompare.getPassword()))
+			return true;
+		return false;
+	}
+
 	/**
 	 * sent message to db to get user details and check if user id exist
 	 * 
 	 * @return
 	 */
-	public boolean checkIfUserIDExist() {
+	public User checkIfUserIDExist(User u) {
+
 		Message userMsg = new Message();
-		userMsg.setSentObj(userToSend);
-		userMsg.setqueryToDo("checkIfUserExist");
+		userMsg.setSentObj(u);
+		userMsg.setqueryToDo("getUserDetails");
 		userMsg.setClassType("User");
 		client.accept(userMsg);
 
@@ -80,15 +94,17 @@ public class LoginController {
 		userMsg = client.getMessage();
 		user = (User) userMsg.getReturnObj();
 		if (user.getuName() == null)
-			return false;
-		return true;
+			return null;
+		return user;
 	}
 
 	/**
 	 * this method send message to server to login the user that recieved in the
 	 * constructor
+	 * 
+	 * @return
 	 */
-	public void loginUser() {
+	public User loginUser() {
 		Message msg = new Message();
 		msg.setClassType("user");
 		msg.setqueryToDo("signIn");
@@ -101,7 +117,9 @@ public class LoginController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		client.printAllConnectedUsers();
+		msg = client.getMessage();
+		user = (User) msg.getReturnObj();
+		return user;
 
 	}
 
@@ -123,35 +141,6 @@ public class LoginController {
 			e.printStackTrace();
 		}
 
-	}
-
-	/**
-	 * return the user password
-	 * 
-	 * @return
-	 */
-	public String getPassword() {
-		return user.getPassword();
-	}
-
-	/**
-	 * return true if the user is logged in
-	 * 
-	 * @return
-	 */
-	public boolean isConnected() {
-		if (user.getIsLoggedIn().equals("NO"))
-			return false;
-		return true;
-	}
-
-	/**
-	 * return user title
-	 * 
-	 * @return
-	 */
-	public String getTitle() {
-		return user.getTitle();
 	}
 
 	/**

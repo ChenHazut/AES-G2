@@ -62,7 +62,7 @@ public class LoginGUI implements Initializable {
 
 	private ClientConsole client;
 	public ChatClient chat;
-
+	static Boolean flag = false;
 	// **************************************************
 	// Public methods
 	// **************************************************
@@ -106,31 +106,33 @@ public class LoginGUI implements Initializable {
 		} else {
 			IP = txtServerIP.getText();
 		}
-		client = new ClientConsole(this.IP, this.port);
 		uid = userIDTF.getText();
 		upass = passwordTF.getText();
-		if (uid.equals("") || upass.equals("")) // if one or more of fields are empty
+		User u = new User(uid, upass);
+		client = new ClientConsole(this.IP, this.port);
+		LoginController lc = new LoginController();
+
+		if (!lc.checkUserDetails(u)) // if one or more of fields are empty
 			errorL.setText("details are missing");
 		else {
-			User userToLog = new User(uid, upass);
-			LoginController lc = new LoginController(userToLog);
-
-			if (!lc.checkIfUserIDExist()) // if user id doesn't exist
+			User userRecived = lc.checkIfUserIDExist(u);
+			if (userRecived == null) // if user id doesn't exist
 			{
 				System.out.println("id doesn't exist");
 				errorL.setText("User ID doesn't exist");
-			} else if (!lc.getPassword().equals(upass)) // if password is incorrect
+			} else if (!lc.checkPassword(u, userRecived)) // if password is incorrect
 			{
 				System.out.println("password is wrong");
 				errorL.setText("password is wrong");
-			} else if (lc.isConnected()) // if user already connected
+			} else if (userRecived.getIsLoggedIn().equalsIgnoreCase("YES")) // if user already connected
 			{
 				System.out.println("user already logged in");
 				errorL.setText("user already logged in");
 			} else {
+				flag = true;
 				lc.loginUser();
 				((Node) ae.getSource()).getScene().getWindow().hide();
-				if (lc.getTitle().equalsIgnoreCase("teacher"))// if user is teacher
+				if (userRecived.getTitle().equalsIgnoreCase("teacher"))// if user is teacher
 				{
 					FXMLLoader loader = new FXMLLoader();
 					loader.setLocation(getClass().getResource("/gui/TeacherMenu.fxml"));
@@ -149,13 +151,13 @@ public class LoginGUI implements Initializable {
 					});
 				}
 
-				if (lc.getTitle().equalsIgnoreCase("Student")) // if user is student
+				if (userRecived.getTitle().equalsIgnoreCase("Student")) // if user is student
 				{
 					Stage primaryStage = new Stage();
 					StudentMenuGUI tmg = new StudentMenuGUI();
 					tmg.start(primaryStage);
 				}
-				if (lc.getTitle().equalsIgnoreCase("Principle")) // if user is principle
+				if (userRecived.getTitle().equalsIgnoreCase("Principle")) // if user is principle
 				{
 					Stage primaryStage = new Stage();
 					PrincipleMenuGUI2 tmg = new PrincipleMenuGUI2();
@@ -165,6 +167,7 @@ public class LoginGUI implements Initializable {
 			}
 
 		}
+
 	}
 
 	/**
