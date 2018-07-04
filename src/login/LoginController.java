@@ -64,7 +64,7 @@ public class LoginController {
 	 * @return
 	 */
 	public Boolean checkUserDetails(User u) {
-		if (u.getuID() == null || u.getPassword() == null)
+		if (u.getuID() == null || u.getPassword() == null || u.getuID().equals("") || u.getPassword().equals(""))
 			return false;
 		return true;
 
@@ -115,12 +115,16 @@ public class LoginController {
 	}
 
 	/**
-	 * this method send message to server to login the user that received in the
-	 * constructor
+	 * --tested-- this method send message to server to login the user that received
+	 * in the constructor
 	 * 
 	 * @return
 	 */
-	public User loginUser(User userToLog, String handler) {
+	public User loginUser(User userToLog, String handler) throws IllegalArgumentException {
+		if (userToLog == null)
+			throw new IllegalArgumentException("entered user is null");
+		if (handler != null && !handler.equalsIgnoreCase("test"))
+			throw new IllegalArgumentException("handler is wrong");
 		Message msg = new Message();
 		msg.setClassType("user");
 		msg.setqueryToDo("signIn");
@@ -141,8 +145,8 @@ public class LoginController {
 	}
 
 	/**
-	 * this method checks the port user entered. if it is empty method return the
-	 * default port- 5555
+	 * --tested-- this method checks the port user entered. if it is empty method
+	 * return the default port- 5555
 	 * 
 	 * @param txtPort
 	 * @return
@@ -151,7 +155,7 @@ public class LoginController {
 		int port;
 
 		// Port
-		if (txtPort.compareTo("") == 0)// empty text field
+		if (txtPort == null || txtPort.compareTo("") == 0)// empty text field
 		{
 			port = 5555;
 		} else {
@@ -161,8 +165,8 @@ public class LoginController {
 	}
 
 	/**
-	 * this method checks the ip user entered. if it is empty method return the
-	 * default ip
+	 * --tested-- this method checks the ip user entered. if it is empty method
+	 * return the default ip
 	 * 
 	 * @param txtIP
 	 * @return
@@ -170,7 +174,7 @@ public class LoginController {
 	public String checkIP(String txtIP) {
 		String ip;
 		// IP
-		if (txtIP.compareTo("") == 0)// empty text field
+		if (txtIP == null || txtIP.compareTo("") == 0)// empty text field
 		{
 			ip = "localhost";
 		} else {
@@ -187,12 +191,12 @@ public class LoginController {
 	 * @param enteredUser
 	 * @return
 	 */
-	public String checkAllLoginDetails(User enteredUser) {
+	public String checkAllLoginDetails(User enteredUser, String handler) {
 		User userRecived;
 		if (!checkUserDetails(enteredUser)) // if one or more of fields are empty
 			return ("details are missing");
 		else {
-			userRecived = checkIfUserIDExist(enteredUser, null);
+			userRecived = checkIfUserIDExist(enteredUser, handler);
 			if (userRecived == null) // if user id doesn't exist
 			{
 				return ("User ID doesn't exist");

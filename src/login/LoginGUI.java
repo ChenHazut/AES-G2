@@ -98,7 +98,7 @@ public class LoginGUI implements Initializable {
 		uid = userIDTF.getText();
 		upass = passwordTF.getText();
 		User u = new User(uid, upass);
-		String msg = lc.checkAllLoginDetails(u);
+		String msg = lc.checkAllLoginDetails(u, null);
 		if (!msg.substring(0, 2).equals("OK"))
 			errorL.setText(msg);
 		else {
