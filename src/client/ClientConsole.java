@@ -39,7 +39,7 @@ public class ClientConsole implements ChatIF {
 
 	public String host;
 	public LoginGUI lg;
-	ChatClient client;
+	static ChatClient client;
 	private static Message msg;
 	int port;
 

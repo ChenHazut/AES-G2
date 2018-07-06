@@ -17,7 +17,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.CreateExamGUI">
    <children>
       <ImageView fitHeight="600.0" fitWidth="600.0" layoutY="1.0" pickOnBounds="true">
@@ -63,7 +62,7 @@
             </TableView>
             <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
                <children>
-                  <Button fx:id="cancleButton" layoutX="275.0" layoutY="7.0" mnemonicParsing="false" onAction="#cancleButtonAction" prefHeight="25.0" prefWidth="102.0" text="Cancle" />
+                  <Button fx:id="cancleButton" layoutX="275.0" layoutY="7.0" mnemonicParsing="false" onAction="#cancleButtonAction" prefHeight="25.0" prefWidth="102.0" text="Cancel" />
                   <Button fx:id="saveButton" layoutX="162.0" layoutY="7.0" mnemonicParsing="false" onAction="#saveButtonAction" prefHeight="25.0" prefWidth="102.0" text="Save" />
                </children>
             </Pane>

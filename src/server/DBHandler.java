@@ -440,7 +440,7 @@ public class DBHandler extends EchoServer implements IDBHandler, Serializable {
 		User u = null;
 		Message msg = new Message();
 		try {
-			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			stmt = (Statement) connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			rs = stmt.executeQuery("SELECT * FROM user WHERE userID=" + s);
 			rs.last();
 			if (rs.getBoolean(3)) {

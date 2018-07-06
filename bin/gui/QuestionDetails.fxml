@@ -128,7 +128,7 @@
          </font>
       </Label>
       <Button fx:id="saveButton" layoutX="134.0" layoutY="551.0" mnemonicParsing="false" onAction="#saveButtonAction" prefHeight="25.0" prefWidth="102.0" text="Save" />
-      <Button fx:id="cancleButton" layoutX="266.0" layoutY="551.0" mnemonicParsing="false" onAction="#cancleButtonAction" prefHeight="25.0" prefWidth="102.0" text="Cancle" />
+      <Button fx:id="cancleButton" layoutX="266.0" layoutY="551.0" mnemonicParsing="false" onAction="#cancleButtonAction" prefHeight="25.0" prefWidth="102.0" text="Cancel" />
       <Label layoutX="82.0" layoutY="67.0" prefHeight="27.0" prefWidth="102.0" text="Question ID:" textFill="#df1414">
          <font>
             <Font name="System Bold" size="15.0" />

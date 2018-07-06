@@ -118,10 +118,12 @@ public class LoginGUI implements Initializable {
 				window.setTitle("Teacher Menu");
 				window.show();
 				window.setOnCloseRequest(event -> {
-					lc.logoutUser();
 					System.out.println("exit AES Application");
+					lc.logoutUser();
+
 					System.exit(0);
 				});
+
 			}
 
 			if (msg.endsWith("Student")) // if user is student
