@@ -39,6 +39,14 @@ public class DBHandler extends EchoServer implements IDBHandler, Serializable {
 		super(port, dbName, dbPass);
 	}
 
+	public static String generateQuery(Message msg) {
+		String s = msg.getqueryToDo();
+		if (s.equals("getUserDetails") || s.equals("signIn") || s.equals("logout"))
+			return "SELECT * FROM user WHERE userID=" + ((User) msg.getSentObj()).getuID();
+		return null;
+
+	}
+
 	// ***********************************************************************
 	// **************************************************************************
 	// handlers to handle different class types request of DB
@@ -293,7 +301,7 @@ public class DBHandler extends EchoServer implements IDBHandler, Serializable {
 			throws SQLException, IOException {
 		User uToSearch = (User) msg.getSentObj();
 		User tmpUsr = new User();
-		String q = "SELECT * FROM user WHERE userID=" + uToSearch.getuID();
+		String q = generateQuery(msg);
 		getUserDet(q, client);
 	}
 
@@ -334,7 +342,7 @@ public class DBHandler extends EchoServer implements IDBHandler, Serializable {
 								+ " AND QC.courseID=CS.courseID AND QC.subjectID=CS.subjectID AND S.subjectID=QC.subjectID");
 				while (rs2.next()) {
 					q.getCourseList().add(new Course(rs2.getString(3), rs2.getString(6), teacherToSearch.getuID(),
-							new Subject(rs2.getString(2), rs2.getString(8))));
+							new Subject(rs2.getString(2), rs2.getString(9))));
 				}
 				stmt2 = (Statement) conn.createStatement();
 				rs2 = stmt2
@@ -441,7 +449,7 @@ public class DBHandler extends EchoServer implements IDBHandler, Serializable {
 		Message msg = new Message();
 		try {
 			stmt = (Statement) connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			rs = stmt.executeQuery("SELECT * FROM user WHERE userID=" + s);
+			rs = stmt.executeQuery(generateQuery(msg));
 			rs.last();
 			if (rs.getBoolean(3)) {
 				msg.setReturnObj(null);
@@ -512,7 +520,7 @@ public class DBHandler extends EchoServer implements IDBHandler, Serializable {
 		try {
 			stmt = (Statement) conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			User user = (User) msg.getSentObj();
-			String s = "SELECT * FROM user WHERE userID=" + user.getuID();
+			String s = generateQuery(msg);
 			rs = stmt.executeQuery(s);
 			rs.last();
 			rs.updateInt(3, user.getIsLoggedIn().equals("YES") ? 1 : 0);

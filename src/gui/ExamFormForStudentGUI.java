@@ -107,7 +107,7 @@ public class ExamFormForStudentGUI {
 	public void initData(ExamInExecution exam, Boolean studentSolveExam, int grade) {
 		st = new StudentController();
 		StudentSelection ss = StudentSelection.getInstance();
-		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port, null);
 		countPassedTime = 0;
 		this.exam = exam;
 		exeTeacherName.setText(exam.getExecTeacher().getuName());

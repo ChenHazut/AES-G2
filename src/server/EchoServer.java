@@ -126,7 +126,6 @@ public class EchoServer extends AbstractServer {
 			}
 		} else
 			handler = new StubDBHandler();
-		System.out.println("SQL connection succeed");
 
 		Message m = (Message) msg;
 		if (m.getClassType().equalsIgnoreCase("User"))

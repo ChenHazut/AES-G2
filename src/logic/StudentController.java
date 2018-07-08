@@ -35,7 +35,7 @@ public class StudentController {
 	public StudentController() {
 		lc = new LoginController();
 		student = lc.getUser();
-		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		client = new ClientConsole(LoginGUI.IP, LoginGUI.port, null);
 	}
 
 	/**

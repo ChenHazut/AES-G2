@@ -94,7 +94,7 @@ public class LoginGUI implements Initializable {
 		LoginController lc = new LoginController();
 		IP = lc.checkIP(txtServerIP.getText());
 		port = lc.checkPort(txtPORT.getText());
-		client = new ClientConsole(IP, port);
+		client = new ClientConsole(IP, port, null);
 		uid = userIDTF.getText();
 		upass = passwordTF.getText();
 		User u = new User(uid, upass);

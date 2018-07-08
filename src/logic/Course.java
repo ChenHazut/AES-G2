@@ -143,7 +143,7 @@ public class Course implements Serializable {
 	 */
 	public String toString() {
 		String s = "";
-		s += "Course name: " + getcID() + " Course ID: \n" + getcID() + subject.toString();
+		s += "Course name: " + getcName() + " Course ID: \n" + getcID() + subject.toString();
 		return s;
 	}
 

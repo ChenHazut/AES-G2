@@ -53,9 +53,10 @@ public class ClientConsole implements ChatIF {
 	 * @param port
 	 *            The port to connect on.
 	 */
-	public ClientConsole(String host, int port) {
+	public ClientConsole(String host, int port, String clientHandler) {
 		this.host = host;
 		this.port = port;
+
 		try {
 			client = new ChatClient(host, port, this);
 
@@ -63,6 +64,7 @@ public class ClientConsole implements ChatIF {
 			System.out.println("Error: Can't setup connection!" + " Terminating client.");
 			System.exit(1);
 		}
+
 	}
 
 	public void addConnectedUser(User u) {
@@ -73,10 +75,6 @@ public class ClientConsole implements ChatIF {
 		client.addCilentToConnectedList(u);
 	}
 
-	public void printAllConnectedUsers() {
-		System.out.println("connected:");
-		client.printAllConnectedUsers();
-	}
 	// Instance methods ************************************************
 
 	/**

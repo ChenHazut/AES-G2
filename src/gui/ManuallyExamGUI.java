@@ -236,7 +236,7 @@ public class ManuallyExamGUI {
 	 * this initialize the data of the manually exam window
 	 */
 	public void initData(ExamInExecution examInExecution) {
-		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port, null);
 		st = new StudentController();
 		exam = examInExecution;
 		s = new StudentInExam();

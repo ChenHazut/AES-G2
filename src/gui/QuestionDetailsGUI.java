@@ -24,12 +24,13 @@ import logic.TeacherController;
 
 /**
  * this method handle the details of the question
+ * 
  * @author vakni
  */
 public class QuestionDetailsGUI implements Initializable {
-	//************************************
-		// Fields
-		//************************************
+	// ************************************
+	// Fields
+	// ************************************
 	@FXML
 	Label questionIDLabel;
 	@FXML
@@ -76,9 +77,9 @@ public class QuestionDetailsGUI implements Initializable {
 	Question q;
 
 	// **************************************************
-    // Public methods
-    // **************************************************
-	
+	// Public methods
+	// **************************************************
+
 	/**
 	 * implement the Initializable
 	 */
@@ -130,7 +131,9 @@ public class QuestionDetailsGUI implements Initializable {
 
 	/**
 	 * this methos show the error massage
-	 * @param s as String with the error massage
+	 * 
+	 * @param s
+	 *            as String with the error massage
 	 */
 	private void errorMessage(String s) {
 		Alert alert = new Alert(AlertType.ERROR);
@@ -142,6 +145,7 @@ public class QuestionDetailsGUI implements Initializable {
 
 	/**
 	 * save the question details on DB when the teacher press the save button
+	 * 
 	 * @param ae
 	 * @throws Exception
 	 */
@@ -171,6 +175,7 @@ public class QuestionDetailsGUI implements Initializable {
 
 	/**
 	 * this method cancel all the function when the techear press the cancel button
+	 * 
 	 * @param ae
 	 * @throws Exception
 	 */
@@ -187,7 +192,6 @@ public class QuestionDetailsGUI implements Initializable {
 		window.show();
 	}
 
-	
 	public void correctAnswerTextField(ActionEvent ae) {
 
 	}

@@ -113,7 +113,7 @@ public class PrincipleMenuGUI2 implements Initializable {
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port, null);
 		LoginController lc = new LoginController();
 		lc.getUser().setTitle("Principal");
 		this.principal = lc.getUser();

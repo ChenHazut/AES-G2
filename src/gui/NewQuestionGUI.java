@@ -152,7 +152,7 @@ public class NewQuestionGUI implements Initializable {
 		} else
 			updatedQuestion.setQuestionTxt(QuestionLabel.getText());
 		updatedQuestion.setInstruction(instructionLabel.getText());
-		
+
 		if (answer1Label.getText().equals("")) {
 			qans1.setVisible(true);
 			flag = 1;
@@ -177,12 +177,12 @@ public class NewQuestionGUI implements Initializable {
 			flag = 1;
 		} else
 			updatedQuestion.setCorrectAnswer(Integer.parseInt((String) correctAnswerCombo.getValue()));
-		
+
 		if (flag == 0)
 			return updatedQuestion;
-		else 
+		else
 			MyErrorMessage.show("Please fill all marked fields", "Missing details!");
-		
+
 		return null;
 	}
 
@@ -208,7 +208,7 @@ public class NewQuestionGUI implements Initializable {
 		selectedcourses = new ArrayList<Course>();
 		ArrayList<String> selected = new ArrayList<String>();
 
-		for (String c : coursesL) {
+		for (String c : courseCombo.getCheckModel().getCheckedItems()) {
 			selected.add(c);
 		}
 		int j;

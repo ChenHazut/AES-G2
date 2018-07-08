@@ -1,6 +1,4 @@
-/gui/
-/logic/
-/login/
-/ocsf/
 /server/
 /client/
+/login/
+/unittests/

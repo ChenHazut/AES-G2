@@ -35,7 +35,7 @@ public class TeacherController {
 	public TeacherController() {
 		lc = new LoginController();
 		teacher = lc.getUser();
-		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		client = new ClientConsole(LoginGUI.IP, LoginGUI.port, null);
 	}
 
 	/**

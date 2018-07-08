@@ -30,9 +30,9 @@ public class LoginController {
 	 */
 	public LoginController() {
 		if (LoginGUI.flag)
-			this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+			this.client = new ClientConsole(LoginGUI.IP, LoginGUI.port, null);
 		else
-			this.client = new ClientConsole("localhost", 5555);
+			this.client = new ClientConsole("localhost", 5555, null);
 	}
 
 	/**

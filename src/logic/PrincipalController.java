@@ -34,7 +34,7 @@ public class PrincipalController {
 	public PrincipalController() {
 		lc = new LoginController();
 		principal = lc.getUser();
-		client = new ClientConsole(LoginGUI.IP, LoginGUI.port);
+		client = new ClientConsole(LoginGUI.IP, LoginGUI.port, null);
 	}
 
 	/**
